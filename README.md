@@ -4,6 +4,7 @@ Software evolution project group 4
 ## Install instructions
 1. Install node.js
 1. Install `npm
+1. Install PostgreSQL
 1. run `npm install -g @angular/cli`
 1. cd to `addchain-app`
 1. run `npm install`

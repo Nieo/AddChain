@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     .catch(error =>{
       console.log("Error: ", error);
       res.status(500);
-      res.send('');
+      res.end();
     })
 });
 

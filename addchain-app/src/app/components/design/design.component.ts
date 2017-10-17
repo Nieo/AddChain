@@ -11,7 +11,9 @@ export class DesignComponent implements OnInit {
 
   designs: Design[];
 
-  constructor(private designService: DesignService) { }
+  constructor(
+    private designService: DesignService
+  ) { }
 
   ngOnInit() {
     this.getDesigns();

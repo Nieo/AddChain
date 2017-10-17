@@ -3,13 +3,15 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { DesignComponent } from './components/design/design.component';
-import {HttpModule} from "@angular/http";
-import {DesignService} from "./services/design.service";
+import { HttpModule } from "@angular/http";
+import { DesignService } from "./services/design.service";
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DesignComponent
+    DesignComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

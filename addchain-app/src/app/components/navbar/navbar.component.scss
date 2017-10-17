@@ -1,0 +1,50 @@
+@import "../../../styles.scss";
+
+h1 {
+  margin: 0;
+  padding:10px;
+}
+
+.btn {
+  margin: 0 5px ;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  transition: all 0.35s;
+  border-radius: 2px;
+  &:hover{
+    background-color: $lightAccent;
+  }
+  &:active{
+    background-color: $darkShade;
+  }
+  @include flex-center()
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  a{
+    flex-grow: 1;
+
+  }
+  h1, div {
+    flex-grow: 2;
+  }
+}
+
+.navbar {
+  background-color: $primaryColor;
+  color: #fff;
+}
+
+
+.input-box {
+  @include flex-center();
+  p, input {
+    display: inline-block;
+    border: 0;
+  }
+}

@@ -1,13 +1,5 @@
 package se.chalmers.sepg4.j2ts;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.CompilationUnit;
@@ -18,6 +10,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.AnnotationDeclaration;
 import com.github.javaparser.ast.body.AnnotationMemberDeclaration;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.EnumConstantDeclaration;
@@ -27,6 +20,7 @@ import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.ReceiverParameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -71,6 +65,7 @@ import com.github.javaparser.ast.modules.ModuleOpensStmt;
 import com.github.javaparser.ast.modules.ModuleProvidesStmt;
 import com.github.javaparser.ast.modules.ModuleRequiresStmt;
 import com.github.javaparser.ast.modules.ModuleUsesStmt;
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.stmt.AssertStmt;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.BreakStmt;
@@ -104,6 +99,18 @@ import com.github.javaparser.ast.type.VoidType;
 import com.github.javaparser.ast.type.WildcardType;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class JavaToTypescript {
     public static void main(String[] args) throws IOException {
         Scanner inputScanner = new Scanner(System.in);
@@ -118,6 +125,70 @@ public class JavaToTypescript {
     }
 
     private static class CodeVisitor implements GenericVisitor<String, Void> {
+        public static class Scope {
+            private Scope parent;
+            private String className;
+            private Set<String> localSymbols = new HashSet<>();
+            private Set<String> instanceSymbols = new HashSet<>();
+            private Set<String> staticSymbols = new HashSet<>();
+
+            public Scope() {}
+
+            public Scope(String className, Scope parent) {
+                this.className = parent.className != null ? parent.className + "." + className : className;
+                this.parent = parent;
+            }
+
+            public Scope(Scope parent) {
+                this.parent = parent;
+                this.className = parent.className;
+            }
+
+            public void addLocalSymbol(String symbol) {
+                localSymbols.add(symbol);
+            }
+
+            public void addInstanceSymbol(String symbol) {
+                instanceSymbols.add(symbol);
+            }
+
+            public void addStaticSymbol(String symbol) {
+                staticSymbols.add(symbol);
+            }
+
+            public String lookup(String symbol) {
+                if (localSymbols.contains(symbol)) {
+                    return "";
+                }
+                if (instanceSymbols.contains(symbol)) {
+                    return "this";
+                }
+                if (staticSymbols.contains(symbol)) {
+                    return className != null ? className : "";
+                }
+                if (parent != null) {
+                    return parent.lookup(symbol);
+                }
+                try {
+                    // Check if referring to java.lang class.
+                    Class.forName("java.lang." + symbol);
+                    return "";
+                } catch (ClassNotFoundException ex) {
+                    return null;
+                }
+            }
+        }
+
+        private Scope scope;
+
+        public CodeVisitor() {
+            this.scope = new Scope();
+        }
+
+        public CodeVisitor(Scope scope) {
+            this.scope = scope;
+        }
+
         private static String join(String delimiter, Stream<String> elements) {
             return elements.collect(Collectors.joining(delimiter));
         }
@@ -162,8 +233,18 @@ public class JavaToTypescript {
             return n.accept(this, null);
         }
 
+        private String visit(Node n, Scope scope) {
+            return n.accept(new CodeVisitor(scope), null);
+        }
+
         private String visit(EnumSet<Modifier> modifiers) {
-            return join(" ", modifiers.stream().map(Enum::toString).map(String::toLowerCase));
+            StringBuilder modifierString = new StringBuilder();
+            if (modifiers.contains(Modifier.PUBLIC)) modifierString.append("public ");
+            if (modifiers.contains(Modifier.PRIVATE)) modifierString.append("private ");
+            if (modifiers.contains(Modifier.PROTECTED)) modifierString.append("protected ");
+            if (modifiers.contains(Modifier.STATIC)) modifierString.append("static ");
+            if (modifiers.contains(Modifier.ABSTRACT)) modifierString.append("abstract ");
+            return modifierString.toString();
         }
 
         @Override
@@ -173,16 +254,17 @@ public class JavaToTypescript {
 
         @Override
         public String visit(Parameter n, Void arg) {
-            String typeAndModifiers = n.getModifiers().isEmpty()
-                    ? n.getType().asString()
-                    : visit(n.getModifiers()) + " " + n.getType();
-            return "param: /* " + typeAndModifiers + " */ " + n.getName().asString();
+            scope.addLocalSymbol(n.getNameAsString());
+            if (n.getType().asString().isEmpty()) {
+                return n.getNameAsString();
+            } else {
+                return n.getNameAsString() + " : " + visit(n.getType());
+            }
         }
 
         @Override
         public String visit(PrimitiveType n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return n.asString();
         }
 
         @Override
@@ -242,18 +324,47 @@ public class JavaToTypescript {
 
         @Override
         public String visit(ThrowStmt n, Void arg) {
-            return "throws " + visit(n.getExpression()) + ";";
+            return "throw " + visit(n.getExpression()) + ";";
         }
 
         @Override
         public String visit(TryStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            if (!n.getResources().isEmpty()) {
+                throw new UnsupportedOperationException(joinLines("Try-with-resources not supported.", n.toString()));
+            }
+            StringBuilder sb = new StringBuilder("try ");
+            sb.append(visit(n.getTryBlock()));
+            if (!n.getCatchClauses().isEmpty()) {
+                // Typescript, as far as we know, does not support multiple catch clauses. Thus, we need to perform
+                // merging magic here.
+                List<String> exceptionNames = new ArrayList<>();
+                {
+                    Set<String> exceptionNamesSet = new HashSet<>();
+                    n.getCatchClauses().stream()
+                            .map(CatchClause::getParameter)
+                            .map(NodeWithSimpleName::getNameAsString)
+                            .forEach(exceptionNamesSet::add);
+                    exceptionNames.addAll(exceptionNamesSet);
+                }
+                Scope catchClauseScope = new Scope(scope);
+                String exceptionName = exceptionNames.get(0);
+                sb.append(" catch (").append(exceptionName).append(") {\n");
+                String catchBlock = joinLines(
+                        exceptionNames.subList(1, exceptionNames.size()).stream()
+                                .map(e -> "let " + e + " = " + exceptionName + ";"))
+                        + join(" else ", n.getCatchClauses().stream().map(c -> visit(c, catchClauseScope)));
+                sb.append(indent(catchBlock)).append("\n}");
+            }
+            if (n.getFinallyBlock().isPresent()) {
+                sb.append(" finally ");
+                sb.append(visit(n.getFinallyBlock().get()));
+            }
+            return sb.toString();
         }
 
         @Override
         public String visit(TypeExpr n, Void arg) {
-            return n.getType().asString();
+            return visit(n.getType());
         }
 
         @Override
@@ -285,26 +396,31 @@ public class JavaToTypescript {
 
         @Override
         public String visit(VariableDeclarationExpr n, Void arg) {
-            String typeAndModifiers = n.getModifiers().isEmpty()
-                    ? n.getElementType().asString()
-                    : visit(n.getModifiers()) + " " + n.getElementType();
-            return join(",\n", n.getVariables().stream()
+            n.getVariables().stream()
+                    .map(NodeWithSimpleName::getNameAsString)
+                    .forEach(scope::addLocalSymbol);
+            String declarationType = n.isFinal() ? "const" : "let";
+            return (n.getVariables().size() > 1
+                    ? "// TODO: Warning - declaring multiple variables with the same statement may not be supported."
+                    : "")
+                    + join(";\n", n.getVariables().stream()
                     .map(this::visit)
-                    .map(v -> "var: /* " + typeAndModifiers + " */ " + v));
+                    .map(v -> declarationType + " " + v));
         }
 
         @Override
         public String visit(VariableDeclarator n, Void arg) {
+            String nameAndType = n.getName() + ": " + visit(n.getType());
             if (n.getInitializer().isPresent()) {
-                return n.getName() + " = " + visit(n.getInitializer().get());
+                return nameAndType + " = " + visit(n.getInitializer().get());
+            } else {
+                return nameAndType;
             }
-            return n.getName().asString();
         }
 
         @Override
         public String visit(VoidType n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return "void";
         }
 
         @Override
@@ -369,7 +485,18 @@ public class JavaToTypescript {
 
         @Override
         public String visit(ImportDeclaration n, Void arg) {
-            return commentedElement(n);
+            String[] components = n.getName().asString().split("\\.");
+            String symbol = components[components.length - 1];
+            scope.addStaticSymbol(symbol);
+            if (!n.isStatic()) {
+                return "import { " + symbol + " } from \"./" + join("/", Arrays.stream(components)) + "\";";
+            } else {
+                String scope = components[components.length - 2];
+                return joinLines("import { " + symbol + " } from \"./"
+                        + join("/", Arrays.stream(components, 0, components.length - 1))
+                        + ";",
+                        "const " + symbol + " = " + scope + "." + symbol + "\";");
+            }
         }
 
         @Override
@@ -409,7 +536,16 @@ public class JavaToTypescript {
 
         @Override
         public String visit(LambdaExpr n, Void arg) {
-            return join(", ", n.getParameters().stream().map(this::visit)) + " -> " + visit(n.getBody());
+            Scope lambdaScope = new Scope(scope);
+            n.getParameters().stream()
+                    .map(NodeWithSimpleName::getNameAsString)
+                    .forEach(lambdaScope::addLocalSymbol);
+            String body = visit(n.getBody(), lambdaScope);
+            if (body.endsWith(";")) {
+                body = body.substring(0, body.length() - 1);
+            }
+            return "(" + join(", ", n.getParameters().stream().map(p -> visit(p, lambdaScope))) + ")"
+                    + " => " + body;
         }
 
         @Override
@@ -449,20 +585,31 @@ public class JavaToTypescript {
             if (n.getScope().isPresent()) {
                 return visit(n.getScope().get()) + "." + call;
             } else {
-                return call;
+                String symbolScope = scope.lookup(n.getNameAsString());
+                if (symbolScope != null) {
+                    return !symbolScope.isEmpty() ? symbolScope + "." + call : call;
+                } else {
+                    return "\n" + indent(joinLines("// TODO: Warning - no scope specified; assuming 'this'.",
+                            "this." + call));
+                }
             }
         }
 
         @Override
         public String visit(MethodDeclaration n, Void arg) {
-            String args = join(",\n", n.getParameters().stream().map(this::visit));
-            String typeAndModifiers = n.getModifiers().isEmpty()
-                    ? n.getType().asString()
-                    : visit(n.getModifiers()) + " " + n.getType();
-            String head = "method: /* " + typeAndModifiers + " */ " + n.getName()
-                            + "(" + (n.getParameters().size() < 2 ? args : joinLines("", indent(2, args))) + ")";
+            if (n.isStatic()) {
+                scope.addStaticSymbol(n.getNameAsString());
+            } else {
+                scope.addInstanceSymbol(n.getNameAsString());
+            }
+            Scope methodScope = new Scope(scope);
+            String args = join(",\n", n.getParameters().stream().map(p -> visit(p, methodScope)));
+            String modifiers = visit(n.getModifiers());
+            String head = modifiers + n.getName()
+                    + "(" + (n.getParameters().size() < 2 ? args : joinLines("", indent(2, args))) + ") : "
+                    + visit(n.getType());
             if (n.getBody().isPresent()) {
-                return head + " " + visit(n.getBody().get());
+                return head + " " + visit(n.getBody().get(), methodScope);
             } else {
                 return head + ";";
             }
@@ -475,7 +622,13 @@ public class JavaToTypescript {
 
         @Override
         public String visit(NameExpr n, Void arg) {
-            return n.getName().asString();
+            String nameScope = scope.lookup(n.getNameAsString());
+            if (nameScope != null) {
+                return !nameScope.isEmpty() ? nameScope + "." + n.getNameAsString() : n.getNameAsString();
+            } else {
+                return "\n" + indent(joinLines("// TODO: Warning - no scope specified; assuming 'this'.",
+                        "this." + n.getNameAsString()));
+            }
         }
 
         @Override
@@ -498,7 +651,7 @@ public class JavaToTypescript {
         @Override
         public String visit(ObjectCreationExpr n, Void arg) {
             String args = join(",\n", n.getArguments().stream().map(this::visit));
-            String constructorCall = "new " + n.getType()
+            String constructorCall = "new " + visit(n.getType())
                     + "(" + (n.getArguments().size() < 2 ? args : joinLines("", indent(args), "")) + ")";
             if (!n.getAnonymousClassBody().isPresent()) {
                 return constructorCall;
@@ -559,8 +712,7 @@ public class JavaToTypescript {
 
         @Override
         public String visit(ArrayType n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return visit(n.getComponentType()) + "[]";
         }
 
         @Override
@@ -587,7 +739,8 @@ public class JavaToTypescript {
 
         @Override
         public String visit(BlockStmt n, Void arg) {
-            return joinLines("{", indent(n.getStatements().accept(this, null)), "}");
+            Scope blockScope = new Scope(scope);
+            return joinLines("{", indent(joinLines(n.getStatements().stream().map(s -> visit(s, blockScope)))), "}");
         }
 
         @Override
@@ -603,13 +756,15 @@ public class JavaToTypescript {
 
         @Override
         public String visit(CastExpr n, Void arg) {
-            return "(" + n.getType() + ") " + visit(n.getExpression());
+            return "(" + visit(n.getType()) + ") " + visit(n.getExpression());
         }
 
         @Override
         public String visit(CatchClause n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            String exceptionName = n.getParameter().getNameAsString();
+            String exceptionType = n.getParameter().getType().asString();
+            String head = "if (" + exceptionName + " instanceof " + exceptionType + ")";
+            return head + visit(n.getBody());
         }
 
         @Override
@@ -625,21 +780,83 @@ public class JavaToTypescript {
 
         @Override
         public String visit(ClassOrInterfaceDeclaration n, Void arg) {
-            // TODO(alniniclas): Handle modifiers.
+            Scope classScope = new Scope(n.getNameAsString(), scope);
+            // TODO(alniniclas): Pre-populate scopes recursively.
+            for (BodyDeclaration<?> member : n.getMembers()) {
+                if (member.isFieldDeclaration()) {
+                    FieldDeclaration field = member.asFieldDeclaration();
+                    field.getVariables().stream()
+                            .map(NodeWithSimpleName::getNameAsString)
+                            .forEach(field.isStatic() ? classScope::addStaticSymbol : classScope::addInstanceSymbol);
+                } else if (member.isConstructorDeclaration()) {
+                    // Ignore.
+                } else if (member.isMethodDeclaration()) {
+                    MethodDeclaration method = member.asMethodDeclaration();
+                    if (method.isStatic()) {
+                        classScope.addStaticSymbol(method.getNameAsString());
+                    } else {
+                        classScope.addInstanceSymbol(method.getNameAsString());
+                    }
+                } else if (member.isTypeDeclaration()) {
+                    TypeDeclaration nestedType = member.asTypeDeclaration();
+                    if (nestedType.isStatic()) {
+                        classScope.addStaticSymbol(nestedType.getNameAsString());
+                    } else {
+                        classScope.addInstanceSymbol(nestedType.getNameAsString());
+                    }
+                } else {
+                    throw new UnsupportedOperationException(
+                            joinLines("Unrecognised class member type, " + member.getClass() + ":",
+                                    member.toString()));
+                }
+            }
             String members = join("\n\n", n.getMembers().stream()
-                    .map(this::visit).map(CodeVisitor::indent));
-            return joinLines("class: " + n.getName() + " {",  members, "}");
+                    .map(m -> visit(m, classScope)).map(CodeVisitor::indent));
+            if (n.isLocalClassDeclaration()) {
+                scope.addLocalSymbol(n.getNameAsString());
+                return joinLines("let " + n.getName() + " = class {", members, "};");
+            } else if (n.isNestedType()) {
+                scope.addStaticSymbol(n.getNameAsString());
+                StringBuilder modifiers = new StringBuilder();
+                if (n.isPublic()) modifiers.append("public ");
+                if (n.isPrivate()) modifiers.append("private ");
+                if (n.isProtected()) modifiers.append("protected ");
+                if (n.isStatic()) modifiers.append("static ");
+                return joinLines(modifiers.toString() + n.getName() + " = class {", members, "};");
+            } else {
+                scope.addStaticSymbol(n.getNameAsString());
+                String keyword = n.isInterface() ? "interface" : "class";
+                return joinLines(keyword + " " + n.getName() + " {",  members, "}");
+            }
         }
 
         @Override
         public String visit(ClassOrInterfaceType n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            String typeScope = scope.lookup(n.getNameAsString());
+            String type = typeScope != null && !typeScope.isEmpty()
+                    ? typeScope + "." + n.asString()
+                    : n.asString();
+            if (typeScope != null) {
+                return type;
+            } else {
+                return "\n" + joinLines(indent("// TODO: Warning - type not found in scope."), type);
+            }
         }
 
         @Override
         public String visit(CompilationUnit n, Void arg) {
-            return joinLines(n.getChildNodes().stream().map(this::visit));
+            StringBuilder sb = new StringBuilder();
+            if (n.getPackageDeclaration().isPresent()) {
+                sb.append("// package ").append(n.getPackageDeclaration().get().getName()).append(";");
+                sb.append("\n\n");
+            }
+            if (!n.getImports().isEmpty()) {
+                sb.append(joinLines(n.getImports().stream().map(this::visit)));
+                sb.append("\n\n");
+            }
+            return sb.append(join("\n\n", n.getTypes().stream()
+                    .map(this::visit)
+                    .map(c -> "export " + c))).toString();
         }
 
         @Override
@@ -651,11 +868,15 @@ public class JavaToTypescript {
 
         @Override
         public String visit(ConstructorDeclaration n, Void arg) {
-            String args = join(",\n", n.getParameters().stream().map(this::visit));
-            return joinLines("constructor: "
-                    + (n.getModifiers().isEmpty() ? " " : "/* " + visit(n.getModifiers()) + " */ ") + n.getName()
-                    + "(" + (n.getParameters().size() < 2 ? args : joinLines("", indent(2, args))) + ") "
-                    + visit(n.getBody()));
+            Scope constructorScope = new Scope(scope);
+            String args = join(",\n", n.getParameters().stream().map(p -> visit(p, constructorScope)));
+            StringBuilder modifiers = new StringBuilder();
+            if (n.isPublic()) modifiers.append("public ");
+            if (n.isProtected()) modifiers.append("private ");
+            if (n.isProtected()) modifiers.append("protected ");
+            return joinLines(modifiers + "constructor("
+                    + (n.getParameters().size() < 2 ? args : joinLines("", indent(2, args))) + ") "
+                    + visit(n.getBody(), constructorScope));
         }
 
         @Override
@@ -716,27 +937,37 @@ public class JavaToTypescript {
 
         @Override
         public String visit(FieldDeclaration n, Void arg) {
-            String modifiers = visit(n.getModifiers());
-            String typeAndModifiers = n.getModifiers().isEmpty()
-                    ? n.getElementType().asString()
-                    : modifiers + " " + n.getElementType();
+            n.getVariables().stream()
+                    .map(f -> f.getName().asString())
+                    .forEach(n.isStatic() ? scope::addStaticSymbol : scope::addInstanceSymbol);
+            StringBuilder modifiers = new StringBuilder();
+            if (n.isPublic()) modifiers.append("public ");
+            if (n.isPrivate()) modifiers.append("private ");
+            if (n.isProtected()) modifiers.append("protected ");
+            if (n.isStatic()) modifiers.append("static ");
+            if (n.isFinal()) modifiers.append("readonly ");
             return joinLines(n.getVariables().stream()
-                    .map(v -> "field: /* " + typeAndModifiers + " */ " + visit(v) + ";"));
+                    .map(v -> modifiers.toString() + visit(v) + ";"));
         }
 
         @Override
         public String visit(ForStmt n, Void arg) {
-            String init = join(",\n", n.getInitialization().stream().map(this::visit));
-            String compare = n.getCompare().isPresent() ? n.getCompare().get().accept(this, null) : "";
-            String update = join(",\n", n.getUpdate().stream().map(this::visit));
+            Scope loopScope = new Scope(scope);
+            String init = join(",\n", n.getInitialization().stream().map(i -> visit(i, loopScope)));
+            String compare = n.getCompare().isPresent() ? visit(n.getCompare().get(), loopScope) : "";
+            String update = join(",\n", n.getUpdate().stream().map(u -> visit(u, loopScope)));
             String head = joinLines("for (" + init + ";", indent(2, joinLines(compare + ";", update)) + ")");
-            return head + " " + visit(n.getBody());
+            return head + " " + visit(n.getBody(), loopScope);
         }
 
         @Override
         public String visit(ForeachStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            Scope forScope = new Scope(scope);
+            String variable = n.getVariable().getVariable(0).getNameAsString();
+            forScope.addLocalSymbol(variable);
+            String declarationType = n.getVariable().isFinal() ? "const" : "let";
+            return "for (" + declarationType + " " + variable + " of " + visit(n.getIterable()) + ") "
+                    + visit(n.getBody(), forScope);
         }
 
         @Override

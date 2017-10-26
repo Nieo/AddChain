@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {Design} from "../../models/design";
-import {DesignService} from "../../services/design.service";
 
 @Component({
   selector: 'app-design',
@@ -9,17 +7,9 @@ import {DesignService} from "../../services/design.service";
 })
 export class DesignComponent implements OnInit {
 
-  designs: Design[];
-
-  constructor(
-    private designService: DesignService
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-    this.getDesigns();
   }
 
-  getDesigns(){
-    this.designService.getDesigns().then(designs => this.designs = designs);
-  }
 }

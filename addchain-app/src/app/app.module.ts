@@ -7,17 +7,19 @@ import { DesignComponent } from './components/design/design.component';
 import { HttpModule } from "@angular/http";
 import { DesignService } from "./services/design.service";
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { BuildComponent } from './components/build/build.component';
 import { ProjectComponent } from './components/project/project.component';
 import { PrintComponent } from './components/print/print.component';
 import { PartComponent } from './components/part/part.component';
+import { BuildDetailComponent } from './components/build-detail/build-detail.component';
+import { DesignListComponent } from './components/design-list/design-list.component';
+import { DesignDetailComponent } from './components/design-detail/design-detail.component';
 
 
 const appRoutes: Routes = [
   {path: "",  redirectTo: "project", pathMatch: "full"},
   {path: "project", component: ProjectComponent},
   {path: "design", component: DesignComponent },
-  {path: "build", component: BuildComponent },
+  {path: "build", component: BuildDetailComponent },
   {path: "print", component: PrintComponent },
   {path: "part", component: PartComponent}
 ];
@@ -28,10 +30,12 @@ const appRoutes: Routes = [
     AppComponent,
     DesignComponent,
     NavbarComponent,
-    BuildComponent,
     ProjectComponent,
     PrintComponent,
     PartComponent,
+    BuildDetailComponent,
+    DesignListComponent,
+    DesignDetailComponent,
   ],
   imports: [
     BrowserModule,

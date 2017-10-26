@@ -1,8 +1,10 @@
 export class Design {
-  id: number;
+  design_id: number;
   name: string;
-  constructor(id: number, name: string){
-    this.id = id;
+  description: string;
+  constructor(design_id: number, name: string, description: string){
+    this.design_id = design_id;
     this.name = name;
+    this.description = description;
   }
 }

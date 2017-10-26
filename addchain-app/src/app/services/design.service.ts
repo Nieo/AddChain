@@ -16,5 +16,11 @@ export class DesignService {
       .then(response => response.json() as Design[])
       .catch( error => console.log(error) );
   }
+  getDesign(id:string): Promise<Design> {
+    return this.http.get(this.baseUrl + "/" + id)
+    .toPromise()
+    .then(response => response.json() as Design)
+    .catch( error => console.log(error) );
+  }
 
 }

@@ -11,6 +11,8 @@ import { ProjectComponent } from './components/project/project.component';
 import { PrintComponent } from './components/print/print.component';
 import { PartComponent } from './components/part/part.component';
 import { BuildDetailComponent } from './components/build-detail/build-detail.component';
+import { DesignListComponent } from './components/design-list/design-list.component';
+import { DesignDetailComponent } from './components/design-detail/design-detail.component';
 
 
 const appRoutes: Routes = [
@@ -32,6 +34,8 @@ const appRoutes: Routes = [
     PrintComponent,
     PartComponent,
     BuildDetailComponent,
+    DesignListComponent,
+    DesignDetailComponent,
   ],
   imports: [
     BrowserModule,

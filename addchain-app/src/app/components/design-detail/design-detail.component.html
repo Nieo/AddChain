@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="data">
+    <div>
+      <h1>Design</h1>
+      <p>ID: {{design.design_id}}</p>
+      <p>Name: {{design.name}}</p>
+      <p>Customer: ABC</p>
+      <p>Project: 123</p>
+    </div>
+    <div>
+      <h1>Related builds</h1>
+      <ul>
+        <li><a>Build 1</a></li>
+        <li><a>Build 2</a></li>
+        <li><a>Build 3</a></li>
+      </ul>
+    </div>
+    <div>
+      <h1>Related parts</h1>
+      <ul>
+        <li><a routerLink="/part/1">Part 1</a></li>
+        <li><a>Part 2</a></li>
+        <li><a>Part 3</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="stl-container">
+    <div>
+      <!--Replace this div with a stl-component-->
+      <p>STL viewer</p>
+      <canvas class="stl-viewer"></canvas>
+    </div>
+  </div>
+</div>

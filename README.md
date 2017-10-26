@@ -18,3 +18,20 @@ Software evolution project group 4
 ## Run 
 Server: in `addchain-server/` run `node app.js`  
 Client: in `addchain-app run/` run `ng-serve`
+
+## How to create frontend component
+1. Go to addchain\addchain-app\src\app\components and use "ng generate component [name of component]"
+
+## How to create frontend service
+1. Go to addchain\addchain-app\src\app\services and use "ng generate service [name of service]"
+2. Go to addchain\addchain-app\src\app
+3. Open the app.module.ts file
+4. Add the service to the providers 
+
+## How to create frontend model
+1.Go to addchain\addchain-app\src\app\models and use "ng generate class [name]"
+
+
+
+
+1. When adding a model addchain\addchain-app\src\app\models and use the 

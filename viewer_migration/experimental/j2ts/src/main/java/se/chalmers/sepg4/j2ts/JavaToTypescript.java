@@ -835,7 +835,7 @@ public class JavaToTypescript {
         public String visit(BreakStmt n, Void arg) {
             if (n.getLabel().isPresent()) {
                 throw new UnsupportedOperationException(
-                        joinLines("Labeled 'continue' is not supported:", n.toString()));
+                        joinLines("Labeled 'break' is not supported:", n.toString()));
             }
             return "break;";
         }

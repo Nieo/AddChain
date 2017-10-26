@@ -37,6 +37,7 @@ import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.InstanceOfExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -92,6 +93,7 @@ import com.github.javaparser.ast.type.ArrayType;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.IntersectionType;
 import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 import com.github.javaparser.ast.type.UnionType;
 import com.github.javaparser.ast.type.UnknownType;
@@ -103,9 +105,11 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -221,6 +225,32 @@ public class JavaToTypescript {
             return indent(1, lines);
         }
 
+        private static void populateClassScope(ClassOrInterfaceDeclaration n, Scope classScope) {
+            for (BodyDeclaration<?> member : n.getMembers()) {
+                if (member.isFieldDeclaration()) {
+                    FieldDeclaration field = member.asFieldDeclaration();
+                    field.getVariables().stream()
+                            .map(NodeWithSimpleName::getNameAsString)
+                            .forEach(field.isStatic() ? classScope::addStaticSymbol : classScope::addInstanceSymbol);
+                } else if (member.isConstructorDeclaration()) {
+                    // Ignore.
+                } else if (member.isMethodDeclaration()) {
+                    MethodDeclaration method = member.asMethodDeclaration();
+                    if (method.isStatic()) {
+                        classScope.addStaticSymbol(method.getNameAsString());
+                    } else {
+                        classScope.addInstanceSymbol(method.getNameAsString());
+                    }
+                } else if (member.isTypeDeclaration()) {
+                    classScope.addStaticSymbol(member.asTypeDeclaration().getNameAsString());
+                } else {
+                    throw new UnsupportedOperationException(
+                            joinLines("Unrecognised class member type, " + member.getClass() + ":",
+                                    member.toString()));
+                }
+            }
+        }
+
         private String commentedElement(Node n) {
             return joinLines(splitLines(n.toString().trim()).map(s -> "// " + s));
         }
@@ -258,13 +288,23 @@ public class JavaToTypescript {
             if (n.getType().asString().isEmpty()) {
                 return n.getNameAsString();
             } else {
-                return n.getNameAsString() + " : " + visit(n.getType());
+                return n.getNameAsString() + ": " + visit(n.getType());
             }
         }
 
         @Override
         public String visit(PrimitiveType n, Void arg) {
-            return n.asString();
+            String typeName = n.asString();
+            switch (typeName) {
+                case "byte":
+                case "short":
+                case "int":
+                case "long":
+                case "float":
+                case "double": return "number";
+                case "char": return "number";
+                default: return typeName;
+            }
         }
 
         @Override
@@ -425,8 +465,7 @@ public class JavaToTypescript {
 
         @Override
         public String visit(WhileStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return "while (" + visit(n.getCondition()) + ") " + visit(n.getBody());
         }
 
         @Override
@@ -507,8 +546,7 @@ public class JavaToTypescript {
 
         @Override
         public String visit(InstanceOfExpr n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return visit(n.getExpression()) + " instanceof " + visit(n.getType());
         }
 
         @Override
@@ -562,7 +600,11 @@ public class JavaToTypescript {
 
         @Override
         public String visit(LongLiteralExpr n, Void arg) {
-            return Long.toString(n.asLong());
+            String literal =  n.toString();
+            if (literal.toLowerCase().endsWith("l")) {
+                literal = literal.substring(0, literal.length() - 1);
+            }
+            return literal;
         }
 
         @Override
@@ -617,7 +659,8 @@ public class JavaToTypescript {
 
         @Override
         public String visit(MethodReferenceExpr n, Void arg) {
-            return visit(n.getScope()) + "::" + n.getIdentifier();
+            return "\n" + indent(joinLines("TODO: Warning - method may require binding.",
+                    visit(n.getScope()) + "." + n.getIdentifier()));
         }
 
         @Override
@@ -685,29 +728,69 @@ public class JavaToTypescript {
 
         @Override
         public String visit(ArrayCreationExpr n, Void arg) {
-            String type = n.createdType().asArrayType().getComponentType().asString();
-            String dimensions = join("", n.getLevels().stream().map(this::visit));
             if (!n.getInitializer().isPresent()) {
-                return "new " + type + dimensions;
+                // Create initialization function to deal with initializations of type "new T[a]", "new T[a][b][c]", and
+                // "new T[a][b][]".
+                //
+                // Because TypeScript (as far as we know) doesn't provide syntax to support this kind of array creation
+                // natively, the generated code is unfortunately rather ugly and verbose.
+                int totalDimensions = n.getLevels().size();
+                List<Expression> initializedDimensions = new ArrayList<>(totalDimensions);
+                n.getLevels().stream()
+                        .map(ArrayCreationLevel::getDimension)
+                        .filter(Optional::isPresent).map(Optional::get)
+                        .forEach(initializedDimensions::add);
+                StringBuilder sb = new StringBuilder("function(d) {\n")
+                        .append(indent(joinLines(commentedElement(n),
+                                "// TODO: Consider refactoring this array initialization to be more readable.")))
+                        .append('\n');
+                Type componentType = n.createdType().asArrayType().getComponentType();
+                while (componentType.isArrayType()) {
+                    componentType = componentType.asArrayType().getComponentType();
+                }
+                String fillValue;
+                if (!componentType.isPrimitiveType()) {
+                    fillValue = null;
+                } else {
+                    fillValue = componentType.equals(PrimitiveType.booleanType()) ? "false" : "0";
+                }
+                if (initializedDimensions.size() > 1) {
+                    // General multi-dimensional array initialization.
+                    String returnType = componentType.asString()
+                            + String.join("", Collections.nCopies(totalDimensions, "[]"));
+                    sb.append(indent(joinLines("let a = function(d) {",
+                            indent(joinLines("if (d.length === 0) return " + fillValue + ";",
+                                    "let r = [];",
+                                    "for (let i = 0; i < d[0]; i++) r.push(a(d.slice(1)));",
+                                    "return r;")),
+                            "};",
+                            "return a(d) as " + returnType + ";")));
+                    sb.append("\n}([")
+                            .append(join(", ", initializedDimensions.stream().map(this::visit))).append("])");
+                } else {
+                    // Special case for one-dimensional arrays.
+                    sb.append(indent(joinLines("let r = [];",
+                            "for (let i = 0; i < d; i++) r.push(" + fillValue + ");",
+                            "return r;")))
+                            .append("\n}(")
+                            .append(visit(initializedDimensions.get(0)))
+                            .append(")");
+                }
+                return sb.toString();
             } else {
-                return joinLines("new " + type + dimensions + " {",
-                        visit(n.getInitializer().get()), "}");
+                return visit(n.getInitializer().get());
             }
         }
 
         @Override
         public String visit(ArrayCreationLevel n, Void arg) {
-            if (n.getDimension().isPresent()) {
-                return "[" +  visit(n.getDimension().get()) + "]";
-            } else {
-                return "[]";
-            }
+            throw new AssertionError(joinLines("Unexpected node type: " + n.getClass()
+                    + ". This node type should never be reached.", n.toString()));
         }
 
         @Override
         public String visit(ArrayInitializerExpr n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return joinLines("[", indent(join(",\n", n.getValues().stream().map(this::visit))), "]");
         }
 
         @Override
@@ -750,8 +833,11 @@ public class JavaToTypescript {
 
         @Override
         public String visit(BreakStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            if (n.getLabel().isPresent()) {
+                throw new UnsupportedOperationException(
+                        joinLines("Labeled 'continue' is not supported:", n.toString()));
+            }
+            return "break;";
         }
 
         @Override
@@ -764,12 +850,12 @@ public class JavaToTypescript {
             String exceptionName = n.getParameter().getNameAsString();
             String exceptionType = n.getParameter().getType().asString();
             String head = "if (" + exceptionName + " instanceof " + exceptionType + ")";
-            return head + visit(n.getBody());
+            return head + " " + visit(n.getBody());
         }
 
         @Override
         public String visit(CharLiteralExpr n, Void arg) {
-            return "'" + n.getValue() + "'";
+            return "/* '" + n.getValue() + "' */ " + ((int) n.asChar());
         }
 
         @Override
@@ -781,35 +867,7 @@ public class JavaToTypescript {
         @Override
         public String visit(ClassOrInterfaceDeclaration n, Void arg) {
             Scope classScope = new Scope(n.getNameAsString(), scope);
-            // TODO(alniniclas): Pre-populate scopes recursively.
-            for (BodyDeclaration<?> member : n.getMembers()) {
-                if (member.isFieldDeclaration()) {
-                    FieldDeclaration field = member.asFieldDeclaration();
-                    field.getVariables().stream()
-                            .map(NodeWithSimpleName::getNameAsString)
-                            .forEach(field.isStatic() ? classScope::addStaticSymbol : classScope::addInstanceSymbol);
-                } else if (member.isConstructorDeclaration()) {
-                    // Ignore.
-                } else if (member.isMethodDeclaration()) {
-                    MethodDeclaration method = member.asMethodDeclaration();
-                    if (method.isStatic()) {
-                        classScope.addStaticSymbol(method.getNameAsString());
-                    } else {
-                        classScope.addInstanceSymbol(method.getNameAsString());
-                    }
-                } else if (member.isTypeDeclaration()) {
-                    TypeDeclaration nestedType = member.asTypeDeclaration();
-                    if (nestedType.isStatic()) {
-                        classScope.addStaticSymbol(nestedType.getNameAsString());
-                    } else {
-                        classScope.addInstanceSymbol(nestedType.getNameAsString());
-                    }
-                } else {
-                    throw new UnsupportedOperationException(
-                            joinLines("Unrecognised class member type, " + member.getClass() + ":",
-                                    member.toString()));
-                }
-            }
+            populateClassScope(n, classScope);
             String members = join("\n\n", n.getMembers().stream()
                     .map(m -> visit(m, classScope)).map(CodeVisitor::indent));
             if (n.isLocalClassDeclaration()) {
@@ -821,11 +879,15 @@ public class JavaToTypescript {
                 if (n.isPublic()) modifiers.append("public ");
                 if (n.isPrivate()) modifiers.append("private ");
                 if (n.isProtected()) modifiers.append("protected ");
-                if (n.isStatic()) modifiers.append("static ");
-                return joinLines(modifiers.toString() + n.getName() + " = class {", members, "};");
+                modifiers.append("static ");  // Always static.
+                if (n.isAbstract()) modifiers.append("abstract ");
+                return joinLines("// TODO: Warning - using nested classes may cause compilation problems.",
+                        modifiers.toString() + n.getName() + " = class {", members, "};");
             } else {
                 scope.addStaticSymbol(n.getNameAsString());
-                String keyword = n.isInterface() ? "interface" : "class";
+                String keyword = n.isInterface()
+                        ? "interface"
+                        : n.isAbstract() ? "abstract class" : "class";
                 return joinLines(keyword + " " + n.getName() + " {",  members, "}");
             }
         }
@@ -836,6 +898,10 @@ public class JavaToTypescript {
             String type = typeScope != null && !typeScope.isEmpty()
                     ? typeScope + "." + n.asString()
                     : n.asString();
+            if (type.equals("String")) {
+                // Special case, switch to using primitive string.
+                type = type.toLowerCase();
+            }
             if (typeScope != null) {
                 return type;
             } else {
@@ -881,25 +947,30 @@ public class JavaToTypescript {
 
         @Override
         public String visit(ContinueStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            if (n.getLabel().isPresent()) {
+                throw new UnsupportedOperationException(
+                        joinLines("Labeled 'continue' is not supported:", n.toString()));
+            }
+            return "continue;";
         }
 
         @Override
         public String visit(DoStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return "do " + visit(n.getBody()) + " while (" + visit(n.getCondition()) + ");";
         }
 
         @Override
         public String visit(DoubleLiteralExpr n, Void arg) {
-            return n.toString();
+            String literal = n.toString();
+            if (literal.toLowerCase().endsWith("d") || literal.toLowerCase().endsWith("f")) {
+                literal = literal.substring(0, literal.length() - 1);
+            }
+            return literal;
         }
 
         @Override
         public String visit(EmptyStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return ";";
         }
 
         @Override
@@ -953,10 +1024,11 @@ public class JavaToTypescript {
         @Override
         public String visit(ForStmt n, Void arg) {
             Scope loopScope = new Scope(scope);
-            String init = join(",\n", n.getInitialization().stream().map(i -> visit(i, loopScope)));
-            String compare = n.getCompare().isPresent() ? visit(n.getCompare().get(), loopScope) : "";
-            String update = join(",\n", n.getUpdate().stream().map(u -> visit(u, loopScope)));
-            String head = joinLines("for (" + init + ";", indent(2, joinLines(compare + ";", update)) + ")");
+            String init = join(", ", n.getInitialization().stream().map(i -> visit(i, loopScope)));
+            String compare = n.getCompare().isPresent() ? " " + visit(n.getCompare().get(), loopScope) : "";
+            String update = join(", ", n.getUpdate().stream().map(u -> visit(u, loopScope)));
+            update = update.isEmpty() ? update : " " + update;
+            String head = "for (" + init + ";" + compare + ";" + update + ")";
             return head + " " + visit(n.getBody(), loopScope);
         }
 

@@ -17,7 +17,7 @@ import { DesignListComponent } from './components/design-list/design-list.compon
 const appRoutes: Routes = [
   {path: "",  redirectTo: "project", pathMatch: "full"},
   {path: "project", component: ProjectComponent},
-  {path: "design", component: DesignComponent },
+  {path: "design/:id", component: DesignComponent },
   {path: "build", component: BuildDetailComponent },
   {path: "print", component: PrintComponent },
   {path: "part", component: PartComponent}

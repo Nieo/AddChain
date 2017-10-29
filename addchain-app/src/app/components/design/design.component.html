@@ -1,5 +1,15 @@
 <app-design-list class="design-list"></app-design-list>
 <div class="detail-container">
+
+  <div class="stl-container">
+    <div>
+      <!--Replace this div with a stl-component-->
+      <p>STL viewer</p>
+      <canvas class="stl-viewer"></canvas>
+    </div>
+
+  </div>
+
   <div class="data">
     <div *ngIf="design != null">
       <h1>Design</h1>
@@ -9,12 +19,5 @@
       <p>Project: 123</p>
     </div>
 
-  </div>
-  <div class="stl-container">
-    <div>
-      <!--Replace this div with a stl-component-->
-      <p>STL viewer</p>
-      <canvas class="stl-viewer"></canvas>
-    </div>
   </div>
 </div>

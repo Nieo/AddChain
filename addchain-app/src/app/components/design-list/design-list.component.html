@@ -1,5 +1,5 @@
-<div class="vertical container">
-    <div *ngFor="let design of designs">
-        <p>{{design.name}}</p>
-    </div>
+<div class="list-container" >
+    <a *ngFor="let design of designs" [routerLink]="['/design', design.design_id]" (click)="onSelect(design.design_id)" [class.selected]="design.design_id == currentDesignID" >
+      {{design.name}}
+    </a>
 </div>

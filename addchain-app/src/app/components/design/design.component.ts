@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import {Design} from "../../models/design";
 import {DesignService} from "../../services/design.service";
+import {ActivatedRoute, ParamMap} from '@angular/router';
+
+
 
 
 @Component({
@@ -9,19 +12,17 @@ import {DesignService} from "../../services/design.service";
   styleUrls: ['./design.component.scss']
 })
 export class DesignComponent implements OnInit {
-
   design: Design;
 
   constructor(
-    private designService: DesignService
+    private designService: DesignService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    this.getDesign("1");
-  }
-
-  getDesign(id: string){
-    this.designService.getDesign(id).then(design => this.design = design);
+    this.route.paramMap
+      .switchMap((params: ParamMap) => this.designService.getDesign(""+params.get('id')))
+      .subscribe(design => this.design = design);
   }
 }
 

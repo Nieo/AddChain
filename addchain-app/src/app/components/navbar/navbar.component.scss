@@ -5,21 +5,23 @@ h1 {
   padding:10px;
 }
 
-.btn {
-  margin: 0 5px ;
+.btn, .btn-active{
   color: white;
   text-align: center;
-  padding: 14px 16px;
   text-decoration: none;
   transition: all 0.35s;
+  text-transform: uppercase;
   border-radius: 2px;
   &:hover{
-    background-color: $lightAccent;
+    background-color: $primaryColor-lighter;
   }
   &:active{
-    background-color: $darkShade;
+    background-color: $primaryColor-darker;
   }
   @include flex-center()
+}
+.btn-active, bt-active:hover , btn-active:active{
+  border-bottom: 2px solid $darkShade;
 }
 
 .container {
@@ -38,6 +40,7 @@ h1 {
 .navbar {
   background-color: $primaryColor;
   color: #fff;
+  border-bottom: 0.3px solid lightgrey;
 }
 
 

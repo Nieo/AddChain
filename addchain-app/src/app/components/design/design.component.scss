@@ -1,13 +1,14 @@
 @import "../../../styles.scss";
 
 :host{
+  display: flex;
+  .design-list{
+    flex-grow: 1;
+  }
+  .detail-container{
+    flex-grow: 2;
     display: flex;
-    .design-list{
-        flex-grow: 1;
-    }
-    .detail-container{
-        flex-grow: 2;
-    }
+  }
 }
 
 .stl-viewer {

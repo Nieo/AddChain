@@ -1,3 +1,28 @@
+
+/*
+Colors
+ */
+$lightShade:  #f9fafa;
+$lightAccent:#aebcb7;
+$primaryColor:  #d88d40;
+$darkAccent: #c3835f;
+$darkShade: #314646;
+
+$primaryColor-darker: #9a5d1e;
+$primaryColor-lighter: #ebc49b;
+/*
+Breakpoints, use these for checking the design
+ */
+
+
+
+
+
+/*
+General styles in the desing goes here please don't place in other scss
+ */
+
+// Something useful when working with boxes in the design, look up international box-sizing awareness day of more info
 *, *:before, *:after {
   /* Chrome 9-, Safari 5-, iOS 4.2-, Android 3-, Blackberry 7- */
   -webkit-box-sizing: border-box;
@@ -7,21 +32,76 @@
   box-sizing: border-box;
 }
 
-
+// Removes default padding that comes from most browsers
 body {
   margin : 0;
   padding: 0;
+  background-color: $lightShade;
 }
 
-$lightShade: #f9fafa;
-$lightAccent: #aebcb7;
-$primaryColor: #d88d40;
-$darkAccent: #c3835f;
-$darkShade: #314646;
+/*
+Default fonts and font size for different elements
+ */
+h1,h2,h3,h4,h5,p,a{
+  font-family: 'Ubuntu', sans-serif;
+}
 
 
+//Styling element for a list with clickable elements
+.list-container{
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+  border-left: 0.25px solid $lightShade;
+  border-right: 0.25px solid $lightShade;
+  a{
+    text-decoration: none;
+    padding: 5px;
+    margin: 1px;
+    background-color: $primaryColor;
+    color: white;
+    border-radius: 2px;
+    transition: all 0.35s;
+    &:hover{
+      background-color: $primaryColor-lighter;
+    }
+    &:active{
+      background-color: $primaryColor-darker;
+    }
+  }
+  a.selected{
+    background-color: $primaryColor-darker;
+  }
+}
+
+
+
+/*
+Below this is several mixins(i.e functions in scss) that are useful to do different things in scss they should include a brief description
+ */
+
+/*
+Uses flex to center a block object on a horizontal and vertical line
+ */
 @mixin flex-center() {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+
+/*
+When using floats there can sometimes be a problem when elements after a floating element will flow around it. To fix this use the clearfix
+command on the parent element.
+ */
+@mixin clearfix(){
+    *zoom: 1;
+    &:before, &:after {
+      content: " ";
+      display: table;
+    }
+    &:after {
+      clear: both;
+    }
+}
+

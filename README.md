@@ -30,8 +30,3 @@ Client: in `addchain-app run/` run `ng-serve`
 
 ## How to create frontend model
 1.Go to addchain\addchain-app\src\app\models and use "ng generate class [name]"
-
-
-
-
-1. When adding a model addchain\addchain-app\src\app\models and use the 

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {Design} from "../../models/design";
+import {DesignService} from "../../services/design.service";
+
 
 @Component({
   selector: 'app-design',
@@ -7,9 +10,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DesignComponent implements OnInit {
 
-  constructor() { }
+  design: Design;
+
+  constructor(
+    private designService: DesignService
+  ) { }
 
   ngOnInit() {
+    this.getDesign("1");
   }
 
+  getDesign(id: string){
+    this.designService.getDesign(id).then(design => this.design = design);
+  }
 }
+
+

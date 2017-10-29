@@ -1,2 +1,20 @@
-<app-design-list></app-design-list>
-<app-design-detail></app-design-detail>
+<app-design-list class="design-list"></app-design-list>
+<div class="detail-container">
+  <div class="data">
+    <div *ngIf="design != null">
+      <h1>Design</h1>
+      <p>ID: {{design.design_id}}</p>
+      <p>Name: {{design.name}}</p>
+      <p>Customer: ABC</p>
+      <p>Project: 123</p>
+    </div>
+
+  </div>
+  <div class="stl-container">
+    <div>
+      <!--Replace this div with a stl-component-->
+      <p>STL viewer</p>
+      <canvas class="stl-viewer"></canvas>
+    </div>
+  </div>
+</div>

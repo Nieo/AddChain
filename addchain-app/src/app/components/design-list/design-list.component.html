@@ -1,5 +1,8 @@
-<div class="list-container" >
-    <a *ngFor="let design of designs" [routerLink]="['/design', design.design_id]" (click)="onSelect(design.design_id)" [class.selected]="design.design_id == currentDesignID" >
+<div [hidden]="designs != undefined">
+  <app-spinner></app-spinner>
+</div>
+<div class="list-container" [hidden]="designs == undefined">
+    <a *ngFor="let design of designs" [routerLink]="['/design', design.design_id]" [class.selected]="design.design_id == currentDesignID" >
       {{design.name}}
     </a>
 </div>

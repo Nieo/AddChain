@@ -12,6 +12,7 @@ import { PrintComponent } from './components/print/print.component';
 import { PartComponent } from './components/part/part.component';
 import { BuildDetailComponent } from './components/build-detail/build-detail.component';
 import { DesignListComponent } from './components/design-list/design-list.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 
 const appRoutes: Routes = [
@@ -34,6 +35,7 @@ const appRoutes: Routes = [
     PartComponent,
     BuildDetailComponent,
     DesignListComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,

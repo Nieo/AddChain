@@ -1,6 +1,11 @@
 const express = require('express');
 const app = express();
-const design = require('./controllers/desgincontroller');
+const bodyParser = require('body-parser');
+
+const design = require('./controllers/designcontroller');
+
+app.use(bodyParser.json());
+
 
 app.get('/', (req, res) =>{
   res.status(200);

@@ -6,7 +6,7 @@ import {Design} from "../models/design";
 
 @Injectable()
 export class DesignService {
-  private baseUrl: string = "http://localhost:3000/designs";
+  private baseUrl: string = "http://localhost:3000/designs/";
 
   constructor(private http: Http) { }
 
@@ -17,10 +17,28 @@ export class DesignService {
       .catch( error => console.log(error) );
   }
   getDesign(id:string): Promise<Design> {
-    return this.http.get(this.baseUrl + "/" + id)
+    return this.http.get(this.baseUrl + id)
     .toPromise()
     .then(response => response.json() as Design)
     .catch( error => console.log(error) );
+  }
+  createDesign(design: Design): Promise<Design> {
+    return this.http.post(this.baseUrl, design)
+      .toPromise()
+      .then(response => response.json() as Design)
+      .catch(error => console.log(error));
+  }
+  updateDesign(design: Design): Promise<Design> {
+    return this.http.put(this.baseUrl + design.design_id, design)
+      .toPromise()
+      .then(response => response.json() as Design)
+      .catch(error => console.log(error));
+  }
+  deleteDesign(design: Design): Promise<any> {
+    return this.http.delete(this.baseUrl + design.design_id)
+      .toPromise()
+      .then( response => true)
+      .catch(error => console.log(error));
   }
 
 }

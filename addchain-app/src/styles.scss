@@ -4,6 +4,8 @@ Colors
  */
 $lightShade:  #f9fafa;
 $lightAccent:#aebcb7;
+$lightAccent-lighter: #BBC9C4;
+$lightAccent-darker: #7B8984;
 $primaryColor:  #d88d40;
 $darkAccent: #c3835f;
 $darkShade: #314646;
@@ -71,6 +73,40 @@ h1,h2,h3,h4,h5,p,a{
   }
   a.selected{
     background-color: $primaryColor-darker;
+  }
+}
+
+
+
+.btn-rasied {
+  text-decoration: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 4px;
+  font-size: 1em;
+  text-transform: uppercase;
+  transition: all 0.35s;
+}
+.btn-light {
+  border: 0.25px solid #889691;
+  box-shadow: 0 2px 2px 0 $lightAccent-lighter;
+  background-color: $lightAccent;
+  &:hover{
+    background-color: $lightAccent-lighter;
+  }
+  &:active{
+    background-color: $lightAccent-darker;
+  }
+}
+.btn-danger{
+  border: 0.25px solid #ac2925;
+  box-shadow: 0 2px 2px 0 #f44336;
+  background-color: #f44336;
+  &:hover{
+    background-color: #FF5D50;
+  }
+  &:active{
+    background-color: #C11003;
   }
 }
 

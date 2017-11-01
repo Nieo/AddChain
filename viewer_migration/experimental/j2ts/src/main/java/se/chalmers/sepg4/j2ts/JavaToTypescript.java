@@ -20,7 +20,6 @@ import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.ReceiverParameter;
-import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -335,8 +334,7 @@ public class JavaToTypescript {
 
         @Override
         public String visit(SuperExpr n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return "super";
         }
 
         @Override
@@ -872,11 +870,17 @@ public class JavaToTypescript {
         public String visit(ClassOrInterfaceDeclaration n, Void arg) {
             Scope classScope = new Scope(n.getNameAsString(), scope);
             populateClassScope(n, classScope);
+            String extension = join(", ", n.getExtendedTypes().stream()
+                    .map(this::visit)
+                    .map(t -> "extends " + t));
+            if (!extension.isEmpty()) {
+                extension += " ";
+            }
             String members = join("\n\n", n.getMembers().stream()
                     .map(m -> visit(m, classScope)).map(CodeVisitor::indent));
             if (n.isLocalClassDeclaration()) {
                 scope.addLocalSymbol(n.getNameAsString());
-                return joinLines("let " + n.getName() + " = class {", members, "};");
+                return joinLines("let " + n.getName() + " = class " + extension + "{", members, "};");
             } else if (n.isNestedType()) {
                 scope.addStaticSymbol(n.getNameAsString());
                 StringBuilder modifiers = new StringBuilder();
@@ -886,13 +890,13 @@ public class JavaToTypescript {
                 modifiers.append("static ");  // Always static.
                 if (n.isAbstract()) modifiers.append("abstract ");
                 return joinLines("// TODO: Warning - using nested classes may cause compilation problems.",
-                        modifiers.toString() + n.getName() + " = class {", members, "};");
+                        modifiers.toString() + n.getName() + " = class " + extension + "{", members, "};");
             } else {
                 scope.addStaticSymbol(n.getNameAsString());
                 String keyword = n.isInterface()
                         ? "interface"
                         : n.isAbstract() ? "abstract class" : "class";
-                return joinLines(keyword + " " + n.getName() + " {",  members, "}");
+                return joinLines(keyword + " " + n.getName() + " " + extension + "{",  members, "}");
             }
         }
 
@@ -1012,8 +1016,12 @@ public class JavaToTypescript {
 
         @Override
         public String visit(ExplicitConstructorInvocationStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            if (n.isThis()) {
+                throw new UnsupportedOperationException(
+                        joinLines("Constructor chaining is not supported.", n.toString()));
+            }
+            String args = join(",\n", n.getArguments().stream().map(this::visit));
+            return "super(" + (n.getArguments().size() < 2 ? args : joinLines("", indent(args), "")) + ");";
         }
 
         @Override

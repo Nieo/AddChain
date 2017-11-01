@@ -980,14 +980,30 @@ public class JavaToTypescript {
 
         @Override
         public String visit(EnumConstantDeclaration n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return n.getNameAsString();
         }
 
         @Override
         public String visit(EnumDeclaration n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            scope.addStaticSymbol(n.getNameAsString());
+            if (!n.getMembers().isEmpty()) {
+                throw new UnsupportedOperationException(joinLines("Only simple enums are supported.", n.toString()));
+            }
+            String declaration = joinLines("enum " + n.getNameAsString() + " {",
+                    indent(join(",\n", n.getEntries().stream().map(this::visit))),
+                    "}");
+            if (n.isNestedType()) {
+                StringBuilder modifiers = new StringBuilder();
+                if (n.isPublic()) modifiers.append("public ");
+                if (n.isPrivate()) modifiers.append("private ");
+                if (n.isProtected()) modifiers.append("protected ");
+                modifiers.append("static "); // Always static.
+                return joinLines(modifiers.toString() + n.getName() + " = function () {",
+                        indent(joinLines(declaration + ";", "return " + n.getNameAsString() + ";")),
+                        "}();");
+            } else {
+                return declaration;
+            }
         }
 
         @Override

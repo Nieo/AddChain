@@ -341,14 +341,18 @@ public class JavaToTypescript {
 
         @Override
         public String visit(SwitchEntryStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            String caseLabel = n.getLabel().isPresent()
+                    ? "case " + visit(n.getLabel().get()) + ":"
+                    : "default:";
+            return !n.getStatements().isEmpty()
+                    ? joinLines(caseLabel, indent(joinLines(n.getStatements().stream().map(this::visit))))
+                    : caseLabel;
         }
 
         @Override
         public String visit(SwitchStmt n, Void arg) {
-            // TODO(alniniclas): Implement this.
-            return visitUnknownElement(n);
+            return joinLines("switch (" + visit(n.getSelector()) + ") {",
+                    indent(joinLines(n.getEntries().stream().map(this::visit))), "}");
         }
 
         @Override

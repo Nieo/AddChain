@@ -37,7 +37,9 @@ router.post('/', (req, res) => {
   })
 });
 router.put('/:id', (req, res) => {
-  design.updateDesign(req.body)
+  let d = req.body;
+  d.id = req.params.id;
+  design.updateDesign(d)
     .then(data => {
       res.json(data);
     })
@@ -58,6 +60,9 @@ router.delete('/:id', (req, res) => {
       res.status(500);
       res.end();
     })
+});
+router.options('/:id', (req, res) => {
+  res.end();
 });
 
 module.exports = router;

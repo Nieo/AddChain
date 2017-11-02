@@ -32,7 +32,10 @@ export class DesignService {
     return this.http.put(this.baseUrl + design.design_id, design)
       .toPromise()
       .then(response => response.json() as Design)
-      .catch(error => console.log(error));
+      .catch(error => {
+        console.log(error);
+        throw error;
+      });
   }
   deleteDesign(design: Design): Promise<any> {
     return this.http.delete(this.baseUrl + design.design_id)

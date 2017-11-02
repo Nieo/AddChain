@@ -15,11 +15,20 @@
   <div class="data">
     <div *ngIf="design != null">
       <h1>Design</h1>
-      <p>ID: {{design.design_id}}</p>
-      <p>Name: {{design.name}}</p>
-      <p>Description: {{design.description}}</p>
+      <div><label>ID:</label>
+        <input type="text" [(ngModel)]="design.design_id" disabled/></div>
+      <div><label>Name:</label>
+        <input type="text" [(ngModel)]="design.name" disabled="{{viewMode}}"/></div>
+      <div><label>Description:</label>
+        <input type="text" [(ngModel)]="design.description" disabled="{{viewMode}}"/></div>
     </div>
-    <a class="btn-rasied btn-light">Edit</a>
-    <a class="btn-rasied btn-danger">Delete</a>
+    <div *ngIf="viewMode">
+      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
+      <button class="btn-rasied btn-danger">Delete</button>
+    </div>
+    <div *ngIf="!viewMode">
+      <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>
+      <button class="btn-rasied btn-success" (click)="save()">Save</button>
+    </div>
   </div>
 </div>

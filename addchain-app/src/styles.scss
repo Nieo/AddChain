@@ -109,6 +109,17 @@ h1,h2,h3,h4,h5,p,a{
     background-color: #C11003;
   }
 }
+.btn-success{
+  border: 0.25px solid #005A00;
+  box-shadow: 0 2px 2px 0 #19B419;
+  background-color: #32CD32;
+  &:hover{
+    background-color: #3FDA3F;
+  }
+  &:active{
+    background-color: #19B419;
+  }
+}
 
 
 

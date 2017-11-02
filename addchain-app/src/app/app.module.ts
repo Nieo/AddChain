@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule }   from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { DesignComponent } from './components/design/design.component';
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(
       appRoutes,
       {enableTracing: true}
-    )
+    ),
+    FormsModule
   ],
   providers: [ DesignService ],
   bootstrap: [AppComponent]

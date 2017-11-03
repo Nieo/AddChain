@@ -24,7 +24,7 @@
     </div>
     <div *ngIf="viewMode">
       <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
-      <button class="btn-rasied btn-danger">Delete</button>
+      <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
     </div>
     <div *ngIf="!viewMode">
       <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>

@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Design} from "../../models/design";
 import {DesignService} from "../../services/design.service";
-import {ActivatedRoute, ParamMap} from '@angular/router';
-
-
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 
 
 @Component({
@@ -18,7 +16,8 @@ export class DesignComponent implements OnInit {
 
   constructor(
     private designService: DesignService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -48,6 +47,13 @@ export class DesignComponent implements OnInit {
   public reset(){
     this.design = JSON.parse(JSON.stringify(this.originalDesign));
     this.viewMode = true;
+  }
+  public remove(){
+    this.designService.deleteDesign(this.design)
+      .then((data) => {
+        console.log("deleted ");
+        this.router.navigateByUrl('/');
+      });
   }
 }
 

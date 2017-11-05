@@ -13,6 +13,7 @@ export class DesignComponent implements OnInit {
   design: Design;
   originalDesign: Design;
   viewMode: boolean = true;
+  createMode: boolean = false;
 
   constructor(
     private designService: DesignService,
@@ -21,12 +22,20 @@ export class DesignComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.paramMap
-      .switchMap((params: ParamMap) => this.designService.getDesign(""+params.get('id')))
-      .subscribe(design => {
-        this.design = design;
-        this.originalDesign = JSON.parse(JSON.stringify(design));
+    if(this.route.snapshot.paramMap.get('id') == "0"){
+      console.log(this.route.snapshot.paramMap.get('id'));
+      this.design = new Design(0,"Design","Template Design");
+      this.viewMode = false;
+      this.createMode = true;
+    }else{
+      this.route.paramMap
+        .switchMap((params: ParamMap) =>
+          this.designService.getDesign(""+params.get('id')))
+        .subscribe(design => {
+          this.design = design;
+          this.originalDesign = JSON.parse(JSON.stringify(design));
       });
+    }
   }
 
   public toggleEdit(){
@@ -52,6 +61,17 @@ export class DesignComponent implements OnInit {
     this.designService.deleteDesign(this.design)
       .then((data) => {
         console.log("deleted ");
+        this.router.navigateByUrl('/');
+      });
+  }
+  public create(){
+    this.designService.createDesign(this.design)
+      .then((data) => {
+        this.design = data;
+        this.originalDesign = data;
+        this.viewMode = true;
+        this.createMode = false;
+
         this.router.navigateByUrl('/');
       });
   }

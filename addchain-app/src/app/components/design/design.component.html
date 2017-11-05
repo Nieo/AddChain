@@ -22,13 +22,17 @@
       <div><label>Description:</label>
         <input type="text" [(ngModel)]="design.description" disabled="{{viewMode}}"/></div>
     </div>
-    <div *ngIf="viewMode">
+    <div *ngIf="viewMode && !createMode">
       <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
       <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
     </div>
-    <div *ngIf="!viewMode">
+    <div *ngIf="!viewMode && !createMode">
       <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>
       <button class="btn-rasied btn-success" (click)="save()">Save</button>
+    </div>
+    <div *ngIf="createMode">
+      <button class="btn-rasied btn-danger" (click)="remove()">Discard</button>
+      <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
 </div>

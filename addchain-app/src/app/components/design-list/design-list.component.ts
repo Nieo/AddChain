@@ -19,9 +19,10 @@ export class DesignListComponent implements OnInit {
       ) { }
 
   ngOnInit() {
-    this.getDesigns();
     this.sub = this.route.params.subscribe(params => {
-      this.currentDesignID = +params['id'];});
+      this.getDesigns();
+      this.currentDesignID = +params['id'];
+    });
   }
   getDesigns(){
       this.designService.getDesigns().then(designs => this.designs = designs);

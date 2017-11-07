@@ -5,7 +5,7 @@ import { FormsModule }   from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { DesignComponent } from './components/design/design.component';
-import { HttpModule } from "@angular/http";
+import { HttpClientModule } from '@angular/common/http';
 import { DesignService } from "./services/design.service";
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ProjectComponent } from './components/project/project.component';
@@ -40,7 +40,7 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserModule,
-    HttpModule,
+    HttpClientModule,
     RouterModule.forRoot(
       appRoutes,
       {enableTracing: true}

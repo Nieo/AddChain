@@ -3,19 +3,12 @@
 
 <div class="detail-container">
 
-  <div class="stl-container">
-    <div>
-      <!--Replace this div with a stl-component-->
-      <p>STL viewer</p>
-      <canvas class="stl-viewer"></canvas>
-    </div>
 
-  </div>
 
   <div class="data">
     <div *ngIf="design != null">
       <h1>Design</h1>
-      <div><label>ID:</label>
+      <div *ngIf="!createMode"><label>ID:</label>
         <input type="text" [(ngModel)]="design.design_id" disabled/></div>
       <div><label>Name:</label>
         <input type="text" [(ngModel)]="design.name" disabled="{{viewMode}}"/></div>
@@ -34,5 +27,13 @@
       <button class="btn-rasied btn-danger" (click)="remove()">Discard</button>
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
+  </div>
+  <div class="stl-container">
+    <div>
+      <!--Replace this div with a stl-component-->
+      <p>STL viewer</p>
+      <canvas class="stl-viewer"></canvas>
+    </div>
+
   </div>
 </div>

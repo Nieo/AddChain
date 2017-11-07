@@ -1,7 +1,7 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Design} from "../../models/design";
 import {DesignService} from "../../services/design.service";
-import {ParamMap, ActivatedRoute} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 
 @Component({
@@ -24,7 +24,16 @@ export class DesignListComponent implements OnInit {
       this.currentDesignID = +params['id'];
     });
   }
+  ngOnDestroy(){
+    this.sub.unsubscribe();
+  }
+
   getDesigns(){
-      this.designService.getDesigns().then(designs => this.designs = designs);
+      this.designService.getDesigns().subscribe(designs => {
+        this.designs = designs;
+        this.designs.sort((a: Design, b: Design) => {
+          return a.design_id > b.design_id ? 1 : -1;
+        });
+      });
   }
 }

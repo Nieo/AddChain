@@ -120,6 +120,17 @@ h1,h2,h3,h4,h5,p,a{
     background-color: #19B419;
   }
 }
+.btn-new{
+  border: 0.25px solid #005A00;
+  background-color: #32CD32 !important;
+  margin-bottom: 5px !important;
+  &:hover{
+    background-color: #3FDA3F;
+  }
+  &:active{
+    background-color: #19B419;
+  }
+}
 
 
 

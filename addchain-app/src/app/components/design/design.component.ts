@@ -3,6 +3,8 @@ import {Design} from "../../models/design";
 import {DesignService} from "../../services/design.service";
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 
+import 'rxjs/add/operator/map';
+
 
 @Component({
   selector: 'app-design',
@@ -22,20 +24,36 @@ export class DesignComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if(this.route.snapshot.paramMap.get('id') == "0"){
-      console.log(this.route.snapshot.paramMap.get('id'));
-      this.design = new Design(0,"Design","Template Design");
-      this.viewMode = false;
-      this.createMode = true;
-    }else{
       this.route.paramMap
-        .switchMap((params: ParamMap) =>
-          this.designService.getDesign(""+params.get('id')))
-        .subscribe(design => {
-          this.design = design;
-          this.originalDesign = JSON.parse(JSON.stringify(design));
-      });
-    }
+        .switchMap((params: ParamMap) => this.loadDesign("" + params.get('id'))).subscribe(
+          design => {
+            this.design = design;
+            this.originalDesign = JSON.parse(JSON.stringify(design));
+          }
+      );
+
+  }
+
+  private loadDesign(id: string):Promise<Design>{
+
+    return new Promise<Design>(((resolve, reject) => {
+      if(id === 'new') {
+        this.viewMode = false;
+        this.createMode = true;
+        resolve(new Design(0, "", ""));
+      }else{
+        this.viewMode = true;
+        this.createMode = false;
+        this.designService.getDesign(id)
+          .then(design => {
+            resolve(design)
+          })
+          .catch(err => {
+            console.log(err);
+            reject();
+          });
+      }
+    }));
   }
 
   public toggleEdit(){
@@ -60,7 +78,7 @@ export class DesignComponent implements OnInit {
   public remove(){
     this.designService.deleteDesign(this.design)
       .then((data) => {
-        console.log("deleted ");
+        console.log("deleted ", data);
         this.router.navigateByUrl('/');
       });
   }
@@ -68,11 +86,11 @@ export class DesignComponent implements OnInit {
     this.designService.createDesign(this.design)
       .then((data) => {
         this.design = data;
-        this.originalDesign = data;
+        this.originalDesign = JSON.parse(JSON.stringify(data));
         this.viewMode = true;
         this.createMode = false;
 
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/design/'+ this.design.design_id);
       });
   }
 }

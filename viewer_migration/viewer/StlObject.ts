@@ -1,10 +1,8 @@
 // package android.app.printerapp.viewer;
 
-import { Context } from "./android/content/Context";
-import { GLES20 } from "./android/opengl/GLES20";
-import { ByteBuffer } from "./java/nio/ByteBuffer";
-import { ByteOrder } from "./java/nio/ByteOrder";
-import { FloatBuffer } from "./java/nio/FloatBuffer";
+import {DataStorage} from "./DataStorage";
+import {ViewerRenderer} from "./ViewerRenderer";
+import {GLES20} from "./GLES20_Wrapper";
 
 export class StlObject {
     private readonly vertexShaderCode: string = // A constant representing the combined model/view/projection matrix.
@@ -117,17 +115,15 @@ export class StlObject {
         1.0
     ];
 
-    private readonly mData: 
-        // TODO: Warning - type not found in scope.
-    DataStorage;
+    private readonly mData: DataStorage;
 
     mVertexArray: number[];
 
     mNormalArray: number[];
 
-    private readonly mNormalBuffer: FloatBuffer;
+    private readonly mNormalBuffer: Float32Array;
 
-    private readonly mTriangleBuffer: FloatBuffer;
+    private readonly mTriangleBuffer: Float32Array;
 
     private readonly vertexCount: number;
 
@@ -140,10 +136,7 @@ export class StlObject {
     private mOverhangAngle: number = 45;
 
     public constructor(
-            data: 
-                // TODO: Warning - type not found in scope.
-            DataStorage,
-            context: Context,
+            data: DataStorage,
             state: number) {
         this.mData = data;
         this.mVertexArray = this.mData.getVertexArray();
@@ -151,49 +144,46 @@ export class StlObject {
         this.vertexCount = this.mVertexArray.length / StlObject.COORDS_PER_VERTEX;
         this.configStlObject(state);
         let auxPlate: number[];
-        if (
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.getCurrentPlate() != null) {
-            auxPlate = 
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerMainFragment.getCurrentPlate();
-        } else auxPlate = [
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.WitboxFaces.WITBOX_LONG,
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.WitboxFaces.WITBOX_WITDH,
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.WitboxFaces.WITBOX_HEIGHT
-        ];
+        // if (
+        //     // TODO: Warning - no scope specified; assuming 'this'.
+        //     this.ViewerMainFragment.getCurrentPlate() != null) {
+        //     auxPlate =
+        //         // TODO: Warning - no scope specified; assuming 'this'.
+        //         this.ViewerMainFragment.getCurrentPlate();
+        // } else auxPlate = [
+        //
+        //         // TODO: Warning - no scope specified; assuming 'this'.
+        //         this.WitboxFaces.WITBOX_LONG,
+        //
+        //         // TODO: Warning - no scope specified; assuming 'this'.
+        //         this.WitboxFaces.WITBOX_WITDH,
+        //
+        //         // TODO: Warning - no scope specified; assuming 'this'.
+        //         this.WitboxFaces.WITBOX_HEIGHT
+        // ];
         if (this.mData.getMaxX() > auxPlate[0] || this.mData.getMinX() < -auxPlate[0] || this.mData.getMaxY() > auxPlate[1] || this.mData.getMinY() < -auxPlate[1] || this.mData.getMaxZ() > auxPlate[2] || this.mData.getMinZ() < 0) this.setColor(StlObject.colorObjectOut); else this.setColor(StlObject.colorNormal);
-        let vbb: ByteBuffer = ByteBuffer.allocateDirect(this.mVertexArray.length * 4);
-        vbb.order(ByteOrder.nativeOrder());
-        this.mTriangleBuffer = vbb.asFloatBuffer();
-        this.mTriangleBuffer.put(this.mVertexArray);
-        this.mTriangleBuffer.position(0);
-        let nbb: ByteBuffer = ByteBuffer.allocateDirect(this.mNormalArray.length * 4);
-        nbb.order(ByteOrder.nativeOrder());
-        this.mNormalBuffer = nbb.asFloatBuffer();
-        this.mNormalBuffer.put(this.mNormalArray);
-        this.mNormalBuffer.position(0);
+        let vbb: ArrayBuffer = new ArrayBuffer(this.mVertexArray.length * 4);
+        // vbb.order(ByteOrder.nativeOrder());
+        this.mTriangleBuffer = new Float32Array(vbb);
+        this.mTriangleBuffer.set(this.mVertexArray,0);
+        // this.mTriangleBuffer.(0);
+        let nbb: ArrayBuffer = new ArrayBuffer(this.mNormalArray.length * 4);
+        // nbb.order(ByteOrder.nativeOrder());
+        this.mNormalBuffer = new Float32Array(nbb);
+        this.mNormalBuffer.set(this.mNormalArray,0);
+        // this.mNormalBuffer.position(0);
         let vertexOverhangShader: number = 
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.loadShader(
+            ViewerRenderer.loadShader(
             GLES20.GL_VERTEX_SHADER,
             this.vertexOverhangShaderCode
         );
         let vertexShader: number = 
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.loadShader(
+            ViewerRenderer.loadShader(
             GLES20.GL_VERTEX_SHADER,
             this.vertexShaderCode
         );
         let fragmentShader: number = 
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.loadShader(
+            ViewerRenderer.loadShader(
             GLES20.GL_FRAGMENT_SHADER,
             this.fragmentShaderCode
         );
@@ -240,23 +230,23 @@ export class StlObject {
     }
 
     public configStlObject(state: number) : void {
-        switch (state) {
-            case 
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerSurfaceView.XRAY:
-                this.setXray(true);
-                break;
-            case 
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerSurfaceView.TRANSPARENT:
-                this.setTransparent(true);
-                break;
-            case 
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerSurfaceView.OVERHANG:
-                this.setOverhang(true);
-                break;
-        }
+        // switch (state) {
+        //     case
+        //         // TODO: Warning - no scope specified; assuming 'this'.
+        //         this.ViewerSurfaceView.XRAY:
+        //         this.setXray(true);
+        //         break;
+        //     case
+        //         // TODO: Warning - no scope specified; assuming 'this'.
+        //         this.ViewerSurfaceView.TRANSPARENT:
+        //         this.setTransparent(true);
+        //         break;
+        //     case
+        //         // TODO: Warning - no scope specified; assuming 'this'.
+        //         this.ViewerSurfaceView.OVERHANG:
+        //         this.setOverhang(true);
+        //         break;
+        // }
     }
 
     public setTransparent(transparent: boolean) : void {
@@ -299,9 +289,7 @@ export class StlObject {
             program,
             "a_Position"
         );
-        
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glGetAttribLocation");
+        ViewerRenderer.checkGlError("glGetAttribLocation");
         GLES20.glVertexAttribPointer(
             this.mPositionHandle,
             StlObject.COORDS_PER_VERTEX,
@@ -316,9 +304,7 @@ export class StlObject {
                 program,
                 "a_ColorOverhang"
             );
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerRenderer.checkGlError("glGetUniformLocation COLOROVERHANG");
+            ViewerRenderer.checkGlError("glGetUniformLocation COLOROVERHANG");
             GLES20.glUniform4fv(
                 this.mColorOverhangHandle,
                 1,
@@ -326,26 +312,23 @@ export class StlObject {
                 0
             );
             
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerRenderer.checkGlError("glUniform4fv");
+            ViewerRenderer.checkGlError("glUniform4fv");
             this.mCosAngleHandle = GLES20.glGetUniformLocation(
                 program,
                 "a_CosAngle"
             );
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerRenderer.checkGlError("glGetUniformLocation");
+
+            ViewerRenderer.checkGlError("glGetUniformLocation");
             GLES20.glUniform1f(
                 this.mCosAngleHandle,
-                (number) Math.cos(Math.toRadians(this.mOverhangAngle))
+                <number> Math.cos((this.mOverhangAngle) * Math.PI / 180)
             );
             this.mMMatrixHandle = GLES20.glGetUniformLocation(
                 program,
                 "u_MMatrix"
             );
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerRenderer.checkGlError("glGetUniformLocation");
+
+            ViewerRenderer.checkGlError("glGetUniformLocation");
             GLES20.glUniformMatrix4fv(
                 this.mMMatrixHandle,
                 1,
@@ -354,32 +337,28 @@ export class StlObject {
                 0
             );
             
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerRenderer.checkGlError("glUniformMatrix4fv");
+            ViewerRenderer.checkGlError("glUniformMatrix4fv");
         }
         this.mColorHandle = GLES20.glGetUniformLocation(
             program,
             "a_Color"
         );
-        
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glGetUniformLocation a_Color");
+
+        ViewerRenderer.checkGlError("glGetUniformLocation a_Color");
         GLES20.glUniform4fv(
             this.mColorHandle,
             1,
             this.mColor,
             0
         );
-        
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glUniform4fv");
+
+        ViewerRenderer.checkGlError("glUniform4fv");
         this.mNormalHandle = GLES20.glGetAttribLocation(
             program,
             "a_Normal"
         );
-        
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glGetAttribLocation");
+
+        ViewerRenderer.checkGlError("glGetAttribLocation");
         GLES20.glVertexAttribPointer(
             this.mNormalHandle,
             StlObject.COORDS_PER_VERTEX,
@@ -394,8 +373,7 @@ export class StlObject {
             "u_MVPMatrix"
         );
         
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glGetUniformLocation");
+        ViewerRenderer.checkGlError("glGetUniformLocation");
         GLES20.glUniformMatrix4fv(
             this.mMVPMatrixHandle,
             1,
@@ -404,15 +382,13 @@ export class StlObject {
             0
         );
         
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glUniformMatrix4fv");
+        ViewerRenderer.checkGlError("glUniformMatrix4fv");
         this.mMVMatrixHandle = GLES20.glGetUniformLocation(
             program,
             "u_MVMatrix"
         );
         
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glGetUniformLocation");
+        ViewerRenderer.checkGlError("glGetUniformLocation");
         GLES20.glUniformMatrix4fv(
             this.mMVMatrixHandle,
             1,
@@ -420,25 +396,20 @@ export class StlObject {
             mvMatrix,
             0
         );
-        
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glUniformMatrix4fv");
+        ViewerRenderer.checkGlError("glUniformMatrix4fv");
         this.mLightPosHandle = GLES20.glGetUniformLocation(
             program,
             "u_LightPos"
         );
         
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glGetUniformLocation");
+        ViewerRenderer.checkGlError("glGetUniformLocation");
         GLES20.glUniform3f(
             this.mLightPosHandle,
             lightVector[0],
             lightVector[1],
             lightVector[2]
         );
-        
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glUniform3f");
+        ViewerRenderer.checkGlError("glUniform3f");
         if (this.mXray) {
             for (let i: number = 0; i < this.vertexCount / StlObject.COORDS_PER_VERTEX; i++) {
                 GLES20.glDrawArrays(

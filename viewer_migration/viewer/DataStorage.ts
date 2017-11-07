@@ -1,21 +1,18 @@
 // package android.app.printerapp.viewer;
 
-import { Log } from "./android/app/printerapp/Log";
-import { Point } from "./android/app/printerapp/viewer/Geometry/Point";
-import { Matrix } from "./android/opengl/Matrix";
-import { ArrayList } from "./java/util/ArrayList";
-import { List } from "./java/util/List";
+import {Point} from "./Geometry";
+import {Matrix} from "./GLMatrix";
 
 export class DataStorage {
-    private mVertexList: List<Float> = new ArrayList<Float>();
+    private mVertexList: Array<Number> = [];
 
-    private mNormalList: List<Float> = new ArrayList<Float>();
+    private mNormalList: Array<Number> = [];
 
-    private mLineLengthList: List<Integer> = new ArrayList<Integer>();
+    private mLineLengthList: Array<Number> = [];
 
-    private mLayerList: List<Integer> = new ArrayList<Integer>();
+    private mLayerList: Array<Number> = [];
 
-    private mTypeList: List<Integer> = new ArrayList<Integer>();
+    private mTypeList: Array<Number> = [];
 
     private mVertexArray: number[];
 
@@ -69,7 +66,7 @@ export class DataStorage {
 
     public static readonly TRIANGLE_VERTEX: number = 3;
 
-    private mRotationMatrix: number[] = function(d) {
+    private mRotationMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -77,7 +74,7 @@ export class DataStorage {
         return r;
     }(16);
 
-    private mModelMatrix: number[] = function(d) {
+    private mModelMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -114,11 +111,10 @@ export class DataStorage {
         );
     }
 
-    public copyData(d: 
-        // TODO: Warning - type not found in scope.
-    DataStorage) : void {
-        for (let i: number = 0; i < d.getLineLengthList().size(); i++) this.mLineLengthList.add(d.getLineLengthList().get(i));
-        this.mVertexArray = function(d) {
+    public copyData(d: // TODO: Warning - type not found in scope.
+                        DataStorage): void {
+        for (let i: number = 0; i < d.getLineLengthList().length; i++) this.mLineLengthList.push(d.getLineLengthList()[i]);
+        this.mVertexArray = function (d) {
             // new float[d.getVertexArray().length]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
@@ -128,7 +124,7 @@ export class DataStorage {
         for (let i: number = 0; i < d.getVertexArray().length; i++) {
             this.mVertexArray[i] = d.getVertexArray()[i];
         }
-        this.mNormalArray = function(d) {
+        this.mNormalArray = function (d) {
             // new float[d.getNormalArray().length]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
@@ -161,75 +157,75 @@ export class DataStorage {
         for (let i: number = 0; i < this.mModelMatrix.length; i++) this.mModelMatrix[i] = d.getModelMatrix()[i];
     }
 
-    public setMaxLinesFile(maxLines: number) : void {
+    public setMaxLinesFile(maxLines: number): void {
         this.mMaxLines = maxLines;
     }
 
-    public getMaxLinesFile() : number {
+    public getMaxLinesFile(): number {
         return this.mMaxLines;
     }
 
-    public getCoordinateListSize() : number {
-        return this.mVertexList.size();
+    public getCoordinateListSize(): number {
+        return this.mVertexList.length;
     }
 
-    public addVertex(v: number) : void {
-        this.mVertexList.add(v);
+    public addVertex(v: number): void {
+        this.mVertexList.push(v);
     }
 
-    public addLayer(layer: number) : void {
-        this.mLayerList.add(layer);
+    public addLayer(layer: number): void {
+        this.mLayerList.push(layer);
     }
 
-    public addType(type: number) : void {
-        this.mTypeList.add(type);
+    public addType(type: number): void {
+        this.mTypeList.push(type);
     }
 
-    public addNormal(normal: number) : void {
-        this.mNormalList.add(normal);
+    public addNormal(normal: number): void {
+        this.mNormalList.push(normal);
     }
 
-    public addLineLength(length: number) : void {
-        this.mLineLengthList.add(length);
+    public addLineLength(length: number): void {
+        this.mLineLengthList.push(length);
     }
 
-    public fillVertexArray(center: boolean) : void {
-        this.mVertexArray = function(d) {
+    public fillVertexArray(center: boolean): void {
+        this.mVertexArray = function (d) {
             // new float[mVertexList.size()]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
             for (let i = 0; i < d; i++) r.push(0);
             return r;
-        }(this.mVertexList.size());
+        }(this.mVertexList.length);
         this.centerSTL(center);
     }
 
-    public initMaxMin() : void {
-        this.setMaxX(-Float.MAX_VALUE);
-        this.setMaxY(-Float.MAX_VALUE);
-        this.setMaxZ(-Float.MAX_VALUE);
-        this.setMinX(Float.MAX_VALUE);
-        this.setMinY(Float.MAX_VALUE);
-        this.setMinZ(Float.MAX_VALUE);
+    public initMaxMin(): void {
+        this.setMaxX(-Number.MAX_VALUE);
+        this.setMaxY(-Number.MAX_VALUE);
+        this.setMaxZ(-Number.MAX_VALUE);
+        this.setMinX(Number.MAX_VALUE);
+        this.setMinY(Number.MAX_VALUE);
+        this.setMinZ(Number.MAX_VALUE);
     }
 
-    public centerSTL(center: boolean) : void {
+    public centerSTL(center: boolean): void {
         let distX: number = 0;
         let distY: number = 0;
         let distZ: number = this.mMinZ;
         if (center) {
             distX = this.mMinX + (this.mMaxX - this.mMinX) / 2;
             distY = this.mMinY + (this.mMaxY - this.mMinY) / 2;
-            distZ = this.mMinZ - (number) DataStorage.MIN_Z;
+            distZ = this.mMinZ - <number> DataStorage.MIN_Z;
         }
-        Log.i(
-            "PrintView",
-            distZ + ""
-        );
-        for (let i: number = 0; i < this.mVertexList.size(); i = i + 3) {
-            this.mVertexArray[i] = this.mVertexList.get(i) - distX;
-            this.mVertexArray[i + 1] = this.mVertexList.get(i + 1) - distY;
-            this.mVertexArray[i + 2] = this.mVertexList.get(i + 2) - distZ;
+        // Log.i(
+        //     "PrintView",
+        //     distZ + ""
+        // );
+        for (let i: number = 0; i < this.mVertexList.length; i = i + 3) {
+            this.mVertexArray[i] = <number> this.mVertexList[i] - distX;
+            this.mVertexArray[i + 1] = <number>  this.mVertexList[i + 1] - distY;
+            this.mVertexArray[i + 2] = <number> this.mVertexList[i + 2] - distZ;
         }
         this.mMinX = this.mMinX - distX;
         this.mMaxX = this.mMaxX - distX;
@@ -239,22 +235,22 @@ export class DataStorage {
         this.mMaxZ = this.mMaxZ - distZ;
     }
 
-    public fillNormalArray() : void {
-        this.mNormalArray = function(d) {
+    public fillNormalArray(): void {
+        this.mNormalArray = function (d) {
             // new float[mNormalList.size() * TRIANGLE_VERTEX]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
             for (let i = 0; i < d; i++) r.push(0);
             return r;
-        }(this.mNormalList.size() * DataStorage.TRIANGLE_VERTEX);
+        }(this.mNormalList.length * DataStorage.TRIANGLE_VERTEX);
         let index: number = 0;
         let x: number;
         let y: number;
         let z: number;
-        for (let i: number = 0; i < this.mNormalList.size(); i = 3) {
-            x = this.mNormalList.get(i);
-            y = this.mNormalList.get(i + 1);
-            z = this.mNormalList.get(i + 2);
+        for (let i: number = 0; i < this.mNormalList.length; i = 3) {
+            x = <number> this.mNormalList[i];
+            y = <number> this.mNormalList[i + 1];
+            z = <number> this.mNormalList[i + 2];
             for (let j: number = 0; j < DataStorage.TRIANGLE_VERTEX; j++) {
                 this.mNormalArray[index] = x;
                 this.mNormalArray[index + 1] = y;
@@ -264,114 +260,110 @@ export class DataStorage {
         }
     }
 
-    public fillLayerArray() : void {
-        this.mLayerArray = function(d) {
+    public fillLayerArray(): void {
+        this.mLayerArray = function (d) {
             // new int[mLayerList.size()]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
             for (let i = 0; i < d; i++) r.push(0);
             return r;
-        }(this.mLayerList.size());
-        for (let i: number = 0; i < this.mLayerList.size(); i++) {
-            this.mLayerArray[i] = this.mLayerList.get(i);
+        }(this.mLayerList.length);
+        for (let i: number = 0; i < this.mLayerList.length; i++) {
+            this.mLayerArray[i] = <number> this.mLayerList[i];
         }
     }
 
-    public fillTypeArray() : void {
-        this.mTypeArray = function(d) {
+    public fillTypeArray(): void {
+        this.mTypeArray = function (d) {
             // new int[mTypeList.size()]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
             for (let i = 0; i < d; i++) r.push(0);
             return r;
-        }(this.mTypeList.size());
-        for (let i: number = 0; i < this.mTypeList.size(); i++) {
-            this.mTypeArray[i] = this.mTypeList.get(i);
+        }(this.mTypeList.length);
+        for (let i: number = 0; i < this.mTypeList.length; i++) {
+            this.mTypeArray[i] = <number> this.mTypeList[i];
         }
     }
 
-    public getVertexArray() : number[] {
+    public getVertexArray(): number[] {
         return this.mVertexArray;
     }
 
-    public getNormalArray() : number[] {
+    public getNormalArray(): number[] {
         return this.mNormalArray;
     }
 
-    public getTypeArray() : number[] {
+    public getTypeArray(): number[] {
         return this.mTypeArray;
     }
 
-    public getLayerArray() : number[] {
+    public getLayerArray(): number[] {
         return this.mLayerArray;
     }
 
-    public clearVertexList() : void {
-        this.mVertexList.clear();
+    public clearVertexList(): void {
+        this.mVertexList.splice(0, this.mVertexList.length);
     }
 
-    public clearNormalList() : void {
-        this.mNormalList.clear();
+    public clearNormalList(): void {
+        this.mNormalList.splice(0, this.mNormalList.length);
     }
 
-    public clearLayerList() : void {
-        this.mLayerList.clear();
+    public clearLayerList(): void {
+        this.mLayerList.splice(0, this.mLayerList.length);
     }
 
-    public clearTypeList() : void {
-        this.mTypeList.clear();
+    public clearTypeList(): void {
+        this.mTypeList.splice(0, this.mTypeList.length);
     }
 
-    public getLineLengthList() : List<Integer> {
+    public getLineLengthList(): Array<Number> {
         return this.mLineLengthList;
     }
 
-    public changeTypeAtIndex(
-            index: number,
-            type: number) : void {
-        this.mTypeList.set(
-            index,
-            type
-        );
+    public changeTypeAtIndex(index: number,
+                             type: number): void {
+        this.mTypeList[index] = type;
+
     }
 
-    public getTypeListSize() : number {
-        return this.mTypeList.size();
+    public getTypeListSize(): number {
+        return this.mTypeList.length;
     }
 
-    public setActualLayer(layer: number) : void {
+    public setActualLayer(layer: number): void {
         this.mActualLayer = layer;
     }
 
-    public getActualLayer() : number {
+    public getActualLayer(): number {
         return this.mActualLayer;
     }
 
-    public setMaxLayer(maxLayer: number) : void {
+    public setMaxLayer(maxLayer: number): void {
         this.mMaxLayer = maxLayer;
         this.mActualLayer = maxLayer;
     }
 
-    public getMaxLayer() : number {
+    public getMaxLayer(): number {
         return this.mMaxLayer;
     }
 
-    public getHeight() : number {
+    public getHeight(): number {
         return this.mMaxZ - this.mMinZ;
     }
 
-    public getWidth() : number {
+    public getWidth(): number {
         return this.mMaxY - this.mMinY;
     }
 
-    public getLong() : number {
+    public getLong(): number {
         return this.mMaxX - this.mMinX;
     }
 
-    public adjustMaxMin(
-            x: number,
-            y: number,
-            z: number) : void {
+    public adjustMaxMin(x: number,
+                        y: number,
+                        z: number): void {
         if (x > this.mMaxX) {
             this.mMaxX = x;
         }
@@ -392,75 +384,75 @@ export class DataStorage {
         }
     }
 
-    public setMinX(x: number) : void {
+    public setMinX(x: number): void {
         this.mMinX = x;
     }
 
-    public getMinX() : number {
+    public getMinX(): number {
         return this.mMinX;
     }
 
-    public setMinY(y: number) : void {
+    public setMinY(y: number): void {
         this.mMinY = y;
     }
 
-    public getMinY() : number {
+    public getMinY(): number {
         return this.mMinY;
     }
 
-    public setMinZ(z: number) : void {
+    public setMinZ(z: number): void {
         this.mMinZ = z;
     }
 
-    public getMinZ() : number {
+    public getMinZ(): number {
         return this.mMinZ;
     }
 
-    public setMaxX(x: number) : void {
+    public setMaxX(x: number): void {
         this.mMaxX = x;
     }
 
-    public getMaxX() : number {
+    public getMaxX(): number {
         return this.mMaxX;
     }
 
-    public setMaxY(y: number) : void {
+    public setMaxY(y: number): void {
         this.mMaxY = y;
     }
 
-    public getMaxY() : number {
+    public getMaxY(): number {
         return this.mMaxY;
     }
 
-    public setMaxZ(z: number) : void {
+    public setMaxZ(z: number): void {
         this.mMaxZ = z;
     }
 
-    public getMaxZ() : number {
+    public getMaxZ(): number {
         return this.mMaxZ;
     }
 
-    public setPathFile(path: string) : void {
+    public setPathFile(path: string): void {
         this.mPath = path;
     }
 
-    public getPathFile() : string {
+    public getPathFile(): string {
         return this.mPath;
     }
 
-    public setPathSnapshot(path: string) : void {
+    public setPathSnapshot(path: string): void {
         this.mPathSnapshot = path;
     }
 
-    public getPathSnapshot() : string {
+    public getPathSnapshot(): string {
         return this.mPathSnapshot;
     }
 
-    public setLastCenter(p: Point) : void {
+    public setLastCenter(p: Point): void {
         this.mLastCenter = p;
     }
 
-    public getTrueCenter() : Point {
+    public getTrueCenter(): Point {
         let x: number = (this.mMaxX + this.mMinX) / 2;
         let y: number = (this.mMaxY + this.mMinY) / 2;
         let z: number = (this.mMaxZ + this.mMinZ) / 2;
@@ -471,67 +463,67 @@ export class DataStorage {
         );
     }
 
-    public getLastCenter() : Point {
+    public getLastCenter(): Point {
         return this.mLastCenter;
     }
 
-    public setRotationMatrix(m: number[]) : void {
+    public setRotationMatrix(m: number[]): void {
         for (let i: number = 0; i < this.mRotationMatrix.length; i++) {
             this.mRotationMatrix[i] = m[i];
         }
     }
 
-    public getRotationMatrix() : number[] {
+    public getRotationMatrix(): number[] {
         return this.mRotationMatrix;
     }
 
-    public setModelMatrix(m: number[]) : void {
+    public setModelMatrix(m: number[]): void {
         for (let i: number = 0; i < this.mModelMatrix.length; i++) {
             this.mModelMatrix[i] = m[i];
         }
     }
 
-    public getModelMatrix() : number[] {
+    public getModelMatrix(): number[] {
         return this.mModelMatrix;
     }
 
-    public setLastScaleFactorX(f: number) : void {
+    public setLastScaleFactorX(f: number): void {
         this.mLastScaleFactorX = f;
     }
 
-    public setLastScaleFactorY(f: number) : void {
+    public setLastScaleFactorY(f: number): void {
         this.mLastScaleFactorY = f;
     }
 
-    public setLastScaleFactorZ(f: number) : void {
+    public setLastScaleFactorZ(f: number): void {
         this.mLastScaleFactorZ = f;
     }
 
-    public getLastScaleFactorX() : number {
+    public getLastScaleFactorX(): number {
         return this.mLastScaleFactorX;
     }
 
-    public getLastScaleFactorY() : number {
+    public getLastScaleFactorY(): number {
         return this.mLastScaleFactorY;
     }
 
-    public getLastScaleFactorZ() : number {
+    public getLastScaleFactorZ(): number {
         return this.mLastScaleFactorZ;
     }
 
-    public setStateObject(state: number) : void {
+    public setStateObject(state: number): void {
         this.mStateObject = state;
     }
 
-    public getStateObject() : number {
+    public getStateObject(): number {
         return this.mStateObject;
     }
 
-    public setAdjustZ(z: number) : void {
+    public setAdjustZ(z: number): void {
         this.mAdjustZ = z;
     }
 
-    public getAdjustZ() : number {
+    public getAdjustZ(): number {
         return this.mAdjustZ;
     }
 }

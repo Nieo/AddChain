@@ -1,10 +1,9 @@
 // package android.app.printerapp.viewer;
 
-import { GLES20 } from "./android/opengl/GLES20";
-import { ByteBuffer } from "./java/nio/ByteBuffer";
-import { ByteOrder } from "./java/nio/ByteOrder";
-import { FloatBuffer } from "./java/nio/FloatBuffer";
-import { ShortBuffer } from "./java/nio/ShortBuffer";
+import {ViewerRenderer} from "./ViewerRenderer";
+import {Point} from "./Geometry";
+import {DataStorage} from "./DataStorage";
+import {GLES20} from "./GLES20_Wrapper";
 
 export class Lines {
     private readonly vertexShaderCode: string = "uniform mat4 uMVPMatrix;" + "attribute vec4 vPosition;" + "void main() {" + // for the matrix multiplication product to be correct.
@@ -41,9 +40,9 @@ export class Lines {
         Lines.TRANSPARENCY
     ];
 
-    readonly mVertexBuffer: FloatBuffer;
+    readonly mVertexBuffer: Float32Array;
 
-    private readonly mDrawListBuffer: ShortBuffer;
+    private readonly mDrawListBuffer: Float32Array;
 
     readonly mProgram: number;
 
@@ -89,23 +88,19 @@ export class Lines {
         this.lineCoords[5] = 0.0;
         this.mCoordsArray = this.lineCoords;
         this.vertexCount = this.mCoordsArray.length / this.COORDS_PER_VERTEX;
-        let bb: ByteBuffer = ByteBuffer.allocateDirect(this.mCoordsArray.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        this.mVertexBuffer = bb.asFloatBuffer();
-        let dlb: ByteBuffer = ByteBuffer.allocateDirect(this.drawOrder.length * 2);
-        dlb.order(ByteOrder.nativeOrder());
+        let bb: ArrayBuffer = new ArrayBuffer(this.mCoordsArray.length * 4);
+        // bb.order(ByteOrder.nativeOrder());
+        this.mVertexBuffer = new Float32Array(bb);
+        let dlb: ArrayBuffer = new ArrayBuffer(this.drawOrder.length * 2);
+        // dlb.order(ByteOrder.nativeOrder());
         this.mDrawListBuffer = dlb.asShortBuffer();
         this.mDrawListBuffer.put(this.drawOrder);
         this.mDrawListBuffer.position(0);
-        let vertexShader: number = 
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.loadShader(
+        let vertexShader: number = ViewerRenderer.loadShader(
             GLES20.GL_VERTEX_SHADER,
             this.vertexShaderCode
         );
-        let fragmentShader: number = 
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.loadShader(
+        let fragmentShader: number = ViewerRenderer.loadShader(
             GLES20.GL_FRAGMENT_SHADER,
             this.fragmentShaderCode
         );
@@ -122,9 +117,7 @@ export class Lines {
     }
 
     private drawXAxis(
-            point: 
-                // TODO: Warning - type not found in scope.
-            Geometry.Point,
+            point: Point,
             z: number) : number[] {
         let tempAxis: number[] = function(d) {
             // new float[6]
@@ -145,7 +138,7 @@ export class Lines {
     private drawYAxis(
             point: 
                 // TODO: Warning - type not found in scope.
-            Geometry.Point,
+            Point,
             z: number) : number[] {
         let tempAxis: number[] = function(d) {
             // new float[6]
@@ -163,11 +156,7 @@ export class Lines {
         return tempAxis;
     }
 
-    private drawZAxis(
-            point: 
-                // TODO: Warning - type not found in scope.
-            Geometry.Point,
-            z: number) : number[] {
+    private drawZAxis(point: Point, z: number) : number[] {
         let tempAxis: number[] = function(d) {
             // new float[6]
             // TODO: Consider refactoring this array initialization to be more readable.
@@ -185,9 +174,7 @@ export class Lines {
     }
 
     public draw(
-            data: 
-                // TODO: Warning - type not found in scope.
-            DataStorage,
+            data: DataStorage,
             mvpMatrix: number[],
             currentAxis: number) : void {
         GLES20.glUseProgram(this.mProgram);
@@ -252,8 +239,7 @@ export class Lines {
                 "uMVPMatrix"
             );
             
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerRenderer.checkGlError("glGetUniformLocation");
+                ViewerRenderer.checkGlError("glGetUniformLocation");
             GLES20.glUniformMatrix4fv(
                 this.mMVPMatrixHandle,
                 1,
@@ -262,8 +248,7 @@ export class Lines {
                 0
             );
             
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerRenderer.checkGlError("glUniformMatrix4fv");
+            ViewerRenderer.checkGlError("glUniformMatrix4fv");
             GLES20.glDrawArrays(
                 GLES20.GL_LINES,
                 0,
@@ -277,10 +262,10 @@ export class Lines {
                 return r;
             }(20);
             let i: number = 0;
-            let radius: number = (number) 0.75;
+            let radius: number = <number> 0.75;
             for (let angle: number = 0; angle < 2 * Math.PI; angle = 0.630) {
-                points[i] = radius * (number) Math.cos(angle);
-                points[i] = radius * (number) Math.sin(angle);
+                points[i] = radius * <number> Math.cos(angle);
+                points[i] = radius * <number> Math.sin(angle);
                 i++;
             }
             GLES20.glDrawArrays(

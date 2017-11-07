@@ -1,5 +1,11 @@
 // package android.app.printerapp.viewer;
 
+import {Ray, Vector, Box, Geometry, Point} from "./Geometry";
+import {StlObject} from "./StlObject";
+import {DataStorage} from "./DataStorage";
+import {Matrix} from "./GLMatrix";
+import {GLES20} from "./GLES20_Wrapper";
+
 export class ViewerRenderer {
 
     private static TAG: string = "ViewerRenderer";
@@ -88,35 +94,28 @@ export class ViewerRenderer {
 
     private mStlObjectList: Array<StlObject> = [];
 
-    private mWitboxFaceDown: 
-        // TODO: Warning - type not found in scope.
-    WitboxPlate;
+    private mWitboxFaceDown: // TODO: Warning - type not found in scope.
+        WitboxPlate;
 
-    private mWitboxFaceRight: 
-        // TODO: Warning - type not found in scope.
-    WitboxFaces;
+    private mWitboxFaceRight: // TODO: Warning - type not found in scope.
+        WitboxFaces;
 
-    private mWitboxFaceBack: 
-        // TODO: Warning - type not found in scope.
-    WitboxFaces;
+    private mWitboxFaceBack: // TODO: Warning - type not found in scope.
+        WitboxFaces;
 
-    private mWitboxFaceLeft: 
-        // TODO: Warning - type not found in scope.
-    WitboxFaces;
+    private mWitboxFaceLeft: // TODO: Warning - type not found in scope.
+        WitboxFaces;
 
-    private mWitboxFaceFront: 
-        // TODO: Warning - type not found in scope.
-    WitboxFaces;
+    private mWitboxFaceFront: // TODO: Warning - type not found in scope.
+        WitboxFaces;
 
-    private mWitboxFaceTop: 
-        // TODO: Warning - type not found in scope.
-    WitboxFaces;
+    private mWitboxFaceTop: // TODO: Warning - type not found in scope.
+        WitboxFaces;
 
-    private mInfinitePlane: 
-        // TODO: Warning - type not found in scope.
-    WitboxPlate;
+    private mInfinitePlane: // TODO: Warning - type not found in scope.
+        WitboxPlate;
 
-    private mDataList: List<DataStorage>;
+    private mDataList: Array<DataStorage>;
 
     private mShowLeftWitboxFace: boolean = true;
 
@@ -130,7 +129,7 @@ export class ViewerRenderer {
 
     private mShowTopWitboxFace: boolean = true;
 
-    public final_matrix_R_Render: number[] = function(d) {
+    public final_matrix_R_Render: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -138,7 +137,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    public final_matrix_S_Render: number[] = function(d) {
+    public final_matrix_S_Render: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -146,7 +145,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    public final_matrix_T_Render: number[] = function(d) {
+    public final_matrix_T_Render: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -154,7 +153,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    private readonly mVPMatrix: number[] = function(d) {
+    private readonly mVPMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -162,7 +161,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    private readonly mModelMatrix: number[] = function(d) {
+    private mModelMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -170,7 +169,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    private readonly mProjectionMatrix: number[] = function(d) {
+    private readonly mProjectionMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -178,7 +177,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    private readonly mViewMatrix: number[] = function(d) {
+    private readonly mViewMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -186,7 +185,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    private readonly mRotationMatrix: number[] = function(d) {
+    private readonly mRotationMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -194,7 +193,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    private readonly mTemporaryMatrix: number[] = function(d) {
+    private readonly mTemporaryMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -202,7 +201,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    private static readonly invertedMVPMatrix: number[] = function(d) {
+    private static readonly invertedMVPMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -210,7 +209,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    mMVMatrix: number[] = function(d) {
+    mMVMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -218,7 +217,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    mMVPMatrix: number[] = function(d) {
+    mMVPMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -226,7 +225,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    mMVPObjectMatrix: number[] = function(d) {
+    mMVPObjectMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -234,7 +233,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    mMVObjectMatrix: number[] = function(d) {
+    mMVObjectMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -242,7 +241,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    mTransInvMVMatrix: number[] = function(d) {
+    mTransInvMVMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -250,7 +249,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    mObjectModel: number[] = function(d) {
+    mObjectModel: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -258,7 +257,7 @@ export class ViewerRenderer {
         return r;
     }(16);
 
-    mTemporaryModel: number[] = function(d) {
+    mTemporaryModel: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -273,7 +272,7 @@ export class ViewerRenderer {
         1.0
     ];
 
-    mLightPosInEyeSpace: number[] = function(d) {
+    mLightPosInEyeSpace: number[] = function (d) {
         // new float[4]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -281,7 +280,7 @@ export class ViewerRenderer {
         return r;
     }(4);
 
-    mLightPosInWorldSpace: number[] = function(d) {
+    mLightPosInWorldSpace: number[] = function (d) {
         // new float[4]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -289,7 +288,7 @@ export class ViewerRenderer {
         return r;
     }(4);
 
-    mLightModelMatrix: number[] = function(d) {
+    mLightModelMatrix: number[] = function (d) {
         // new float[16]
         // TODO: Consider refactoring this array initialization to be more readable.
         let r = [];
@@ -327,117 +326,113 @@ export class ViewerRenderer {
 
     public static readonly OUT_TOUCHED: number = 3;
 
-    private mCircle:
-        // TODO: Warning - type not found in scope.
-    Circles;
+    private mCircle: // TODO: Warning - type not found in scope.
+        Circles;
 
     private mPlate: number[];
 
     private mAxis: number = -1;
 
-    public constructor(
-            dataList: List<DataStorage>,
-            state: number,
-            mode: number) {
+    public constructor(dataList: Array<DataStorage>,
+                       state: number,
+                       mode: number) {
         this.mDataList = dataList;
         this.mState = state;
         this.mMode = mode;
     }
 
-    public showBackWitboxFace(draw: boolean) : void {
+    public showBackWitboxFace(draw: boolean): void {
         this.mShowBackWitboxFace = draw;
     }
 
-    public showRightWitboxFace(draw: boolean) : void {
+    public showRightWitboxFace(draw: boolean): void {
         this.mShowRightWitboxFace = draw;
     }
 
-    public showLeftWitboxFace(draw: boolean) : void {
+    public showLeftWitboxFace(draw: boolean): void {
         this.mShowLeftWitboxFace = draw;
     }
 
-    public showDownWitboxFace(draw: boolean) : void {
+    public showDownWitboxFace(draw: boolean): void {
         this.mShowDownWitboxFace = draw;
     }
 
-    public getShowRightWitboxFace() : boolean {
+    public getShowRightWitboxFace(): boolean {
         return this.mShowRightWitboxFace;
     }
 
-    public getShowLeftWitboxFace() : boolean {
+    public getShowLeftWitboxFace(): boolean {
         return this.mShowLeftWitboxFace;
     }
 
-    public getShowDownWitboxFace() : boolean {
+    public getShowDownWitboxFace(): boolean {
         return this.mShowDownWitboxFace;
     }
 
-    public getShowBackWitboxFace() : boolean {
+    public getShowBackWitboxFace(): boolean {
         return this.mShowBackWitboxFace;
     }
 
-    public setTransparent(transparent: boolean) : void {
-        for (let i: number = 0; i < this.mStlObjectList.size(); i++) this.mStlObjectList.get(i).setTransparent(transparent);
+    public setTransparent(transparent: boolean): void {
+        for (let i: number = 0; i < this.mStlObjectList.length; i++) this.mStlObjectList[i].setTransparent(transparent);
     }
 
-    public setXray(xray: boolean) : void {
-        for (let i: number = 0; i < this.mStlObjectList.size(); i++) this.mStlObjectList.get(i).setXray(xray);
+    public setXray(xray: boolean): void {
+        for (let i: number = 0; i < this.mStlObjectList.length; i++) this.mStlObjectList[i].setXray(xray);
     }
 
-    public setOverhang(overhang: boolean) : void {
-        for (let i: number = 0; i < this.mStlObjectList.size(); i++) this.mStlObjectList.get(i).setOverhang(overhang);
+    public setOverhang(overhang: boolean): void {
+        for (let i: number = 0; i < this.mStlObjectList.length; i++) this.mStlObjectList[i].setOverhang(overhang);
     }
 
-    public setRotationVector(vector: Vector) : void {
+    public setRotationVector(vector: Vector): void {
         this.mVector = vector;
     }
 
-    public setCurrentaxis(axis: number) : void {
+    public setCurrentaxis(axis: number): void {
         this.mAxis = axis;
     }
 
-    public setObjectPressed(i: number) : void {
+    public setObjectPressed(i: number): void {
         this.mObjectPressed = i;
     }
 
-    public deleteObject(i: number) : void {
-        if (!this.mDataList.isEmpty()) {
-            this.mStlObjectList.remove(i);
-            this.mDataList.remove(i);
+    public deleteObject(i: number): void {
+        if (!(this.mDataList.length > 0)) {
+            this.mStlObjectList.splice(i, 1);
+            this.mDataList.splice(i, 1);
             this.mObjectPressed = -1;
             this.changeTouchedState();
         }
     }
 
-    private isStl() : boolean {
-        if (this.mDataList.size() > 0) if (this.mDataList.get(0).getPathFile().endsWith(".stl") || this.mDataList.get(0).getPathFile().endsWith(".STL")) return true;
+    private isStl(): boolean {
+        if (this.mDataList.length > 0) if (this.mDataList[0].getPathFile().endsWith(".stl") || this.mDataList[0].getPathFile().endsWith(".STL")) return true;
         return false;
     }
 
-    public objectPressed(
-            x: number,
-            y: number) : number {
+    public objectPressed(x: number,
+                         y: number): number {
         let object: number = -1;
-        if (this.mDataList != null && !this.mDataList.isEmpty()) {
+        if (this.mDataList != null && !(this.mDataList.length > 0)) {
             let ray: Ray = ViewerRenderer.convertNormalized2DPointToRay(
                 x,
                 y
             );
-            for (let i: number = 0; i < this.mDataList.size(); i++) {
+            for (let i: number = 0; i < this.mDataList.length; i++) {
                 let objectBox: Box = new Box(
-                    this.mDataList.get(i).getMinX(),
-                    this.mDataList.get(i).getMaxX(),
-                    this.mDataList.get(i).getMinY(),
-                    this.mDataList.get(i).getMaxY(),
-                    this.mDataList.get(i).getMinZ(),
-                    this.mDataList.get(i).getMaxZ()
+                    this.mDataList[i].getMinX(),
+                    this.mDataList[i].getMaxX(),
+                    this.mDataList[i].getMinY(),
+                    this.mDataList[i].getMaxY(),
+                    this.mDataList[i].getMinZ(),
+                    this.mDataList[i].getMaxZ()
                 );
                 if (
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.Geometry.intersects(
-                    objectBox,
-                    ray
-                )) {
+                    Geometry.intersects(
+                        objectBox,
+                        ray
+                    )) {
                     object = i;
                     break;
                 }
@@ -448,50 +443,40 @@ export class ViewerRenderer {
         return object;
     }
 
-    public changeTouchedState() : void {
-        for (let i: number = 0; i < this.mDataList.size(); i++) {
-            let d: 
-                // TODO: Warning - type not found in scope.
-            DataStorage = this.mDataList.get(i);
+    public changeTouchedState(): void {
+        for (let i: number = 0; i < this.mDataList.length; i++) {
+            let d: // TODO: Warning - type not found in scope.
+                DataStorage = this.mDataList[i];
             if (i == this.mObjectPressed) {
-                if (!
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.Geometry.isValidPosition(
-                    d.getMaxX(),
-                    d.getMinX(),
-                    d.getMaxY(),
-                    d.getMinY(),
-                    this.mDataList,
-                    i
-                )) this.mDataList.get(i).setStateObject(ViewerRenderer.OUT_TOUCHED); else this.mDataList.get(i).setStateObject(ViewerRenderer.INSIDE_TOUCHED);
+                if (!Geometry.isValidPosition(
+                        d.getMaxX(),
+                        d.getMinX(),
+                        d.getMaxY(),
+                        d.getMinY(),
+                        this.mDataList,
+                        i
+                    )) this.mDataList[i].setStateObject(ViewerRenderer.OUT_TOUCHED); else this.mDataList[i].setStateObject(ViewerRenderer.INSIDE_TOUCHED);
             } else {
-                if (!
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.Geometry.isValidPosition(
-                    d.getMaxX(),
-                    d.getMinX(),
-                    d.getMaxY(),
-                    d.getMinY(),
-                    this.mDataList,
-                    i
-                )) this.mDataList.get(i).setStateObject(ViewerRenderer.OUT_NOT_TOUCHED); else this.mDataList.get(i).setStateObject(ViewerRenderer.INSIDE_NOT_TOUCHED);
+                if (!Geometry.isValidPosition(
+                        d.getMaxX(),
+                        d.getMinX(),
+                        d.getMaxY(),
+                        d.getMinY(),
+                        this.mDataList,
+                        i
+                    )) this.mDataList[i].setStateObject(ViewerRenderer.OUT_NOT_TOUCHED); else this.mDataList[i].setStateObject(ViewerRenderer.INSIDE_NOT_TOUCHED);
             }
         }
     }
 
-    public dragObject(
-            x: number,
-            y: number) : void {
+    public dragObject(x: number,
+                      y: number): void {
         let ray: Ray = ViewerRenderer.convertNormalized2DPointToRay(
             x,
             y
         );
-        let touched: Point = 
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.Geometry.intersectionPointWitboxPlate(ray);
-        let data: 
-            // TODO: Warning - type not found in scope.
-        DataStorage = this.mDataList.get(this.mObjectPressed);
+        let touched: Point = Geometry.intersectionPointWitboxPlate(ray);
+        let data: DataStorage = this.mDataList[this.mObjectPressed];
         let dx: number = touched.x - data.getLastCenter().x;
         let dy: number = touched.y - data.getLastCenter().y;
         let maxX: number = data.getMaxX() + dx;
@@ -520,23 +505,19 @@ export class ViewerRenderer {
             }
             finalx = finalx / i;
             finaly = finaly / i;
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerMainFragment.setSlicingPosition(
-                finalx,
-                finaly
-            );
+            //     this.ViewerMainFragment.setSlicingPosition(
+            //     finalx,
+            //     finaly
+            // );
         }
     }
 
-    public scaleObject(fx: number, fy: number, fz: number, error: boolean) : void {
+    public scaleObject(fx: number, fy: number, fz: number, error: boolean): void {
         if (Math.abs(fx) < 10 && Math.abs(fy) < 10 && Math.abs(fz) < 10) {
             this.mScaleFactorX = fx;
             this.mScaleFactorY = fy;
             this.mScaleFactorZ = fz;
-            let data: 
-                // TODO: Warning - type not found in scope.
-            DataStorage = this.mDataList.get(this.mObjectPressed);
+            let data: DataStorage = this.mDataList[this.mObjectPressed];
             let lastCenter: Point = data.getLastCenter();
             let maxX: number = data.getMaxX() - lastCenter.x;
             let maxY: number = data.getMaxY() - lastCenter.y;
@@ -555,12 +536,10 @@ export class ViewerRenderer {
             minZ = (minZ + (this.mScaleFactorZ - lastScaleFactorZ) * (minZ / lastScaleFactorZ)) + lastCenter.z;
             if (maxX > this.mPlate[0] || minX < -this.mPlate[0] || maxY > this.mPlate[1] || minY < -this.mPlate[1]) {
                 if (error) {
-                    if (maxX > this.mPlate[0] || minX < -this.mPlate[0]) 
-                        // TODO: Warning - no scope specified; assuming 'this'.
-                        this.ViewerMainFragment.displayErrorInAxis(0);
-                    if (maxY > this.mPlate[1] || minY < -this.mPlate[1]) 
-                        // TODO: Warning - no scope specified; assuming 'this'.
-                        this.ViewerMainFragment.displayErrorInAxis(1);
+                    if (maxX > this.mPlate[0] || minX < -this.mPlate[0])
+                        console.log('this.ViewerMainFragment.displayErrorInAxis(0);');
+                    if (maxY > this.mPlate[1] || minY < -this.mPlate[1])
+                        console.log('this.ViewerMainFragment.displayErrorInAxis(1);');
                 }
                 return;
             } else {
@@ -577,20 +556,18 @@ export class ViewerRenderer {
         }
     }
 
-    public setRotationObject(angle: number) : void {
-        let data: 
-            // TODO: Warning - type not found in scope.
-        DataStorage = this.mDataList.get(this.mObjectPressed);
+    public setRotationObject(angle: number): void {
+        let data: DataStorage = this.mDataList[this.mObjectPressed];
         let rotateObjectMatrix: number[] = data.getRotationMatrix();
         let center: Point = data.getLastCenter();
-        let mTemporaryMatrix: number[] = function(d) {
+        let mTemporaryMatrix: number[] = function (d) {
             // new float[16]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
             for (let i = 0; i < d; i++) r.push(0);
             return r;
         }(16);
-        let mFinalMatrix: number[] = function(d) {
+        let mFinalMatrix: number[] = function (d) {
             // new float[16]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
@@ -627,126 +604,125 @@ export class ViewerRenderer {
         data.setRotationMatrix(mFinalMatrix);
     }
 
-    public refreshRotatedObjectCoordinates() : void {
-        const task: AsyncTask<Void,Void,Void> = new AsyncTask<Void,Void,Void>(){
-        protected onPreExecute() : void {
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerMainFragment.configureProgressState(View.VISIBLE);
-        }
-        protected doInBackground(params: Void) : Void {
-            try {
-                let data: 
-                    // TODO: Warning - type not found in scope.
-                DataStorage = this.mDataList.get(this.mObjectPressed);
-                data.initMaxMin();
-                let coordinatesArray: number[] = data.getVertexArray();
-                // TODO: Warning - declaring multiple variables with the same statement may not be supported.let x: number;
-                let y: number;
-                let z: number;
-                let vector: number[] = function(d) {
-                    // new float[4]
-                    // TODO: Consider refactoring this array initialization to be more readable.
-                    let r = [];
-                    for (let i = 0; i < d; i++) r.push(0);
-                    return r;
-                }(4);
-                let result: number[] = function(d) {
-                    // new float[4]
-                    // TODO: Consider refactoring this array initialization to be more readable.
-                    let r = [];
-                    for (let i = 0; i < d; i++) r.push(0);
-                    return r;
-                }(4);
-                let aux: number[] = function(d) {
-                    // new float[16]
-                    // TODO: Consider refactoring this array initialization to be more readable.
-                    let r = [];
-                    for (let i = 0; i < d; i++) r.push(0);
-                    return r;
-                }(16);
-                let rotationMatrix: number[] = data.getRotationMatrix();
-                for (let i: number = 0; i < coordinatesArray.length; i = 3) {
-                    vector[0] = coordinatesArray[i];
-                    vector[1] = coordinatesArray[i + 1];
-                    vector[2] = coordinatesArray[i + 2];
-                    Matrix.setIdentityM(
-                        aux,
-                        0
-                    );
-                    Matrix.multiplyMM(
-                        aux,
-                        0,
-                        rotationMatrix,
-                        0,
-                        aux,
-                        0
-                    );
-                    Matrix.multiplyMV(
-                        result,
-                        0,
-                        aux,
-                        0,
-                        vector,
-                        0
-                    );
-                    x = result[0];
-                    y = result[1];
-                    z = result[2];
-                    data.adjustMaxMin(
-                        x,
-                        y,
-                        z
-                    );
-                }
-                let maxX: number = data.getMaxX();
-                let minX: number = data.getMinX();
-                let minY: number = data.getMinY();
-                let maxY: number = data.getMaxY();
-                let maxZ: number = data.getMaxZ();
-                let minZ: number = data.getMinZ();
-                let lastCenter: Point = data.getLastCenter();
-                maxX = maxX * Math.abs(this.mScaleFactorX) + lastCenter.x;
-                maxY = maxY * this.mScaleFactorY + lastCenter.y;
-                maxZ = maxZ * this.mScaleFactorZ + lastCenter.z;
-                minX = minX * Math.abs(this.mScaleFactorX) + lastCenter.x;
-                minY = minY * this.mScaleFactorY + lastCenter.y;
-                minZ = minZ * this.mScaleFactorZ + lastCenter.z;
-                data.setMaxX(maxX);
-                data.setMaxY(maxY);
-                data.setMinX(minX);
-                data.setMinY(minY);
-                let adjustZ: number = 0;
-                if (minZ != 0) adjustZ = -data.getMinZ() + (number) 
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.DataStorage.MIN_Z;
-                data.setAdjustZ(adjustZ);
-                data.setMinZ(minZ + adjustZ);
-                data.setMaxZ(maxZ + adjustZ);
-            } catch (e) {
-                if (e instanceof ArrayIndexOutOfBoundsException) {
-                    
-                        // TODO: Warning - no scope specified; assuming 'this'.
-                        this.e.printStackTrace();
-                }
-            }
-            return null;
-        }
-        protected onPostExecute(unused: Void) : void {
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerMainFragment.configureProgressState(View.GONE);
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerMainFragment.displayModelSize(this.mObjectPressed);
-        }
-        };
-        task.execute();
-    }
+    // public refreshRotatedObjectCoordinates() : void {
+    //     const task: AsyncTask<Void,Void,Void> = new AsyncTask<Void,Void,Void>(){
+    //     protected onPreExecute() : void {
+    //
+    //             // TODO: Warning - no scope specified; assuming 'this'.
+    //             // this.ViewerMainFragment.configureProgressState(View.VISIBLE);
+    //     }
+    //     protected doInBackground(params: Void) : Void {
+    //         try {
+    //             let data:
+    //                 // TODO: Warning - type not found in scope.
+    //             DataStorage = this.mDataList.get(this.mObjectPressed);
+    //             data.initMaxMin();
+    //             let coordinatesArray: number[] = data.getVertexArray();
+    //             // TODO: Warning - declaring multiple variables with the same statement may not be supported.let x: number;
+    //             let y: number;
+    //             let z: number;
+    //             let vector: number[] = function(d) {
+    //                 // new float[4]
+    //                 // TODO: Consider refactoring this array initialization to be more readable.
+    //                 let r = [];
+    //                 for (let i = 0; i < d; i++) r.push(0);
+    //                 return r;
+    //             }(4);
+    //             let result: number[] = function(d) {
+    //                 // new float[4]
+    //                 // TODO: Consider refactoring this array initialization to be more readable.
+    //                 let r = [];
+    //                 for (let i = 0; i < d; i++) r.push(0);
+    //                 return r;
+    //             }(4);
+    //             let aux: number[] = function(d) {
+    //                 // new float[16]
+    //                 // TODO: Consider refactoring this array initialization to be more readable.
+    //                 let r = [];
+    //                 for (let i = 0; i < d; i++) r.push(0);
+    //                 return r;
+    //             }(16);
+    //             let rotationMatrix: number[] = data.getRotationMatrix();
+    //             for (let i: number = 0; i < coordinatesArray.length; i = 3) {
+    //                 vector[0] = coordinatesArray[i];
+    //                 vector[1] = coordinatesArray[i + 1];
+    //                 vector[2] = coordinatesArray[i + 2];
+    //                 Matrix.setIdentityM(
+    //                     aux,
+    //                     0
+    //                 );
+    //                 Matrix.multiplyMM(
+    //                     aux,
+    //                     0,
+    //                     rotationMatrix,
+    //                     0,
+    //                     aux,
+    //                     0
+    //                 );
+    //                 Matrix.multiplyMV(
+    //                     result,
+    //                     0,
+    //                     aux,
+    //                     0,
+    //                     vector,
+    //                     0
+    //                 );
+    //                 x = result[0];
+    //                 y = result[1];
+    //                 z = result[2];
+    //                 data.adjustMaxMin(
+    //                     x,
+    //                     y,
+    //                     z
+    //                 );
+    //             }
+    //             let maxX: number = data.getMaxX();
+    //             let minX: number = data.getMinX();
+    //             let minY: number = data.getMinY();
+    //             let maxY: number = data.getMaxY();
+    //             let maxZ: number = data.getMaxZ();
+    //             let minZ: number = data.getMinZ();
+    //             let lastCenter: Point = data.getLastCenter();
+    //             maxX = maxX * Math.abs(this.mScaleFactorX) + lastCenter.x;
+    //             maxY = maxY * this.mScaleFactorY + lastCenter.y;
+    //             maxZ = maxZ * this.mScaleFactorZ + lastCenter.z;
+    //             minX = minX * Math.abs(this.mScaleFactorX) + lastCenter.x;
+    //             minY = minY * this.mScaleFactorY + lastCenter.y;
+    //             minZ = minZ * this.mScaleFactorZ + lastCenter.z;
+    //             data.setMaxX(maxX);
+    //             data.setMaxY(maxY);
+    //             data.setMinX(minX);
+    //             data.setMinY(minY);
+    //             let adjustZ: number = 0;
+    //             if (minZ != 0) adjustZ = -data.getMinZ() + (number)
+    //                 // TODO: Warning - no scope specified; assuming 'this'.
+    //                 this.DataStorage.MIN_Z;
+    //             data.setAdjustZ(adjustZ);
+    //             data.setMinZ(minZ + adjustZ);
+    //             data.setMaxZ(maxZ + adjustZ);
+    //         } catch (e) {
+    //             if (e instanceof ArrayIndexOutOfBoundsException) {
+    //
+    //                     // TODO: Warning - no scope specified; assuming 'this'.
+    //                     this.e.printStackTrace();
+    //             }
+    //         }
+    //         return null;
+    //     }
+    //     protected onPostExecute(unused: Void) : void {
+    //
+    //             // TODO: Warning - no scope specified; assuming 'this'.
+    //             this.ViewerMainFragment.configureProgressState(View.GONE);
+    //
+    //             // TODO: Warning - no scope specified; assuming 'this'.
+    //             this.ViewerMainFragment.displayModelSize(this.mObjectPressed);
+    //     }
+    //     };
+    //     task.execute();
+    // }
 
-    private static convertNormalized2DPointToRay(
-            normalizedX: number,
-            normalizedY: number) : Ray {
+    private static convertNormalized2DPointToRay(normalizedX: number,
+                                                 normalizedY: number): Ray {
         const nearPointNdc: number[] = [
             normalizedX,
             normalizedY,
@@ -759,14 +735,14 @@ export class ViewerRenderer {
             1,
             1
         ];
-        const nearPointWorld: number[] = function(d) {
+        const nearPointWorld: number[] = function (d) {
             // new float[4]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
             for (let i = 0; i < d; i++) r.push(0);
             return r;
         }(4);
-        const farPointWorld: number[] = function(d) {
+        const farPointWorld: number[] = function (d) {
             // new float[4]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
@@ -803,95 +779,84 @@ export class ViewerRenderer {
         );
         return new Ray(
             nearPointRay,
-            
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.Geometry.vectorBetween(
-                nearPointRay,
-                farPointRay
-            )
+            Geometry.vectorBetween(nearPointRay, farPointRay)
         );
     }
 
-    private static divideByW(vector: number[]) : void {
+    private static divideByW(vector: number[]): void {
         vector[0] = vector[3];
         vector[1] = vector[3];
         vector[2] = vector[3];
     }
 
-    public getWidthScreen() : number {
+    public getWidthScreen(): number {
         return ViewerRenderer.mWidth;
     }
 
-    public getHeightScreen() : number {
+    public getHeightScreen(): number {
         return ViewerRenderer.mHeight;
     }
 
-    private setColor(object: number) : void {
-        let stl: 
-            // TODO: Warning - type not found in scope.
-        StlObject = this.mStlObjectList.get(object);
-        switch (this.mDataList.get(object).getStateObject()) {
+    private setColor(object: number): void {
+        let stl: StlObject = this.mStlObjectList[object];
+        switch (this.mDataList[object].getStateObject()) {
             case ViewerRenderer.INSIDE_NOT_TOUCHED:
                 stl.setColor(
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.StlObject.colorNormal);
+                    StlObject.colorNormal);
                 break;
             case ViewerRenderer.INSIDE_TOUCHED:
                 stl.setColor(
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.StlObject.colorSelectedObject);
+                    StlObject.colorSelectedObject);
                 break;
             case ViewerRenderer.OUT_NOT_TOUCHED:
                 stl.setColor(
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.StlObject.colorObjectOut);
+                    StlObject.colorObjectOut);
                 break;
             case ViewerRenderer.OUT_TOUCHED:
                 stl.setColor(
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.StlObject.colorObjectOutTouched);
+                    StlObject.colorObjectOutTouched);
                 break;
         }
     }
 
-    public generatePlate(type: number[]) : void {
+    public generatePlate(type: number[]): void {
         try {
             this.mPlate = type;
-            if (this.mMode == 
+            if (this.mMode ==
                 // TODO: Warning - no scope specified; assuming 'this'.
                 this.ViewerMainFragment.PRINT_PREVIEW) {
-                this.mWitboxFaceBack = new 
-                    // TODO: Warning - type not found in scope.
+                this.mWitboxFaceBack = new
+                // TODO: Warning - type not found in scope.
                 WitboxFaces(
                     ViewerRenderer.BACK,
                     this.mPlate
                 );
-                this.mWitboxFaceRight = new 
-                    // TODO: Warning - type not found in scope.
+                this.mWitboxFaceRight = new
+                // TODO: Warning - type not found in scope.
                 WitboxFaces(
                     ViewerRenderer.RIGHT,
                     this.mPlate
                 );
-                this.mWitboxFaceLeft = new 
-                    // TODO: Warning - type not found in scope.
+                this.mWitboxFaceLeft = new
+                // TODO: Warning - type not found in scope.
                 WitboxFaces(
                     ViewerRenderer.LEFT,
                     this.mPlate
                 );
-                this.mWitboxFaceFront = new 
-                    // TODO: Warning - type not found in scope.
+                this.mWitboxFaceFront = new
+                // TODO: Warning - type not found in scope.
                 WitboxFaces(
                     ViewerRenderer.FRONT,
                     this.mPlate
                 );
-                this.mWitboxFaceTop = new 
-                    // TODO: Warning - type not found in scope.
+                this.mWitboxFaceTop = new
+                // TODO: Warning - type not found in scope.
                 WitboxFaces(
                     ViewerRenderer.TOP,
                     this.mPlate
                 );
-                this.mWitboxFaceDown = new 
-                    // TODO: Warning - type not found in scope.
+                this.mWitboxFaceDown = new
+                // TODO: Warning - type not found in scope.
                 WitboxPlate(
                     this.mContext,
                     false,
@@ -923,17 +888,12 @@ export class ViewerRenderer {
                 false
             );
         } catch (e) {
-            if (e instanceof NullPointerException) {
-                
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.e.printStackTrace();
-            }
+            console.log(e);
         }
     }
 
-    public onSurfaceCreated(
-            unused: GL10,
-            config: EGLConfig) : void {
+    public onSurfaceCreated(unused: GL10,
+                            config: EGLConfig): void {
         GLES20.glClearColor(
             0.149,
             0.196,
@@ -949,104 +909,86 @@ export class ViewerRenderer {
         ViewerRenderer.mCurrentSceneAngleY = 0;
         ViewerRenderer.mSceneAngleX = ViewerRenderer.ANGLE_X;
         ViewerRenderer.mSceneAngleY = ViewerRenderer.ANGLE_Y;
-        if (this.mDataList.size() > 0) if (this.isStl()) {
+        if (this.mDataList.length > 0) {
             this.mStlObjectList.clear();
-            for (let i: number = 0; i < this.mDataList.size(); i++) {
-                if (this.mDataList.get(i).getVertexArray() != null) {
-                    Log.i(
-                        "VERTEX",
-                        "adding"
-                    );
-                    this.mStlObjectList.add(new 
-                        // TODO: Warning - type not found in scope.
-                    StlObject(
-                        this.mDataList.get(i),
-                        this.mContext,
+            for (let i: number = 0; i < this.mDataList.length; i++) {
+                if (this.mDataList[i].getVertexArray() != null) {
+                    // Log.i(
+                    //     "VERTEX",
+                    //     "adding"
+                    // );
+                    this.mStlObjectList.push(new StlObject(
+                        this.mDataList[i],
                         this.mState
                     ));
-                } else Log.i(
+                } else console.log(
                     "VERTEX",
                     "ONE NULL " + i
                 );
             }
-        } else if (this.mDataList.size() > 0) {
-            try {
-                this.mGcodeObject = new 
-                    // TODO: Warning - type not found in scope.
-                GcodeObject(
-                    this.mDataList.get(0),
-                    this.mContext
-                );
-            } catch (e) {
-                if (e instanceof NullPointerException) {
-                    
-                        // TODO: Warning - no scope specified; assuming 'this'.
-                        this.e.printStackTrace();
-                }
-            }
         }
-        if (this.mMode == 
+        if (this.mMode ==
             // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.DO_SNAPSHOT || this.mMode == 
+            this.ViewerMainFragment.DO_SNAPSHOT || this.mMode ==
             // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.PRINT_PREVIEW) this.mInfinitePlane = new 
+            this.ViewerMainFragment.PRINT_PREVIEW)
+            this.mInfinitePlane = new
             // TODO: Warning - type not found in scope.
-        WitboxPlate(
-            this.mContext,
-            true,
-            
+            WitboxPlate(
+                this.mContext,
+                true,
+
                 // TODO: Warning - no scope specified; assuming 'this'.
                 this.ViewerMainFragment.getCurrentPlate()
-        );
-        this.mWitboxFaceBack = new 
-            // TODO: Warning - type not found in scope.
+            );
+        this.mWitboxFaceBack = new
+        // TODO: Warning - type not found in scope.
         WitboxFaces(
             ViewerRenderer.BACK,
             this.mPlate
         );
-        this.mWitboxFaceRight = new 
-            // TODO: Warning - type not found in scope.
+        this.mWitboxFaceRight = new
+        // TODO: Warning - type not found in scope.
         WitboxFaces(
             ViewerRenderer.RIGHT,
             this.mPlate
         );
-        this.mWitboxFaceLeft = new 
-            // TODO: Warning - type not found in scope.
+        this.mWitboxFaceLeft = new
+        // TODO: Warning - type not found in scope.
         WitboxFaces(
             ViewerRenderer.LEFT,
             this.mPlate
         );
-        this.mWitboxFaceFront = new 
-            // TODO: Warning - type not found in scope.
+        this.mWitboxFaceFront = new
+        // TODO: Warning - type not found in scope.
         WitboxFaces(
             ViewerRenderer.FRONT,
             this.mPlate
         );
-        this.mWitboxFaceTop = new 
-            // TODO: Warning - type not found in scope.
+        this.mWitboxFaceTop = new
+        // TODO: Warning - type not found in scope.
         WitboxFaces(
             ViewerRenderer.TOP,
             this.mPlate
         );
-        this.mWitboxFaceDown = new 
-            // TODO: Warning - type not found in scope.
+        this.mWitboxFaceDown = new
+        // TODO: Warning - type not found in scope.
         WitboxPlate(
             this.mContext,
             false,
             this.mPlate
         );
-        this.mCircle = new 
-            // TODO: Warning - type not found in scope.
+        this.mCircle = new
+        // TODO: Warning - type not found in scope.
         Circles();
     }
 
-    public onSurfaceChanged(
-            unused: GL10,
-            width: number,
-            height: number) : void {
+    public onSurfaceChanged(unused: GL10,
+                            width: number,
+                            height: number): void {
         ViewerRenderer.mWidth = width;
         ViewerRenderer.mHeight = height;
-        Log.i(
+        console.log(
             "OUT",
             "Width: " + width + " ; Height: " + height
         );
@@ -1056,7 +998,7 @@ export class ViewerRenderer {
             width,
             height
         );
-        let ratio: number = (number) width / height;
+        let ratio: number = <number> width / height;
         Matrix.perspectiveM(
             this.mProjectionMatrix,
             0,
@@ -1065,22 +1007,21 @@ export class ViewerRenderer {
             ViewerRenderer.Z_NEAR,
             ViewerRenderer.Z_FAR
         );
-        if (this.mMode == 
+        if (this.mMode ==
             // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.DO_SNAPSHOT || this.mMode == 
+            this.ViewerMainFragment.DO_SNAPSHOT || this.mMode ==
             // TODO: Warning - no scope specified; assuming 'this'.
             this.ViewerMainFragment.PRINT_PREVIEW) {
-            let data: 
-                // TODO: Warning - type not found in scope.
-            DataStorage = this.mDataList.get(0);
+            let data: // TODO: Warning - type not found in scope.
+                DataStorage = this.mDataList.get(0);
             let h: number = data.getHeight();
             let l: number = data.getLong();
             let w: number = data.getWidth();
             l = l / ratio;
             w = w / ratio;
-            let dh: number = (number) (h / (Math.tan(Math.toRadians(45 / 2))));
-            let dl: number = (number) (l / (2 * Math.tan(Math.toRadians(45 / 2))));
-            let dw: number = (number) (w / (2 * Math.tan(Math.toRadians(45 / 2))));
+            let dh: number = <number> (h / (Math.tan(0.39)));
+            let dl: number = <number> (l / (2 * Math.tan(0.39)));
+            let dw: number = <number> (w / (2 * Math.tan(0.39)));
             if (dw > dh && dw > dl) ViewerRenderer.mCameraZ = ViewerRenderer.OFFSET_BIG_HEIGHT * h; else if (dh > dl) ViewerRenderer.mCameraZ = ViewerRenderer.OFFSET_HEIGHT * h; else ViewerRenderer.mCameraZ = ViewerRenderer.OFFSET_BIG_HEIGHT * h;
             dl = dl + Math.abs(data.getMinY());
             dw = dw + Math.abs(data.getMinX());
@@ -1095,10 +1036,9 @@ export class ViewerRenderer {
         }
     }
 
-    matrixTranslate(
-            x: number,
-            y: number,
-            z: number) : void {
+    matrixTranslate(x: number,
+                    y: number,
+                    z: number): void {
         this.mDx = x;
         this.mDy = y;
         if ((this.mDx < -300) || (this.mDx > 300)) this.mDx = x;
@@ -1106,9 +1046,9 @@ export class ViewerRenderer {
         this.mViewMatrix[14] = z;
     }
 
-    public onDrawFrame(unused: GL10) : void {
+    public onDrawFrame(unused: GL10): void {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        if (this.isStl()) for (let i: number = 0; i < this.mStlObjectList.size(); i++) this.setColor(i);
+        if (this.isStl()) for (let i: number = 0; i < this.mStlObjectList.length; i++) this.setColor(i);
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         Matrix.setLookAtM(
@@ -1163,13 +1103,7 @@ export class ViewerRenderer {
             this.mRotationMatrix,
             0
         );
-        System.arraycopy(
-            this.mTemporaryMatrix,
-            0,
-            this.mModelMatrix,
-            0,
-            16
-        );
+        this.mModelMatrix = this.mTemporaryMatrix.slice();
         Matrix.setIdentityM(
             this.mRotationMatrix,
             0
@@ -1257,16 +1191,13 @@ export class ViewerRenderer {
             this.mLightPosInWorldSpace,
             0
         );
-        if (this.mDataList.size() > 0) {
+        if (this.mDataList.length > 0) {
             if (this.mObjectPressed != -1) {
-                if (this.mObjectPressed < this.mDataList.size()) {
-                    let data: 
-                        // TODO: Warning - type not found in scope.
-                    DataStorage = this.mDataList.get(this.mObjectPressed);
+                if (this.mObjectPressed < this.mDataList.length) {
+                    let data: DataStorage = this.mDataList[this.mObjectPressed];
                     let center: Point = data.getLastCenter();
-                    Log.i(
-                        "CENTER",
-                        "Settings center @" + center.x + ";" + center.y + ";" + center.z
+                    console.log(
+                        "CENTER Settings center @" + center.x + ";" + center.y + ";" + center.z
                     );
                     Matrix.setIdentityM(
                         this.mTemporaryModel,
@@ -1331,54 +1262,45 @@ export class ViewerRenderer {
                         0
                     );
                 } else {
-                    Log.i(
-                        "Multiply",
-                        "IndexOutOfBounds " + this.mObjectPressed
-                    );
+                    console.log("Multiply IndexOutOfBounds " + this.mObjectPressed);
                 }
             }
             if (this.isStl()) for (let i: number = 0; i < this.mStlObjectList.size(); i++) {
                 if (i == this.mObjectPressed) {
                     try {
-                        if (this.mDataList.size() > 0) {
-                            this.mDataList.get(this.mObjectPressed).setModelMatrix(this.mObjectModel);
-                            this.mStlObjectList.get(this.mObjectPressed).draw(
+                        if (this.mDataList.length > 0) {
+                            this.mDataList[this.mObjectPressed].setModelMatrix(this.mObjectModel);
+                            this.mStlObjectList[this.mObjectPressed].draw(
                                 this.mMVPObjectMatrix,
                                 this.mTransInvMVMatrix,
                                 this.mLightPosInEyeSpace,
                                 this.mObjectModel
                             );
                             this.mCircle.draw(
-                                this.mDataList.get(this.mObjectPressed),
+                                this.mDataList[this.mObjectPressed],
                                 this.mMVPMatrix,
                                 this.mAxis
                             );
                         }
                     } catch (e) {
-                        if (e instanceof IndexOutOfBoundsException) {
-                            Log.i(
-                                "Slicer",
-                                "IndexOutOfBounds " + this.mObjectPressed
-                            );
-                        }
+                        console.log("Slicer IndexOutOfBounds " + this.mObjectPressed);
                     }
                 } else {
-                    let modelMatrix: number[] = this.mDataList.get(i).getModelMatrix();
-                    let mvpMatrix: number[] = function(d) {
+                    let modelMatrix: number[] = this.mDataList[i].getModelMatrix();
+                    let mvpMatrix: number[] = function (d) {
+                        // new float[16]
+                        let r = [];
+                        for (let i = 0; i < d; i++) r.push(0);
+                        return r;
+                    }(16);
+                    let mvMatrix: number[] = function (d) {
                         // new float[16]
                         // TODO: Consider refactoring this array initialization to be more readable.
                         let r = [];
                         for (let i = 0; i < d; i++) r.push(0);
                         return r;
                     }(16);
-                    let mvMatrix: number[] = function(d) {
-                        // new float[16]
-                        // TODO: Consider refactoring this array initialization to be more readable.
-                        let r = [];
-                        for (let i = 0; i < d; i++) r.push(0);
-                        return r;
-                    }(16);
-                    let mvFinalMatrix: number[] = function(d) {
+                    let mvFinalMatrix: number[] = function (d) {
                         // new float[16]
                         // TODO: Consider refactoring this array initialization to be more readable.
                         let r = [];
@@ -1420,49 +1342,35 @@ export class ViewerRenderer {
                         modelMatrix
                     );
                 }
-            } else {
-                try {
-                    if (this.mGcodeObject != null) this.mGcodeObject.draw(this.mMVPMatrix);
-                } catch (e) {
-                    if (e instanceof NullPointerException) {
-                        
-                            // TODO: Warning - no scope specified; assuming 'this'.
-                            this.e.printStackTrace();
-                    }
-                }
             }
         }
-        if (this.mMode == 
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.DO_SNAPSHOT) {
-            this.mInfinitePlane.draw(
-                this.mMVPMatrix,
-                this.mMVMatrix
-            );
-            this.takeSnapshot(unused);
-        } else {
-            if (this.mShowDownWitboxFace) this.mWitboxFaceDown.draw(
-                this.mMVPMatrix,
-                this.mMVMatrix
-            );
-            if (this.mShowBackWitboxFace) this.mWitboxFaceBack.draw(this.mMVPMatrix);
-            if (this.mShowRightWitboxFace) this.mWitboxFaceRight.draw(this.mMVPMatrix);
-            if (this.mShowLeftWitboxFace) this.mWitboxFaceLeft.draw(this.mMVPMatrix);
-            if (this.mShowFrontWitboxFace) this.mWitboxFaceFront.draw(this.mMVPMatrix);
-            if (this.mShowTopWitboxFace) this.mWitboxFaceTop.draw(this.mMVPMatrix);
-        }
+        // if (this.mMode ==
+        //     this.ViewerMainFragment.DO_SNAPSHOT) {
+        //     this.mInfinitePlane.draw(
+        //         this.mMVPMatrix,
+        //         this.mMVMatrix
+        //     );
+        //     this.takeSnapshot(unused);
+        // } else {
+        //     if (this.mShowDownWitboxFace) this.mWitboxFaceDown.draw(
+        //         this.mMVPMatrix,
+        //         this.mMVMatrix
+        //     );
+        //     if (this.mShowBackWitboxFace) this.mWitboxFaceBack.draw(this.mMVPMatrix);
+        //     if (this.mShowRightWitboxFace) this.mWitboxFaceRight.draw(this.mMVPMatrix);
+        //     if (this.mShowLeftWitboxFace) this.mWitboxFaceLeft.draw(this.mMVPMatrix);
+        //     if (this.mShowFrontWitboxFace) this.mWitboxFaceFront.draw(this.mMVPMatrix);
+        //     if (this.mShowTopWitboxFace) this.mWitboxFaceTop.draw(this.mMVPMatrix);
+        // }
     }
 
-    private takeSnapshot(unused: GL10) : void {
-        Log.i(
-            ViewerRenderer.TAG,
-            "TAKING SNAPSHOT"
-        );
+    private takeSnapshot(unused: GL10): void {
+        console.log(ViewerRenderer.TAG + "TAKING SNAPSHOT");
         let minX: number = 0;
         let minY: number = 0;
         let screenshotSize: number = ViewerRenderer.mWidth * ViewerRenderer.mHeight;
-        let bb: ByteBuffer = ByteBuffer.allocateDirect(screenshotSize * 4);
-        bb.order(ByteOrder.nativeOrder());
+        let bb: ArrayBuffer = new ArrayBuffer(screenshotSize * 4);
+        // bb.order(ByteOrder.nativeOrder());
         GLES20.glReadPixels(
             minX,
             minY,
@@ -1479,59 +1387,58 @@ export class ViewerRenderer {
         );
     }
 
-    public setSceneAngleX(x: number) : void {
+    public setSceneAngleX(x: number): void {
         ViewerRenderer.mSceneAngleX = x;
     }
 
-    public setSceneAngleY(y: number) : void {
+    public setSceneAngleY(y: number): void {
         ViewerRenderer.mSceneAngleY = y;
     }
 
-    public setCameraPosX(x: number) : void {
+    public setCameraPosX(x: number): void {
         ViewerRenderer.mCameraX = x;
     }
 
-    public setCameraPosY(y: number) : void {
+    public setCameraPosY(y: number): void {
         ViewerRenderer.mCameraY = y;
     }
 
-    public setCameraPosZ(z: number) : void {
+    public setCameraPosZ(z: number): void {
         ViewerRenderer.mCameraZ = z;
     }
 
-    public getCameraPosX() : number {
+    public getCameraPosX(): number {
         return ViewerRenderer.mCameraX;
     }
 
-    public getCameraPosY() : number {
+    public getCameraPosY(): number {
         return ViewerRenderer.mCameraY;
     }
 
-    public getCameraPosZ() : number {
+    public getCameraPosZ(): number {
         return ViewerRenderer.mCameraZ;
     }
 
-    public setCenterX(x: number) : void {
+    public setCenterX(x: number): void {
         ViewerRenderer.mCenterX = x;
     }
 
-    public setCenterY(y: number) : void {
+    public setCenterY(y: number): void {
         ViewerRenderer.mCenterY = y;
     }
 
-    public setCenterZ(z: number) : void {
+    public setCenterZ(z: number): void {
         ViewerRenderer.mCenterZ = z;
     }
 
-    public setZNear(h: number) : void {
-        let ang: number = Math.toRadians(45 / 2);
-        let valor: number = (number) Math.tan(ang);
+    public setZNear(h: number): void {
+        let ang: number = 0.39 //Math.toRadians(45 / 2);
+        let valor: number = <number> Math.tan(ang);
         ViewerRenderer.Z_NEAR = valor * (h / 2);
     }
 
-    public static loadShader(
-            type: number,
-            shaderCode: string) : number {
+    public static loadShader(type: number,
+                             shaderCode: string): number {
         let shader: number = GLES20.glCreateShader(type);
         GLES20.glShaderSource(
             shader,
@@ -1541,14 +1448,14 @@ export class ViewerRenderer {
         return shader;
     }
 
-    public static checkGlError(glOperation: string) : void {
+    public static checkGlError(glOperation: string): void {
         let error: number;
         while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-            Log.e(
-                ViewerRenderer.TAG,
+            console.log(
+                ViewerRenderer.TAG +
                 glOperation + ": glError " + error
             );
-            throw new RuntimeException(glOperation + ": glError " + error);
+            throw new Error(glOperation + ": glError " + error);
         }
     }
 
@@ -1560,33 +1467,32 @@ export class ViewerRenderer {
 
     private static readonly POSITION_MIN_TRANSLATION_DISTANCE: number = 0.05;
 
-    public restoreInitialCameraPosition(
-            dx: number,
-            dy: number,
-            zoom: boolean,
-            rotation: boolean) : boolean {
+    public restoreInitialCameraPosition(dx: number,
+                                        dy: number,
+                                        zoom: boolean,
+                                        rotation: boolean): boolean {
         let dyx: number = 0;
         if (!zoom) dyx = ViewerRenderer.POSITION_DEFAULT_Y;
-        if ((number) this.mDx < (number) (ViewerRenderer.POSITION_DEFAULT_X - dx)) this.mDx = ViewerRenderer.POSITION_MIN_TRANSLATION_DISTANCE; else if ((number) this.mDx > (number) (ViewerRenderer.POSITION_DEFAULT_X - dx)) this.mDx = ViewerRenderer.POSITION_MIN_TRANSLATION_DISTANCE;
-        if ((number) this.mDy < (number) (dyx - dy)) this.mDy = ViewerRenderer.POSITION_MIN_TRANSLATION_DISTANCE; else if ((number) this.mDy > (number) (dyx - dy)) this.mDy = ViewerRenderer.POSITION_MIN_TRANSLATION_DISTANCE;
+        if (<number> this.mDx < <number> (ViewerRenderer.POSITION_DEFAULT_X - dx)) this.mDx = ViewerRenderer.POSITION_MIN_TRANSLATION_DISTANCE; else if (<number> this.mDx > <number> (ViewerRenderer.POSITION_DEFAULT_X - dx)) this.mDx = ViewerRenderer.POSITION_MIN_TRANSLATION_DISTANCE;
+        if (<number> this.mDy < <number> (dyx - dy)) this.mDy = ViewerRenderer.POSITION_MIN_TRANSLATION_DISTANCE; else if (<number> this.mDy > <number> (dyx - dy)) this.mDy = ViewerRenderer.POSITION_MIN_TRANSLATION_DISTANCE;
         if (!zoom) {
-            if ((number) ViewerRenderer.mCameraX < ViewerRenderer.CAMERA_DEFAULT_X) ViewerRenderer.mCameraX = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE; else if ((number) ViewerRenderer.mCameraX > ViewerRenderer.CAMERA_DEFAULT_X) ViewerRenderer.mCameraX = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE;
-            if ((number) ViewerRenderer.mCameraY < ViewerRenderer.CAMERA_DEFAULT_Y) ViewerRenderer.mCameraY = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE; else if ((number) ViewerRenderer.mCameraY > ViewerRenderer.CAMERA_DEFAULT_Y) ViewerRenderer.mCameraY = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE;
-            if ((number) ViewerRenderer.mCameraZ < ViewerRenderer.CAMERA_DEFAULT_Z) ViewerRenderer.mCameraZ = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE; else if ((number) ViewerRenderer.mCameraZ > ViewerRenderer.CAMERA_DEFAULT_Z) ViewerRenderer.mCameraZ = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE;
+            if (<number> ViewerRenderer.mCameraX < ViewerRenderer.CAMERA_DEFAULT_X) ViewerRenderer.mCameraX = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE; else if (<number> ViewerRenderer.mCameraX > ViewerRenderer.CAMERA_DEFAULT_X) ViewerRenderer.mCameraX = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE;
+            if (<number> ViewerRenderer.mCameraY < ViewerRenderer.CAMERA_DEFAULT_Y) ViewerRenderer.mCameraY = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE; else if (<number> ViewerRenderer.mCameraY > ViewerRenderer.CAMERA_DEFAULT_Y) ViewerRenderer.mCameraY = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE;
+            if (<number> ViewerRenderer.mCameraZ < ViewerRenderer.CAMERA_DEFAULT_Z) ViewerRenderer.mCameraZ = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE; else if (<number> ViewerRenderer.mCameraZ > ViewerRenderer.CAMERA_DEFAULT_Z) ViewerRenderer.mCameraZ = ViewerRenderer.CAMERA_MIN_TRANSLATION_DISTANCE;
         }
         if (rotation) {
-            if ((number) ViewerRenderer.mCurrentSceneAngleX < ViewerRenderer.ANGLE_X) {
-                if ((number) ViewerRenderer.mCurrentSceneAngleX > (ViewerRenderer.ANGLE_X - 10)) ViewerRenderer.mSceneAngleX = ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleX = ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
-            } else if ((number) ViewerRenderer.mCurrentSceneAngleX > ViewerRenderer.ANGLE_X) {
-                if ((number) ViewerRenderer.mCurrentSceneAngleX < (ViewerRenderer.ANGLE_X + 10)) ViewerRenderer.mSceneAngleX = -ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleX = -ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
+            if (<number> ViewerRenderer.mCurrentSceneAngleX < ViewerRenderer.ANGLE_X) {
+                if (<number> ViewerRenderer.mCurrentSceneAngleX > (ViewerRenderer.ANGLE_X - 10)) ViewerRenderer.mSceneAngleX = ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleX = ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
+            } else if (<number> ViewerRenderer.mCurrentSceneAngleX > ViewerRenderer.ANGLE_X) {
+                if (<number> ViewerRenderer.mCurrentSceneAngleX < (ViewerRenderer.ANGLE_X + 10)) ViewerRenderer.mSceneAngleX = -ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleX = -ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
             }
-            if ((number) ViewerRenderer.mCurrentSceneAngleY < ViewerRenderer.ANGLE_Y) {
-                if ((number) ViewerRenderer.mCurrentSceneAngleY > (ViewerRenderer.ANGLE_Y - 10)) ViewerRenderer.mSceneAngleY = ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleY = ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
-            } else if ((number) ViewerRenderer.mCurrentSceneAngleY > ViewerRenderer.ANGLE_Y) {
-                if ((number) ViewerRenderer.mCurrentSceneAngleY < (ViewerRenderer.ANGLE_Y + 10)) ViewerRenderer.mSceneAngleY = -ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleY = -ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
+            if (<number> ViewerRenderer.mCurrentSceneAngleY < ViewerRenderer.ANGLE_Y) {
+                if (<number> ViewerRenderer.mCurrentSceneAngleY > (ViewerRenderer.ANGLE_Y - 10)) ViewerRenderer.mSceneAngleY = ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleY = ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
+            } else if (<number> ViewerRenderer.mCurrentSceneAngleY > ViewerRenderer.ANGLE_Y) {
+                if (<number> ViewerRenderer.mCurrentSceneAngleY < (ViewerRenderer.ANGLE_Y + 10)) ViewerRenderer.mSceneAngleY = -ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleY = -ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
             }
         }
-        if (((((number) ViewerRenderer.mCameraZ == ViewerRenderer.CAMERA_DEFAULT_Z) && ((number) ViewerRenderer.mCameraY == ViewerRenderer.CAMERA_DEFAULT_Y) && ((number) ViewerRenderer.mCameraX == ViewerRenderer.CAMERA_DEFAULT_X)) || (zoom)) && (((number) ViewerRenderer.mCurrentSceneAngleX == ViewerRenderer.ANGLE_X) && ((number) ViewerRenderer.mCurrentSceneAngleY == ViewerRenderer.ANGLE_Y) || (!rotation)) && ((number) this.mDx == (number) (ViewerRenderer.POSITION_DEFAULT_X - dx)) && ((number) this.mDy == (number) (dyx - dy))) return true; else {
+        if ((((<number> ViewerRenderer.mCameraZ == ViewerRenderer.CAMERA_DEFAULT_Z) && (<number> ViewerRenderer.mCameraY == ViewerRenderer.CAMERA_DEFAULT_Y) && (<number> ViewerRenderer.mCameraX == ViewerRenderer.CAMERA_DEFAULT_X)) || (zoom)) && ((<number> ViewerRenderer.mCurrentSceneAngleX == ViewerRenderer.ANGLE_X) && (<number> ViewerRenderer.mCurrentSceneAngleY == ViewerRenderer.ANGLE_Y) || (!rotation)) && (<number> this.mDx == <number> (ViewerRenderer.POSITION_DEFAULT_X - dx)) && (<number> this.mDy == <number> (dyx - dy))) return true; else {
             return false;
         }
     }

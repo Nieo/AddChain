@@ -1,201 +1,191 @@
 // package android.app.printerapp.viewer;
 
-import { Matrix } from "./android/opengl/Matrix";
-import { List } from "./java/util/List";
+import {DataStorage} from "./DataStorage";
+import {Matrix} from "./GLMatrix";
+
+export class Box{
+    static readonly LEFT: number = 0;
+
+    static readonly RIGHT: number = 1;
+
+    static readonly FRONT: number = 2;
+
+    static readonly BEHIND: number = 3;
+
+    static readonly DOWN: number = 4;
+
+    static readonly UP: number = 5;
+
+    coordBox: number[] = function (d) {
+        // new float[6]
+        // TODO: Consider refactoring this array initialization to be more readable.
+        let r = [];
+        for (let i = 0; i < d; i++) r.push(0);
+        return r;
+    }(6);
+
+    public constructor(minX: number,
+                       maxX: number,
+                       minY: number,
+                       maxY: number,
+                       minZ: number,
+                       maxZ: number) {
+        this.coordBox[Box.LEFT] = minX;
+        this.coordBox[Box.RIGHT] = maxX;
+        this.coordBox[Box.FRONT] = minY;
+        this.coordBox[Box.BEHIND] = maxY;
+        this.coordBox[Box.DOWN] = minZ;
+        this.coordBox[Box.UP] = maxZ;
+    }
+}
+
+export class Point{
+    public readonly x: number;
+    public readonly y: number;
+    public readonly z: number;
+
+    public constructor(x: number,
+                       y: number,
+                       z: number) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+}
+
+export class Vector {
+    public readonly x: number;
+    public readonly y: number;
+    public readonly z: number;
+
+    public constructor(x: number,
+                       y: number,
+                       z: number) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public static substract(v1: Vector,
+                            v2: Vector): Vector {
+        let x: number = v1.x - v2.x;
+        let y: number = v1.y - v2.y;
+        let z: number = v1.z - v2.z;
+        let substract: Vector = new Vector(
+            x,
+            y,
+            z
+        );
+        return substract;
+    }
+
+    public static crossProduct(v: Vector,
+                               v2: Vector): Vector {
+        let x: number = (v.y * v2.z) - (v.z * v2.y);
+        let y: number = (v.z * v2.x) - (v.x * v2.z);
+        let z: number = (v.x * v2.y) - (v.y * v2.x);
+        let result: Vector = new Vector(
+            x,
+            y,
+            z
+        );
+        return result;
+    }
+
+    public static normalize(v: Vector): Vector {
+        let length: number = <number> Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        let result: Vector = new Vector(
+            v.x / length,
+            v.y / length,
+            v.z / length
+        );
+        return result;
+    }
+}
+
+export class Ray {
+    public readonly point: Point;
+
+    public readonly vector: Vector;
+
+    public constructor(point: Point,
+                       vector: Vector) {
+        this.point = point;
+        this.vector = vector;
+    }
+}
+
 
 export class Geometry {
     private static readonly OFFSET: number = 20;
 
     // TODO: Warning - using nested classes may cause compilation problems.
-    public static Point = class {
-        public readonly x: number;
-        public readonly y: number;
-        public readonly z: number;
     
-        public constructor(
-                x: number,
-                y: number,
-                z: number) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-    };
-
     // TODO: Warning - using nested classes may cause compilation problems.
-    public static Box = class {
-        static readonly LEFT: number = 0;
-    
-        static readonly RIGHT: number = 1;
-    
-        static readonly FRONT: number = 2;
-    
-        static readonly BEHIND: number = 3;
-    
-        static readonly DOWN: number = 4;
-    
-        static readonly UP: number = 5;
-    
-        coordBox: number[] = function(d) {
-            // new float[6]
-            // TODO: Consider refactoring this array initialization to be more readable.
-            let r = [];
-            for (let i = 0; i < d; i++) r.push(0);
-            return r;
-        }(6);
-    
-        public constructor(
-                minX: number,
-                maxX: number,
-                minY: number,
-                maxY: number,
-                minZ: number,
-                maxZ: number) {
-            this.coordBox[Geometry.Box.LEFT] = minX;
-            this.coordBox[Geometry.Box.RIGHT] = maxX;
-            this.coordBox[Geometry.Box.FRONT] = minY;
-            this.coordBox[Geometry.Box.BEHIND] = maxY;
-            this.coordBox[Geometry.Box.DOWN] = minZ;
-            this.coordBox[Geometry.Box.UP] = maxZ;
-        }
-    };
 
-    // TODO: Warning - using nested classes may cause compilation problems.
-    public static Vector = class {
-        public readonly x: number;
-        public readonly y: number;
-        public readonly z: number;
-    
-        public constructor(
-                x: number,
-                y: number,
-                z: number) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-    
-        public static substract(
-                v1: Geometry.Vector,
-                v2: Geometry.Vector) : Geometry.Vector {
-            let x: number = v1.x - v2.x;
-            let y: number = v1.y - v2.y;
-            let z: number = v1.z - v2.z;
-            let substract: Geometry.Vector = new Geometry.Vector(
-                x,
-                y,
-                z
-            );
-            return substract;
-        }
-    
-        public static crossProduct(
-                v: Geometry.Vector,
-                v2: Geometry.Vector) : Geometry.Vector {
-            let x: number = (v.y * v2.z) - (v.z * v2.y);
-            let y: number = (v.z * v2.x) - (v.x * v2.z);
-            let z: number = (v.x * v2.y) - (v.y * v2.x);
-            let result: Geometry.Vector = new Geometry.Vector(
-                x,
-                y,
-                z
-            );
-            return result;
-        }
-    
-        public static normalize(v: Geometry.Vector) : Geometry.Vector {
-            let length: number = (number) Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-            let result: Geometry.Vector = new Geometry.Vector(
-                v.x / length,
-                v.y / length,
-                v.z / length
-            );
-            return result;
-        }
-    };
-
-    // TODO: Warning - using nested classes may cause compilation problems.
-    public static Ray = class {
-        public readonly point: Geometry.Point;
-    
-        public readonly vector: Geometry.Vector;
-    
-        public constructor(
-                point: Geometry.Point,
-                vector: Geometry.Vector) {
-            this.point = point;
-            this.vector = vector;
-        }
-    };
-
-    public static intersects(
-            box: Geometry.Box,
-            ray: Geometry.Ray) : boolean {
+    public static intersects(box: Box,
+                             ray: Ray): boolean {
         let index: number = 0;
         let k: number;
-        let x: number = Float.MIN_VALUE;
-        let y: number = Float.MIN_VALUE;
-        let z: number = Float.MIN_VALUE;
+        let x: number = Number.MIN_VALUE;
+        let y: number = Number.MIN_VALUE;
+        let z: number = Number.MIN_VALUE;
         while (index < box.coordBox.length) {
             switch (index) {
-                case (Geometry.Box.LEFT):
-                case (Geometry.Box.RIGHT):
+                case (Box.LEFT):
+                case (Box.RIGHT):
                     k = (box.coordBox[index] - ray.point.x) / ray.vector.x;
                     x = box.coordBox[index];
                     y = ray.point.y + k * ray.vector.y;
                     z = ray.point.z + k * ray.vector.z;
                     break;
-                case (Geometry.Box.BEHIND):
-                case (Geometry.Box.FRONT):
+                case (Box.BEHIND):
+                case (Box.FRONT):
                     k = (box.coordBox[index] - ray.point.y) / ray.vector.y;
                     x = ray.point.x + k * ray.vector.x;
                     y = box.coordBox[index];
                     z = ray.point.z + k * ray.vector.z;
                     break;
-                case (Geometry.Box.UP):
-                case (Geometry.Box.DOWN):
+                case (Box.UP):
+                case (Box.DOWN):
                     k = (box.coordBox[index] - ray.point.z) / ray.vector.z;
                     x = ray.point.x + k * ray.vector.x;
                     y = ray.point.y + k * ray.vector.y;
                     z = box.coordBox[index];
                     break;
             }
-            if (x >= box.coordBox[Geometry.Box.LEFT] && x <= box.coordBox[Geometry.Box.RIGHT] && y >= box.coordBox[Geometry.Box.FRONT] && y <= box.coordBox[Geometry.Box.BEHIND] && z >= box.coordBox[Geometry.Box.DOWN] && z <= box.coordBox[Geometry.Box.UP]) return true;
+            if (x >= box.coordBox[Box.LEFT] && x <= box.coordBox[Box.RIGHT] && y >= box.coordBox[Box.FRONT] && y <= box.coordBox[Box.BEHIND] && z >= box.coordBox[Box.DOWN] && z <= box.coordBox[Box.UP]) return true;
             index++;
         }
         return false;
     }
 
-    public static vectorBetween(
-            from: Geometry.Point,
-            to: Geometry.Point) : Geometry.Vector {
-        return new Geometry.Vector(
+    public static vectorBetween(from: Point,
+                                to: Point): Vector {
+        return new Vector(
             to.x - from.x,
             to.y - from.y,
             to.z - from.z
         );
     }
 
-    public static intersectionPointWitboxPlate(ray: Geometry.Ray) : Geometry.Point {
+    public static intersectionPointWitboxPlate(ray: Ray): Point {
         let k: number = (0 - ray.point.z) / ray.vector.z;
         let x: number = ray.point.x + k * ray.vector.x;
         let y: number = ray.point.y + k * ray.vector.y;
         let z: number = 0;
-        return new Geometry.Point(
+        return new Point(
             x,
             y,
             z
         );
     }
 
-    public static overlaps(
-            maxX: number,
-            minX: number,
-            maxY: number,
-            minY: number,
-            d: 
-                // TODO: Warning - type not found in scope.
-            DataStorage) : boolean {
+    public static overlaps(maxX: number,
+                           minX: number,
+                           maxY: number,
+                           minY: number,
+                           d: DataStorage): boolean {
         let maxX2: number = d.getMaxX();
         let maxY2: number = d.getMaxY();
         let minX2: number = d.getMinX();
@@ -212,32 +202,29 @@ export class Geometry {
         return false;
     }
 
-    public static relocateIfOverlaps(objects: List<DataStorage>) : boolean {
-        let objectToFit: number = objects.size() - 1;
-        let data: 
-            // TODO: Warning - type not found in scope.
-        DataStorage;
+    public static relocateIfOverlaps(objects: Array<DataStorage>): boolean {
+        let objectToFit: number = objects.length - 1;
+        let data: // TODO: Warning - type not found in scope.
+            DataStorage;
         try {
-            data = objects.get(objectToFit);
+            data = objects[objectToFit];
         } catch (e) {
-            if (e instanceof ArrayIndexOutOfBoundsException) {
-                
-                    // TODO: Warning - no scope specified; assuming 'this'.
-                    this.e.printStackTrace();
+            if (e instanceof RangeError) {
+                console.log((<Error>e).message);//conversion to Error type
                 return false;
             }
         }
         let overlaps: boolean = false;
-        for (let i: number = 0; i < objects.size(); i++) {
-            if (i != objectToFit && 
+        for (let i: number = 0; i < objects.length; i++) {
+            if (i != objectToFit &&
                 // TODO: Warning - no scope specified; assuming 'this'.
-                this.Geometry.overlaps(
-                data.getMaxX(),
-                data.getMinX(),
-                data.getMaxY(),
-                data.getMinY(),
-                objects.get(i)
-            )) {
+                this.overlaps(
+                    data.getMaxX(),
+                    data.getMinX(),
+                    data.getMaxY(),
+                    data.getMinY(),
+                    objects[i]
+                )) {
                 overlaps = true;
                 break;
             }
@@ -245,17 +232,16 @@ export class Geometry {
         if (!overlaps) return false;
         let width: number = data.getMaxX() - data.getMinX();
         let deep: number = data.getMaxY() - data.getMinY();
-        let setMinX: number = Float.MAX_VALUE;
+        let setMinX: number = Number.MAX_VALUE;
         let index: number = -1;
         let newMaxX: number;
         let newMinX: number;
         let newMaxY: number;
         let newMinY: number;
-        for (let i: number = 0; i < objects.size(); i++) {
+        for (let i: number = 0; i < objects.length; i++) {
             if (i != objectToFit) {
-                let d: 
-                    // TODO: Warning - type not found in scope.
-                DataStorage = objects.get(i);
+                let d: // TODO: Warning - type not found in scope.
+                    DataStorage = objects[i];
                 if (d.getMinX() < setMinX) {
                     setMinX = d.getMinX();
                     index = i;
@@ -265,13 +251,13 @@ export class Geometry {
                 newMaxY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) + deep + Geometry.OFFSET;
                 newMinY = d.getLastCenter().y + Math.abs(d.getMaxY() - d.getLastCenter().y) + Geometry.OFFSET;
                 if (Geometry.isValidPosition(
-                    newMaxX,
-                    newMinX,
-                    newMaxY,
-                    newMinY,
-                    objects,
-                    objectToFit
-                )) {
+                        newMaxX,
+                        newMinX,
+                        newMaxY,
+                        newMinY,
+                        objects,
+                        objectToFit
+                    )) {
                     Geometry.changeModelToFit(
                         newMaxX,
                         newMinX,
@@ -286,13 +272,13 @@ export class Geometry {
                 newMaxY = d.getMaxY();
                 newMinY = d.getMinY();
                 if (Geometry.isValidPosition(
-                    newMaxX,
-                    newMinX,
-                    newMaxY,
-                    newMinY,
-                    objects,
-                    objectToFit
-                )) {
+                        newMaxX,
+                        newMinX,
+                        newMaxY,
+                        newMinY,
+                        objects,
+                        objectToFit
+                    )) {
                     Geometry.changeModelToFit(
                         newMaxX,
                         newMinX,
@@ -307,13 +293,13 @@ export class Geometry {
                 newMaxY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + Geometry.OFFSET);
                 newMinY = d.getLastCenter().y - (Math.abs(d.getMinY() - d.getLastCenter().y) + deep + Geometry.OFFSET);
                 if (Geometry.isValidPosition(
-                    newMaxX,
-                    newMinX,
-                    newMaxY,
-                    newMinY,
-                    objects,
-                    objectToFit
-                )) {
+                        newMaxX,
+                        newMinX,
+                        newMaxY,
+                        newMinY,
+                        objects,
+                        objectToFit
+                    )) {
                     Geometry.changeModelToFit(
                         newMaxX,
                         newMinX,
@@ -328,13 +314,13 @@ export class Geometry {
                 newMaxY = d.getMaxY();
                 newMinY = d.getMinY();
                 if (Geometry.isValidPosition(
-                    newMaxX,
-                    newMinX,
-                    newMaxY,
-                    newMinY,
-                    objects,
-                    objectToFit
-                )) {
+                        newMaxX,
+                        newMinX,
+                        newMaxY,
+                        newMinY,
+                        objects,
+                        objectToFit
+                    )) {
                     Geometry.changeModelToFit(
                         newMaxX,
                         newMinX,
@@ -343,7 +329,7 @@ export class Geometry {
                         data
                     );
                     break;
-                } else if (i == objects.size() - 2) {
+                } else if (i == objects.length - 2) {
                     return false;
                 }
             }
@@ -351,45 +337,42 @@ export class Geometry {
         return true;
     }
 
-    public static isValidPosition(
-            newMaxX: number,
-            newMinX: number,
-            newMaxY: number,
-            newMinY: number,
-            objects: List<DataStorage>,
-            object: number) : boolean {
+    public static isValidPosition(newMaxX: number,
+                                  newMinX: number,
+                                  newMaxY: number,
+                                  newMinY: number,
+                                  objects: Array<DataStorage>,
+                                  object: number): boolean {
         let overlaps: boolean = false;
         let outOfPlate: boolean = false;
         let k: number = 0;
-        let auxPlate: number[] = 
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.getCurrentPlate();
-        if (newMaxX > auxPlate[0] || newMinX < -auxPlate[0] || newMaxY > auxPlate[1] || newMinY < -auxPlate[1]) outOfPlate = true;
-        while (!outOfPlate && !overlaps && k < objects.size()) {
+        // let auxPlate: number[] =
+        //     // TODO: Warning - no scope specified; assuming 'this'.
+        //     this.ViewerMainFragment.getCurrentPlate();
+        // if (newMaxX > auxPlate[0] || newMinX < -auxPlate[0] || newMaxY > auxPlate[1] || newMinY < -auxPlate[1]) outOfPlate = true;
+        while (!outOfPlate && !overlaps && k < objects.length) {
             if (k != object) {
                 if (
                     // TODO: Warning - no scope specified; assuming 'this'.
-                    this.Geometry.overlaps(
-                    newMaxX,
-                    newMinX,
-                    newMaxY,
-                    newMinY,
-                    objects.get(k)
-                )) overlaps = true;
+                    this.overlaps(
+                        newMaxX,
+                        newMinX,
+                        newMaxY,
+                        newMinY,
+                        objects[k]
+                    )) overlaps = true;
             }
             k++;
         }
         if (!outOfPlate && !overlaps) return true; else return false;
     }
 
-    public static changeModelToFit(
-            newMaxX: number,
-            newMinX: number,
-            newMaxY: number,
-            newMinY: number,
-            d: 
-                // TODO: Warning - type not found in scope.
-            DataStorage) : void {
+    public static changeModelToFit(newMaxX: number,
+                                   newMinX: number,
+                                   newMaxY: number,
+                                   newMinY: number,
+                                   d: // TODO: Warning - type not found in scope.
+                                       DataStorage): void {
         d.setMaxX(newMaxX);
         d.setMinX(newMinX);
         d.setMaxY(newMaxY);
@@ -397,13 +380,13 @@ export class Geometry {
         let newCenterX: number = newMinX + (newMaxX - newMinX) / 2;
         let newCenterY: number = newMinY + (newMaxY - newMinY) / 2;
         let newCenterZ: number = d.getLastCenter().z;
-        let newCenter: Geometry.Point = new Geometry.Point(
+        let newCenter: Point = new Point(
             newCenterX,
             newCenterY,
             newCenterZ
         );
         d.setLastCenter(newCenter);
-        let temporaryModel: number[] = function(d) {
+        let temporaryModel: number[] = function (d) {
             // new float[16]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];
@@ -436,7 +419,7 @@ export class Geometry {
             d.getAdjustZ()
         );
         let rotateObjectMatrix: number[] = d.getRotationMatrix();
-        let modelMatrix: number[] = function(d) {
+        let modelMatrix: number[] = function (d) {
             // new float[16]
             // TODO: Consider refactoring this array initialization to be more readable.
             let r = [];

@@ -486,7 +486,7 @@ export class ViewerRenderer {
         if (maxX > this.mPlate[0] + data.getLong() || minX < -this.mPlate[0] - data.getLong() || maxY > this.mPlate[1] + data.getWidth() || minY < -this.mPlate[1] - data.getWidth()) {
             return;
         } else {
-            this.mDataList.get(this.mObjectPressed).setLastCenter(new Point(
+            this.mDataList[this.mObjectPressed].setLastCenter(new Point(
                 touched.x,
                 touched.y,
                 data.getLastCenter().z
@@ -1265,7 +1265,7 @@ export class ViewerRenderer {
                     console.log("Multiply IndexOutOfBounds " + this.mObjectPressed);
                 }
             }
-            if (this.isStl()) for (let i: number = 0; i < this.mStlObjectList.size(); i++) {
+            if (this.isStl()) for (let i: number = 0; i < this.mStlObjectList.length; i++) {
                 if (i == this.mObjectPressed) {
                     try {
                         if (this.mDataList.length > 0) {
@@ -1335,7 +1335,7 @@ export class ViewerRenderer {
                         mvFinalMatrix,
                         0
                     );
-                    this.mStlObjectList.get(i).draw(
+                    this.mStlObjectList[i].draw(
                         mvpMatrix,
                         mvFinalMatrix,
                         this.mLightPosInEyeSpace,
@@ -1369,7 +1369,7 @@ export class ViewerRenderer {
         let minX: number = 0;
         let minY: number = 0;
         let screenshotSize: number = ViewerRenderer.mWidth * ViewerRenderer.mHeight;
-        let bb: ArrayBuffer = new ArrayBuffer(screenshotSize * 4);
+        let bb: Int8Array= new Int8Array(screenshotSize * 4);
         // bb.order(ByteOrder.nativeOrder());
         GLES20.glReadPixels(
             minX,
@@ -1438,8 +1438,8 @@ export class ViewerRenderer {
     }
 
     public static loadShader(type: number,
-                             shaderCode: string): number {
-        let shader: number = GLES20.glCreateShader(type);
+                             shaderCode: string): WebGLShader {
+        let shader: WebGLShader = GLES20.glCreateShader(type);
         GLES20.glShaderSource(
             shader,
             shaderCode

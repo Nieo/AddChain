@@ -50,27 +50,27 @@ export class StlObject {
     "void main()                    \n" + "{                              \n" + // Pass the color directly through the pipeline.		  
     "   gl_FragColor = v_Color;     \n" + "}   " + "" + "            					\n";
 
-    private readonly mProgram: number;
+    private readonly mProgram: WebGLProgram;
 
-    private readonly mProgramOverhang: number;
+    private readonly mProgramOverhang: WebGLProgram;
 
     private mPositionHandle: number;
 
-    private mColorHandle: number;
+    private mColorHandle: WebGLUniformLocation;
 
-    private mColorOverhangHandle: number;
+    private mColorOverhangHandle: WebGLUniformLocation;
 
-    private mCosAngleHandle: number;
+    private mCosAngleHandle: WebGLUniformLocation;
 
     private mNormalHandle: number;
 
-    private mMMatrixHandle: number;
+    private mMMatrixHandle: WebGLUniformLocation;
 
-    private mMVPMatrixHandle: number;
+    private mMVPMatrixHandle: WebGLUniformLocation;
 
-    private mMVMatrixHandle: number;
+    private mMVMatrixHandle: WebGLUniformLocation;
 
-    private mLightPosHandle: number;
+    private mLightPosHandle: WebGLUniformLocation;
 
     static readonly COORDS_PER_VERTEX: number = 3;
 
@@ -172,17 +172,17 @@ export class StlObject {
         this.mNormalBuffer = new Float32Array(nbb);
         this.mNormalBuffer.set(this.mNormalArray,0);
         // this.mNormalBuffer.position(0);
-        let vertexOverhangShader: number = 
+        let vertexOverhangShader: WebGLShader =
             ViewerRenderer.loadShader(
             GLES20.GL_VERTEX_SHADER,
             this.vertexOverhangShaderCode
         );
-        let vertexShader: number = 
+        let vertexShader: WebGLShader=
             ViewerRenderer.loadShader(
             GLES20.GL_VERTEX_SHADER,
             this.vertexShaderCode
         );
-        let fragmentShader: number = 
+        let fragmentShader: WebGLShader=
             ViewerRenderer.loadShader(
             GLES20.GL_FRAGMENT_SHADER,
             this.fragmentShaderCode
@@ -270,7 +270,7 @@ export class StlObject {
             mvMatrix: number[],
             lightVector: number[],
             mMatrix: number[]) : void {
-        let program: number = this.mProgram;
+        let program: WebGLProgram = this.mProgram;
         if (this.mOverhang) {
             program = this.mProgramOverhang;
             GLES20.glUseProgram(this.mProgramOverhang);

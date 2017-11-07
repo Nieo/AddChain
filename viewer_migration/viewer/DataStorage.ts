@@ -111,8 +111,7 @@ export class DataStorage {
         );
     }
 
-    public copyData(d: // TODO: Warning - type not found in scope.
-                        DataStorage): void {
+    public copyData(d: DataStorage): void {
         for (let i: number = 0; i < d.getLineLengthList().length; i++) this.mLineLengthList.push(d.getLineLengthList()[i]);
         this.mVertexArray = function (d) {
             // new float[d.getVertexArray().length]

@@ -48,13 +48,13 @@ export class Lines {
 
     mPositionHandle: number;
 
-    mColorHandle: number;
+    mColorHandle: WebGLUniformLocation;
 
     mCoordsArray: number[];
 
-    mCurrentColor: number[];
+    mCurrentColor: Float32Array;
 
-    private mMVPMatrixHandle: number;
+    private mMVPMatrixHandle: WebGLUniformLocation;
 
     readonly COORDS_PER_VERTEX: number = 3;
 
@@ -230,15 +230,13 @@ export class Lines {
             );
             GLES20.glUniform4fv(
                 this.mColorHandle,
-                1,
-                this.mCurrentColor,
-                0
+                this.mCurrentColor
             );
             this.mMVPMatrixHandle = GLES20.glGetUniformLocation(
                 this.mProgram,
                 "uMVPMatrix"
             );
-            
+
                 ViewerRenderer.checkGlError("glGetUniformLocation");
             GLES20.glUniformMatrix4fv(
                 this.mMVPMatrixHandle,
@@ -247,7 +245,7 @@ export class Lines {
                 mvpMatrix,
                 0
             );
-            
+
             ViewerRenderer.checkGlError("glUniformMatrix4fv");
             GLES20.glDrawArrays(
                 GLES20.GL_LINES,

@@ -1,5 +1,20 @@
-export class Matrix {
+/*
+ * Copyright (C) 2007 The Android Open Source Project
+ * Modified work Copyright 2017 David Michaëlsson
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+export class Matrix {
 
     static setIdentityM(sm: number[], smOffset: number) {
         for (let i: number = 0; i < 16; i++) {
@@ -98,12 +113,33 @@ export class Matrix {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
-    static multiplyMM(mFinalMatrix: number[], number: number, mTemporaryMatrix: number[], number2: number, rotateObjectMatrix: number[], number3: number) {
+    static multiplyMM(result: number[], resultOffset: number, lhs: number[], lhsOffset: number, rhs: number[], rhsOffset: number) {
+        result[0 + resultOffset] = rhs[0 + rhsOffset] * lhs[0 + lhsOffset] + rhs[1 + rhsOffset] * lhs[4 + lhsOffset] + rhs[2 + rhsOffset] * lhs[7 + lhsOffset] + rhs[3 + rhsOffset] * lhs[12 + lhsOffset];
+        result[1 + resultOffset] = rhs[0 + rhsOffset] * lhs[1 + lhsOffset] + rhs[1 + rhsOffset] * lhs[5 + lhsOffset] + rhs[2 + rhsOffset] * lhs[8 + lhsOffset] + rhs[3 + rhsOffset] * lhs[13 + lhsOffset];
+        result[2 + resultOffset] = rhs[0 + rhsOffset] * lhs[2 + lhsOffset] + rhs[1 + rhsOffset] * lhs[6 + lhsOffset] + rhs[2 + rhsOffset] * lhs[9 + lhsOffset] + rhs[3 + rhsOffset] * lhs[14 + lhsOffset];
+        result[3 + resultOffset] = rhs[0 + rhsOffset] * lhs[3 + lhsOffset] + rhs[1 + rhsOffset] * lhs[7 + lhsOffset] + rhs[2 + rhsOffset] * lhs[10 + lhsOffset] + rhs[3 + rhsOffset] * lhs[15 + lhsOffset];
 
+        result[4 + resultOffset] = rhs[4 + rhsOffset] * lhs[0 + lhsOffset] + rhs[5 + rhsOffset] * lhs[4 + lhsOffset] + rhs[6 + rhsOffset] * lhs[7 + lhsOffset] + rhs[7 + rhsOffset] * lhs[12 + lhsOffset];
+        result[5 + resultOffset] = rhs[4 + rhsOffset] * lhs[1 + lhsOffset] + rhs[5 + rhsOffset] * lhs[5 + lhsOffset] + rhs[6 + rhsOffset] * lhs[8 + lhsOffset] + rhs[7 + rhsOffset] * lhs[13 + lhsOffset];
+        result[6 + resultOffset] = rhs[4 + rhsOffset] * lhs[2 + lhsOffset] + rhs[5 + rhsOffset] * lhs[6 + lhsOffset] + rhs[6 + rhsOffset] * lhs[9 + lhsOffset] + rhs[7 + rhsOffset] * lhs[14 + lhsOffset];
+        result[7 + resultOffset] = rhs[4 + rhsOffset] * lhs[3 + lhsOffset] + rhs[5 + rhsOffset] * lhs[7 + lhsOffset] + rhs[6 + rhsOffset] * lhs[10 + lhsOffset] + rhs[7 + rhsOffset] * lhs[15 + lhsOffset];
+
+        result[8 + resultOffset] = rhs[8 + rhsOffset] * lhs[0 + lhsOffset] + rhs[9 + rhsOffset] * lhs[4 + lhsOffset] + rhs[10 + rhsOffset] * lhs[7 + lhsOffset] + rhs[11 + rhsOffset] * lhs[12 + lhsOffset];
+        result[9 + resultOffset] = rhs[8 + rhsOffset] * lhs[1 + lhsOffset] + rhs[9 + rhsOffset] * lhs[5 + lhsOffset] + rhs[10 + rhsOffset] * lhs[8 + lhsOffset] + rhs[11 + rhsOffset] * lhs[13 + lhsOffset];
+        result[10 + resultOffset] = rhs[8 + rhsOffset] * lhs[2 + lhsOffset] + rhs[9 + rhsOffset] * lhs[6 + lhsOffset] + rhs[10 + rhsOffset] * lhs[9 + lhsOffset] + rhs[11 + rhsOffset] * lhs[14 + lhsOffset];
+        result[11 + resultOffset] = rhs[8 + rhsOffset] * lhs[3 + lhsOffset] + rhs[9 + rhsOffset] * lhs[7 + lhsOffset] + rhs[10 + rhsOffset] * lhs[10 + lhsOffset] + rhs[11 + rhsOffset] * lhs[15 + lhsOffset];
+
+        result[12 + resultOffset] = rhs[12 + rhsOffset] * lhs[0 + lhsOffset] + rhs[13 + rhsOffset] * lhs[4 + lhsOffset] + rhs[14 + rhsOffset] * lhs[7 + lhsOffset] + rhs[15 + rhsOffset] * lhs[12 + lhsOffset];
+        result[13 + resultOffset] = rhs[12 + rhsOffset] * lhs[1 + lhsOffset] + rhs[13 + rhsOffset] * lhs[5 + lhsOffset] + rhs[14 + rhsOffset] * lhs[8 + lhsOffset] + rhs[15 + rhsOffset] * lhs[13 + lhsOffset];
+        result[14 + resultOffset] = rhs[12 + rhsOffset] * lhs[2 + lhsOffset] + rhs[13 + rhsOffset] * lhs[6 + lhsOffset] + rhs[14 + rhsOffset] * lhs[9 + lhsOffset] + rhs[15 + rhsOffset] * lhs[14 + lhsOffset];
+        result[15 + resultOffset] = rhs[12 + rhsOffset] * lhs[3 + lhsOffset] + rhs[13 + rhsOffset] * lhs[7 + lhsOffset] + rhs[14 + rhsOffset] * lhs[10 + lhsOffset] + rhs[15 + rhsOffset] * lhs[15 + lhsOffset];
     }
 
-    static multiplyMV(nearPointWorld: number[], number: number, invertedMVPMatrix: number[], number2: number, nearPointNdc: number[], number3: number) {
-
+    static multiplyMV(resultVec: number[], resultVecOffset: number, lhsMat: number[], lhsMatOffset: number, rhsVec: number[], rhsVecOffset: number) {
+        resultVec[0 + resultVecOffset] = lhsMat[0 + lhsMatOffset] * rhsVec[0 + rhsVecOffset] + lhsMat[4 + lhsMatOffset] * rhsVec[1 + rhsVecOffset] + lhsMat[8 + lhsMatOffset] * rhsVec[2 + rhsVecOffset] + lhsMat[12 + lhsMatOffset] * rhsVec[3 + rhsVecOffset];
+        resultVec[1 + resultVecOffset] = lhsMat[1 + lhsMatOffset] * rhsVec[0 + rhsVecOffset] + lhsMat[5 + lhsMatOffset] * rhsVec[1 + rhsVecOffset] + lhsMat[9 + lhsMatOffset] * rhsVec[2 + rhsVecOffset] + lhsMat[13 + lhsMatOffset] * rhsVec[3 + rhsVecOffset];
+        resultVec[2 + resultVecOffset] = lhsMat[2 + lhsMatOffset] * rhsVec[0 + rhsVecOffset] + lhsMat[6 + lhsMatOffset] * rhsVec[1 + rhsVecOffset] + lhsMat[10 + lhsMatOffset] * rhsVec[2 + rhsVecOffset] + lhsMat[14 + lhsMatOffset] * rhsVec[3 + rhsVecOffset];
+        resultVec[3 + resultVecOffset] = lhsMat[3 + lhsMatOffset] * rhsVec[0 + rhsVecOffset] + lhsMat[7 + lhsMatOffset] * rhsVec[1 + rhsVecOffset] + lhsMat[11 + lhsMatOffset] * rhsVec[2 + rhsVecOffset] + lhsMat[15 + lhsMatOffset] * rhsVec[3 + rhsVecOffset];
     }
 
     static perspectiveM(m: number[], mOffset: number, fovy: number, aspect: number, zNear: number, zFar: number) {

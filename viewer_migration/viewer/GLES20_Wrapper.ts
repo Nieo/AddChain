@@ -1,4 +1,7 @@
 export class GLES20 {
+    static set gl(value: WebGLRenderingContext) {
+        this._gl = value;
+    }
     static GL_VERTEX_SHADER: number;
     static GL_FRAGMENT_SHADER: number;
     static GL_ONE: number;
@@ -17,109 +20,109 @@ export class GLES20 {
     static GL_UNSIGNED_BYTE: number;
     static GL_NO_ERROR: number;
 
-    private static gl: WebGLRenderingContext;
+    private static _gl: WebGLRenderingContext;
 
     static glBindAttribLocation(mProgram: WebGLProgram, index: number, name: string) {
-        GLES20.gl.bindAttribLocation(mProgram, index, name);
+        GLES20._gl.bindAttribLocation(mProgram, index, name);
     }
 
     static glAttachShader(mProgramOverhang: WebGLProgram, fragmentShader: WebGLShader) {
-        GLES20.gl.attachShader(mProgramOverhang, fragmentShader);
+        GLES20._gl.attachShader(mProgramOverhang, fragmentShader);
     }
 
     static glCreateProgram(): WebGLProgram {
-        return GLES20.gl.createProgram();
+        return GLES20._gl.createProgram();
     }
 
     static glLinkProgram(mProgram: WebGLProgram) {
-        GLES20.gl.linkProgram(mProgram);
+        GLES20._gl.linkProgram(mProgram);
     }
 
     static glUseProgram(mProgramOverhang: WebGLProgram) {
-        GLES20.gl.useProgram(mProgramOverhang);
+        GLES20._gl.useProgram(mProgramOverhang);
     }
 
     static glBlendFunc(sFactor: number, dFactor: number) {
-        GLES20.gl.blendFunc(sFactor, dFactor);
+        GLES20._gl.blendFunc(sFactor, dFactor);
     }
 
     static glGetAttribLocation(program: WebGLProgram, name: string): number {
-        return GLES20.gl.getAttribLocation(program, name);
+        return GLES20._gl.getAttribLocation(program, name);
     }
 
     static glVertexAttribPointer_(index: number, size: number, type: number, normalized: boolean, stride: number, mTriangleBuffer: Float32Array) {
-        GLES20.gl.vertexAttribPointer(index,size,type,normalized,stride,0)
+        GLES20._gl.vertexAttribPointer(index,size,type,normalized,stride,0)
     }
 
     static glVertexAttribPointer(index: number, size: number, type: number, normalized: boolean, stride: number, offset: number) {
-        GLES20.gl.vertexAttribPointer(index, size, type, normalized, stride, offset);
+        GLES20._gl.vertexAttribPointer(index, size, type, normalized, stride, offset);
     }
 
     static glEnableVertexAttribArray(mPositionHandle: number) {
-        GLES20.gl.enableVertexAttribArray(mPositionHandle);
+        GLES20._gl.enableVertexAttribArray(mPositionHandle);
     }
 
     static glGetUniformLocation(program: WebGLProgram, name: string): WebGLUniformLocation {
-        return GLES20.gl.getUniformLocation(program, name);
+        return GLES20._gl.getUniformLocation(program, name);
     }
 
     static glUniform4fv(location: WebGLUniformLocation, v: Float32Array) {
-        GLES20.gl.uniform4fv(location, v);
+        GLES20._gl.uniform4fv(location, v);
     }
 
     static glUniform1f(location: WebGLUniformLocation, x: number) {
-        GLES20.gl.uniform1f(location, x);
+        GLES20._gl.uniform1f(location, x);
     }
 
     static glUniformMatrix4fv(location: WebGLUniformLocation, number: number, transpose: boolean, mMatrix: number[], number2: number) {
-        GLES20.gl.uniformMatrix4fv(location, transpose, mMatrix);
+        GLES20._gl.uniformMatrix4fv(location, transpose, mMatrix);
     }
 
     static glUniform3f(location: WebGLUniformLocation, x: number, y: number, z: number) {
-        GLES20.gl.uniform3f(location, x, y, z);
+        GLES20._gl.uniform3f(location, x, y, z);
     }
 
     static glDrawArrays(mode: number, first: number, count: number) {
-        GLES20.gl.drawArrays(mode,first, count);
+        GLES20._gl.drawArrays(mode,first, count);
     }
 
     static glClear(mask: number) {
-        GLES20.gl.clear(mask);
+        GLES20._gl.clear(mask);
     }
 
     static glEnable(cap: number) {
-        GLES20.gl.enable(cap);
+        GLES20._gl.enable(cap);
     }
 
     static glReadPixels(x: number, y: number, width: number, height: number, format: number, type: number, pixels: ArrayBufferView) {
-        GLES20.gl.readPixels(x, y, width, height, format, type, pixels);
+        GLES20._gl.readPixels(x, y, width, height, format, type, pixels);
     }
 
     static glCreateShader(type: number): WebGLShader{
-        return GLES20.gl.createShader(type);
+        return GLES20._gl.createShader(type);
     }
 
     static glShaderSource(shader: WebGLShader, shaderCode: string) {
-        GLES20.gl.shaderSource(shader, shaderCode);
+        GLES20._gl.shaderSource(shader, shaderCode);
     }
 
     static glCompileShader(shader: WebGLShader) {
-        GLES20.gl.compileShader(shader);
+        GLES20._gl.compileShader(shader);
     }
 
     static glGetError(): number {
-        return GLES20.gl.getError();
+        return GLES20._gl.getError();
     }
 
     static glViewport(x: number, y: number, width: number, height: number) {
-        GLES20.gl.viewport(x, y, width, height);
+        GLES20._gl.viewport(x, y, width, height);
     }
 
     static glClearColor(red: number, green: number, blue: number, alpha: number) {
-        GLES20.gl.clearColor(red, green, blue, alpha);
+        GLES20._gl.clearColor(red, green, blue, alpha);
     }
 
     static glDisableVertexAttribArray(index: number) {
-        GLES20.gl.disableVertexAttribArray(index);
+        GLES20._gl.disableVertexAttribArray(index);
     }
 }

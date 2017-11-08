@@ -18,7 +18,7 @@ export class Box{
 
     coordBox: number[] = function (d) {
         // new float[6]
-        // TODO: Consider refactoring this array initialization to be more readable.
+        // TODO: Consider refactorihttps://www.reddit.com/r/all/ng this array initialization to be more readable.
         let r = [];
         for (let i = 0; i < d; i++) r.push(0);
         return r;

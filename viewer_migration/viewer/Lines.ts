@@ -44,7 +44,7 @@ export class Lines {
 
     private readonly mDrawListBuffer: Float32Array;
 
-    readonly mProgram: number;
+    readonly mProgram: WebGLProgram;
 
     mPositionHandle: number;
 
@@ -96,11 +96,11 @@ export class Lines {
         this.mDrawListBuffer = dlb.asShortBuffer();
         this.mDrawListBuffer.put(this.drawOrder);
         this.mDrawListBuffer.position(0);
-        let vertexShader: number = ViewerRenderer.loadShader(
+        let vertexShader: WebGLShader= ViewerRenderer.loadShader(
             GLES20.GL_VERTEX_SHADER,
             this.vertexShaderCode
         );
-        let fragmentShader: number = ViewerRenderer.loadShader(
+        let fragmentShader: WebGLShader = ViewerRenderer.loadShader(
             GLES20.GL_FRAGMENT_SHADER,
             this.fragmentShaderCode
         );

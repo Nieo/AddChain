@@ -73,7 +73,7 @@ export class DesignComponent implements OnInit {
   }
   public reset(){
     this.design = JSON.parse(JSON.stringify(this.originalDesign));
-    this.viewMode = true;
+    this.viewMode = this.createMode? false: true;
   }
   public remove(){
     this.designService.deleteDesign(this.design)

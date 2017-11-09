@@ -8,12 +8,18 @@
   <div class="data">
     <div *ngIf="design != null">
       <h1>Design</h1>
-      <div *ngIf="!createMode"><label>ID:</label>
-        <input type="text" [(ngModel)]="design.design_id" disabled/></div>
-      <div><label>Name:</label>
-        <input type="text" [(ngModel)]="design.name" disabled="{{viewMode}}"/></div>
-      <div><label>Description:</label>
-        <input type="text" [(ngModel)]="design.description" disabled="{{viewMode}}"/></div>
+      <div class="input-container" *ngIf="!createMode">
+        <label>ID:</label>
+        <input type="text" [(ngModel)]="design.design_id" disabled/>
+      </div>
+      <div class="input-container">
+        <label>Name:</label>
+        <input  type="text" [(ngModel)]="design.name" disabled="{{viewMode}}"/>
+      </div>
+      <div class="input-container">
+        <label>Description:</label>
+        <textarea [(ngModel)]="design.description" disabled="{{viewMode}}"></textarea>
+      </div>
     </div>
     <div *ngIf="viewMode && !createMode">
       <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>

@@ -79,7 +79,7 @@ export class DesignComponent implements OnInit {
     this.designService.deleteDesign(this.design)
       .then((data) => {
         console.log("deleted ", data);
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/design/new');
       });
   }
   public create(){

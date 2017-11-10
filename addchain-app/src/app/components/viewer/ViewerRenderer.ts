@@ -407,8 +407,7 @@ export class ViewerRenderer {
     }
 
     private isStl(): boolean {
-        if (this.mDataList.length > 0) if (this.mDataList[0].getPathFile().endsWith(".stl") || this.mDataList[0].getPathFile().endsWith(".STL")) return true;
-        return false;
+        return true;
     }
 
     public objectPressed(x: number,

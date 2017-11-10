@@ -305,12 +305,10 @@ export class StlObject {
                 "a_ColorOverhang"
             );
             ViewerRenderer.checkGlError("glGetUniformLocation COLOROVERHANG");
-            // GLES20.glUniform4fv(
-            //     this.mColorOverhangHandle,
-            //     1,
-            //     StlObject.colorOverhang,
-            //     0
-            // );
+            GLES20.glUniform4fv(
+                this.mColorOverhangHandle,
+                new  Float32Array(StlObject.colorOverhang)
+            );
 
             ViewerRenderer.checkGlError("glUniform4fv");
             this.mCosAngleHandle = GLES20.glGetUniformLocation(

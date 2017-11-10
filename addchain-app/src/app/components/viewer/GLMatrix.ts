@@ -36,7 +36,7 @@ export class Matrix {
         var temp: Array<number> = [32];
         Matrix.setRotateM(temp, 0, a, x, y, z);
         Matrix.multiplyMM(temp, 16, m, mOffset, temp, 0);
-        //System.arraycopy(temp, 16, m, mOffset, 16);
+        // System.arraycopy(temp, 16, m, mOffset, 16);
         m.splice(mOffset, 16);
         m.concat(temp.slice(16, temp.length - 1))
     }

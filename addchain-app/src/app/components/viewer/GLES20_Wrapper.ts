@@ -2,23 +2,23 @@ export class GLES20 {
     static set gl(value: WebGLRenderingContext) {
         this._gl = value;
     }
-    static GL_VERTEX_SHADER: number;
-    static GL_FRAGMENT_SHADER: number;
-    static GL_ONE: number;
-    static GL_ONE_MINUS_SRC_ALPHA: number;
-    static GL_SRC_COLOR: number;
-    static GL_CONSTANT_COLOR: number;
-    static GL_FLOAT: number;
-    static GL_LINE_LOOP: number;
-    static GL_TRIANGLES: number;
-    static GL_LINES: number;
-    static GL_COLOR_BUFFER_BIT: number;
-    static GL_DEPTH_BUFFER_BIT: number;
-    static GL_BLEND: number;
-    static GL_DEPTH_TEST: number;
-    static GL_RGBA: number;
-    static GL_UNSIGNED_BYTE: number;
-    static GL_NO_ERROR: number;
+    static GL_VERTEX_SHADER: number = 0x8B31;
+    static GL_FRAGMENT_SHADER: number = 0x8B30;
+    static GL_ONE: number = 1;
+    static GL_ONE_MINUS_SRC_ALPHA: number = 0x0303;
+    static GL_SRC_COLOR: number = 0x0300;
+    static GL_CONSTANT_COLOR: number = 0x8001;
+    static GL_FLOAT: number = 0x1406;
+    static GL_LINE_LOOP: number = 0x0002;
+    static GL_TRIANGLES: number = 0x0004;
+    static GL_LINES: number = 0x0001;
+    static GL_COLOR_BUFFER_BIT: number = 0x00004000;
+    static GL_DEPTH_BUFFER_BIT: number = 0x00000400;
+    static GL_BLEND: number = 0x0BE2;
+    static GL_DEPTH_TEST: number = 0x0B71;
+    static GL_RGBA: number = 0x1908;
+    static GL_UNSIGNED_BYTE: number = 0x1401;
+    static GL_NO_ERROR: number = 0;
 
 
 

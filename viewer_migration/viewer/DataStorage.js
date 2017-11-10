@@ -1,63 +1,59 @@
-"use strict";
 // package android.app.printerapp.viewer;
-Object.defineProperty(exports, "__esModule", { value: true });
-var Log_1 = require("./android/app/printerapp/Log");
-var Point_1 = require("./android/app/printerapp/viewer/Geometry/Point");
-var Matrix_1 = require("./android/opengl/Matrix");
-var ArrayList_1 = require("./java/util/ArrayList");
-var DataStorage = (function () {
-    function DataStorage() {
-        this.mVertexList = new ArrayList_1.ArrayList();
-        this.mNormalList = new ArrayList_1.ArrayList();
-        this.mLineLengthList = new ArrayList_1.ArrayList();
-        this.mLayerList = new ArrayList_1.ArrayList();
-        this.mTypeList = new ArrayList_1.ArrayList();
+import { Point } from "./Geometry";
+import { Matrix } from "./GLMatrix";
+export class DataStorage {
+    constructor() {
+        this.mVertexList = [];
+        this.mNormalList = [];
+        this.mLineLengthList = [];
+        this.mLayerList = [];
+        this.mTypeList = [];
         this.mRotationMatrix = function (d) {
             // new float[16]
             // TODO: Consider refactoring this array initialization to be more readable.
-            var r = [];
-            for (var i = 0; i < d; i++)
+            let r = [];
+            for (let i = 0; i < d; i++)
                 r.push(0);
             return r;
         }(16);
         this.mModelMatrix = function (d) {
             // new float[16]
             // TODO: Consider refactoring this array initialization to be more readable.
-            var r = [];
-            for (var i = 0; i < d; i++)
+            let r = [];
+            for (let i = 0; i < d; i++)
                 r.push(0);
             return r;
         }(16);
         this.mLastScaleFactorX = 1.0;
         this.mLastScaleFactorY = 1.0;
         this.mLastScaleFactorZ = 1.0;
-        this.mLastCenter = new Point_1.Point(0, 0, 0);
-        Matrix_1.Matrix.setIdentityM(this.mRotationMatrix, 0);
-        Matrix_1.Matrix.setIdentityM(this.mModelMatrix, 0);
+        this.mLastCenter = new Point(0, 0, 0);
+        Matrix.setIdentityM(this.mRotationMatrix, 0);
+        Matrix.setIdentityM(this.mModelMatrix, 0);
     }
-    DataStorage.prototype.copyData = function (d) {
-        for (var i = 0; i < d.getLineLengthList().size(); i++)
-            this.mLineLengthList.add(d.getLineLengthList().get(i));
+    copyData(d) {
+        for (let i = 0; i < d.getLineLengthList().length; i++)
+            this.mLineLengthList.push(d.getLineLengthList()[i]);
         this.mVertexArray = function (d) {
             // new float[d.getVertexArray().length]
             // TODO: Consider refactoring this array initialization to be more readable.
-            var r = [];
-            for (var i = 0; i < d; i++)
+            let r = [];
+            for (let i = 0; i < d; i++)
                 r.push(0);
             return r;
         }(d.getVertexArray().length);
-        for (var i = 0; i < d.getVertexArray().length; i++) {
+        for (let i = 0; i < d.getVertexArray().length; i++) {
             this.mVertexArray[i] = d.getVertexArray()[i];
         }
         this.mNormalArray = function (d) {
             // new float[d.getNormalArray().length]
             // TODO: Consider refactoring this array initialization to be more readable.
-            var r = [];
-            for (var i = 0; i < d; i++)
+            let r = [];
+            for (let i = 0; i < d; i++)
                 r.push(0);
             return r;
         }(d.getNormalArray().length);
-        for (var i = 0; i < d.getNormalArray().length; i++) {
+        for (let i = 0; i < d.getNormalArray().length; i++) {
             this.mNormalArray[i] = d.getNormalArray()[i];
         }
         this.mMaxLayer = d.getMaxLayer();
@@ -74,70 +70,72 @@ var DataStorage = (function () {
         this.mLastScaleFactorY = d.getLastScaleFactorY();
         this.mLastScaleFactorZ = d.getLastScaleFactorZ();
         this.mAdjustZ = d.getAdjustZ();
-        this.mLastCenter = new Point_1.Point(d.getLastCenter().x, d.getLastCenter().y, d.getLastCenter().z);
-        for (var i = 0; i < this.mRotationMatrix.length; i++)
+        this.mLastCenter = new Point(d.getLastCenter().x, d.getLastCenter().y, d.getLastCenter().z);
+        for (let i = 0; i < this.mRotationMatrix.length; i++)
             this.mRotationMatrix[i] = d.getRotationMatrix()[i];
-        for (var i = 0; i < this.mModelMatrix.length; i++)
+        for (let i = 0; i < this.mModelMatrix.length; i++)
             this.mModelMatrix[i] = d.getModelMatrix()[i];
-    };
-    DataStorage.prototype.setMaxLinesFile = function (maxLines) {
+    }
+    setMaxLinesFile(maxLines) {
         this.mMaxLines = maxLines;
-    };
-    DataStorage.prototype.getMaxLinesFile = function () {
+    }
+    getMaxLinesFile() {
         return this.mMaxLines;
-    };
-    DataStorage.prototype.getCoordinateListSize = function () {
-        return this.mVertexList.size();
-    };
-    DataStorage.prototype.addVertex = function (v) {
-        this.mVertexList.add(v);
-    };
-    DataStorage.prototype.addLayer = function (layer) {
-        this.mLayerList.add(layer);
-    };
-    DataStorage.prototype.addType = function (type) {
-        this.mTypeList.add(type);
-    };
-    DataStorage.prototype.addNormal = function (normal) {
-        this.mNormalList.add(normal);
-    };
-    DataStorage.prototype.addLineLength = function (length) {
-        this.mLineLengthList.add(length);
-    };
-    DataStorage.prototype.fillVertexArray = function (center) {
+    }
+    getCoordinateListSize() {
+        return this.mVertexList.length;
+    }
+    addVertex(v) {
+        this.mVertexList.push(v);
+    }
+    addLayer(layer) {
+        this.mLayerList.push(layer);
+    }
+    addType(type) {
+        this.mTypeList.push(type);
+    }
+    addNormal(normal) {
+        this.mNormalList.push(normal);
+    }
+    addLineLength(length) {
+        this.mLineLengthList.push(length);
+    }
+    fillVertexArray(center) {
         this.mVertexArray = function (d) {
             // new float[mVertexList.size()]
             // TODO: Consider refactoring this array initialization to be more readable.
-            var r = [];
-            for (var i = 0; i < d; i++)
+            let r = [];
+            for (let i = 0; i < d; i++)
                 r.push(0);
             return r;
-        }(this.mVertexList.size());
+        }(this.mVertexList.length);
         this.centerSTL(center);
-    };
-    DataStorage.prototype.initMaxMin = function () {
-        this.setMaxX(-Float.MAX_VALUE);
-        this.setMaxY(-Float.MAX_VALUE);
-        this.setMaxZ(-Float.MAX_VALUE);
-        this.setMinX(Float.MAX_VALUE);
-        this.setMinY(Float.MAX_VALUE);
-        this.setMinZ(Float.MAX_VALUE);
-    };
-    DataStorage.prototype.centerSTL = function (center) {
-        var distX = 0;
-        var distY = 0;
-        var distZ = this.mMinZ;
+    }
+    initMaxMin() {
+        this.setMaxX(-Number.MAX_VALUE);
+        this.setMaxY(-Number.MAX_VALUE);
+        this.setMaxZ(-Number.MAX_VALUE);
+        this.setMinX(Number.MAX_VALUE);
+        this.setMinY(Number.MAX_VALUE);
+        this.setMinZ(Number.MAX_VALUE);
+    }
+    centerSTL(center) {
+        let distX = 0;
+        let distY = 0;
+        let distZ = this.mMinZ;
         if (center) {
             distX = this.mMinX + (this.mMaxX - this.mMinX) / 2;
             distY = this.mMinY + (this.mMaxY - this.mMinY) / 2;
-            distZ = this.mMinZ - (number);
-            DataStorage.MIN_Z;
+            distZ = this.mMinZ - DataStorage.MIN_Z;
         }
-        Log_1.Log.i("PrintView", distZ + "");
-        for (var i = 0; i < this.mVertexList.size(); i = i + 3) {
-            this.mVertexArray[i] = this.mVertexList.get(i) - distX;
-            this.mVertexArray[i + 1] = this.mVertexList.get(i + 1) - distY;
-            this.mVertexArray[i + 2] = this.mVertexList.get(i + 2) - distZ;
+        // Log.i(
+        //     "PrintView",
+        //     distZ + ""
+        // );
+        for (let i = 0; i < this.mVertexList.length; i = i + 3) {
+            this.mVertexArray[i] = this.mVertexList[i] - distX;
+            this.mVertexArray[i + 1] = this.mVertexList[i + 1] - distY;
+            this.mVertexArray[i + 2] = this.mVertexList[i + 2] - distZ;
         }
         this.mMinX = this.mMinX - distX;
         this.mMaxX = this.mMaxX - distX;
@@ -145,114 +143,114 @@ var DataStorage = (function () {
         this.mMaxY = this.mMaxY - distY;
         this.mMinZ = this.mMinZ - distZ;
         this.mMaxZ = this.mMaxZ - distZ;
-    };
-    DataStorage.prototype.fillNormalArray = function () {
+    }
+    fillNormalArray() {
         this.mNormalArray = function (d) {
             // new float[mNormalList.size() * TRIANGLE_VERTEX]
             // TODO: Consider refactoring this array initialization to be more readable.
-            var r = [];
-            for (var i = 0; i < d; i++)
+            let r = [];
+            for (let i = 0; i < d; i++)
                 r.push(0);
             return r;
-        }(this.mNormalList.size() * DataStorage.TRIANGLE_VERTEX);
-        var index = 0;
-        var x;
-        var y;
-        var z;
-        for (var i = 0; i < this.mNormalList.size(); i = 3) {
-            x = this.mNormalList.get(i);
-            y = this.mNormalList.get(i + 1);
-            z = this.mNormalList.get(i + 2);
-            for (var j = 0; j < DataStorage.TRIANGLE_VERTEX; j++) {
+        }(this.mNormalList.length * DataStorage.TRIANGLE_VERTEX);
+        let index = 0;
+        let x;
+        let y;
+        let z;
+        for (let i = 0; i < this.mNormalList.length; i = 3) {
+            x = this.mNormalList[i];
+            y = this.mNormalList[i + 1];
+            z = this.mNormalList[i + 2];
+            for (let j = 0; j < DataStorage.TRIANGLE_VERTEX; j++) {
                 this.mNormalArray[index] = x;
                 this.mNormalArray[index + 1] = y;
                 this.mNormalArray[index + 2] = z;
                 index = 3;
             }
         }
-    };
-    DataStorage.prototype.fillLayerArray = function () {
+    }
+    fillLayerArray() {
         this.mLayerArray = function (d) {
             // new int[mLayerList.size()]
             // TODO: Consider refactoring this array initialization to be more readable.
-            var r = [];
-            for (var i = 0; i < d; i++)
+            let r = [];
+            for (let i = 0; i < d; i++)
                 r.push(0);
             return r;
-        }(this.mLayerList.size());
-        for (var i = 0; i < this.mLayerList.size(); i++) {
-            this.mLayerArray[i] = this.mLayerList.get(i);
+        }(this.mLayerList.length);
+        for (let i = 0; i < this.mLayerList.length; i++) {
+            this.mLayerArray[i] = this.mLayerList[i];
         }
-    };
-    DataStorage.prototype.fillTypeArray = function () {
+    }
+    fillTypeArray() {
         this.mTypeArray = function (d) {
             // new int[mTypeList.size()]
             // TODO: Consider refactoring this array initialization to be more readable.
-            var r = [];
-            for (var i = 0; i < d; i++)
+            let r = [];
+            for (let i = 0; i < d; i++)
                 r.push(0);
             return r;
-        }(this.mTypeList.size());
-        for (var i = 0; i < this.mTypeList.size(); i++) {
-            this.mTypeArray[i] = this.mTypeList.get(i);
+        }(this.mTypeList.length);
+        for (let i = 0; i < this.mTypeList.length; i++) {
+            this.mTypeArray[i] = this.mTypeList[i];
         }
-    };
-    DataStorage.prototype.getVertexArray = function () {
+    }
+    getVertexArray() {
         return this.mVertexArray;
-    };
-    DataStorage.prototype.getNormalArray = function () {
+    }
+    getNormalArray() {
         return this.mNormalArray;
-    };
-    DataStorage.prototype.getTypeArray = function () {
+    }
+    getTypeArray() {
         return this.mTypeArray;
-    };
-    DataStorage.prototype.getLayerArray = function () {
+    }
+    getLayerArray() {
         return this.mLayerArray;
-    };
-    DataStorage.prototype.clearVertexList = function () {
-        this.mVertexList.clear();
-    };
-    DataStorage.prototype.clearNormalList = function () {
-        this.mNormalList.clear();
-    };
-    DataStorage.prototype.clearLayerList = function () {
-        this.mLayerList.clear();
-    };
-    DataStorage.prototype.clearTypeList = function () {
-        this.mTypeList.clear();
-    };
-    DataStorage.prototype.getLineLengthList = function () {
+    }
+    clearVertexList() {
+        this.mVertexList.splice(0, this.mVertexList.length);
+    }
+    clearNormalList() {
+        this.mNormalList.splice(0, this.mNormalList.length);
+    }
+    clearLayerList() {
+        this.mLayerList.splice(0, this.mLayerList.length);
+    }
+    clearTypeList() {
+        this.mTypeList.splice(0, this.mTypeList.length);
+    }
+    getLineLengthList() {
         return this.mLineLengthList;
-    };
-    DataStorage.prototype.changeTypeAtIndex = function (index, type) {
-        this.mTypeList.set(index, type);
-    };
-    DataStorage.prototype.getTypeListSize = function () {
-        return this.mTypeList.size();
-    };
-    DataStorage.prototype.setActualLayer = function (layer) {
+    }
+    changeTypeAtIndex(index, type) {
+        this.mTypeList[index] = type;
+    }
+    getTypeListSize() {
+        return this.mTypeList.length;
+    }
+    setActualLayer(layer) {
         this.mActualLayer = layer;
-    };
-    DataStorage.prototype.getActualLayer = function () {
+    }
+    getActualLayer() {
         return this.mActualLayer;
-    };
-    DataStorage.prototype.setMaxLayer = function (maxLayer) {
+    }
+    setMaxLayer(maxLayer) {
         this.mMaxLayer = maxLayer;
         this.mActualLayer = maxLayer;
-    };
-    DataStorage.prototype.getMaxLayer = function () {
+    }
+    getMaxLayer() {
         return this.mMaxLayer;
-    };
-    DataStorage.prototype.getHeight = function () {
+    }
+    getHeight() {
         return this.mMaxZ - this.mMinZ;
-    };
-    DataStorage.prototype.getWidth = function () {
+    }
+    getWidth() {
         return this.mMaxY - this.mMinY;
-    };
-    DataStorage.prototype.getLong = function () {
+    }
+    getLong() {
         return this.mMaxX - this.mMinX;
-    };
-    DataStorage.prototype.adjustMaxMin = function (x, y, z) {
+    }
+    adjustMaxMin(x, y, z) {
         if (x > this.mMaxX) {
             this.mMaxX = x;
         }
@@ -271,115 +269,114 @@ var DataStorage = (function () {
         if (z < this.mMinZ) {
             this.mMinZ = z;
         }
-    };
-    DataStorage.prototype.setMinX = function (x) {
+    }
+    setMinX(x) {
         this.mMinX = x;
-    };
-    DataStorage.prototype.getMinX = function () {
+    }
+    getMinX() {
         return this.mMinX;
-    };
-    DataStorage.prototype.setMinY = function (y) {
+    }
+    setMinY(y) {
         this.mMinY = y;
-    };
-    DataStorage.prototype.getMinY = function () {
+    }
+    getMinY() {
         return this.mMinY;
-    };
-    DataStorage.prototype.setMinZ = function (z) {
+    }
+    setMinZ(z) {
         this.mMinZ = z;
-    };
-    DataStorage.prototype.getMinZ = function () {
+    }
+    getMinZ() {
         return this.mMinZ;
-    };
-    DataStorage.prototype.setMaxX = function (x) {
+    }
+    setMaxX(x) {
         this.mMaxX = x;
-    };
-    DataStorage.prototype.getMaxX = function () {
+    }
+    getMaxX() {
         return this.mMaxX;
-    };
-    DataStorage.prototype.setMaxY = function (y) {
+    }
+    setMaxY(y) {
         this.mMaxY = y;
-    };
-    DataStorage.prototype.getMaxY = function () {
+    }
+    getMaxY() {
         return this.mMaxY;
-    };
-    DataStorage.prototype.setMaxZ = function (z) {
+    }
+    setMaxZ(z) {
         this.mMaxZ = z;
-    };
-    DataStorage.prototype.getMaxZ = function () {
+    }
+    getMaxZ() {
         return this.mMaxZ;
-    };
-    DataStorage.prototype.setPathFile = function (path) {
+    }
+    setPathFile(path) {
         this.mPath = path;
-    };
-    DataStorage.prototype.getPathFile = function () {
+    }
+    getPathFile() {
         return this.mPath;
-    };
-    DataStorage.prototype.setPathSnapshot = function (path) {
+    }
+    setPathSnapshot(path) {
         this.mPathSnapshot = path;
-    };
-    DataStorage.prototype.getPathSnapshot = function () {
+    }
+    getPathSnapshot() {
         return this.mPathSnapshot;
-    };
-    DataStorage.prototype.setLastCenter = function (p) {
+    }
+    setLastCenter(p) {
         this.mLastCenter = p;
-    };
-    DataStorage.prototype.getTrueCenter = function () {
-        var x = (this.mMaxX + this.mMinX) / 2;
-        var y = (this.mMaxY + this.mMinY) / 2;
-        var z = (this.mMaxZ + this.mMinZ) / 2;
-        return new Point_1.Point(x, y, z);
-    };
-    DataStorage.prototype.getLastCenter = function () {
+    }
+    getTrueCenter() {
+        let x = (this.mMaxX + this.mMinX) / 2;
+        let y = (this.mMaxY + this.mMinY) / 2;
+        let z = (this.mMaxZ + this.mMinZ) / 2;
+        return new Point(x, y, z);
+    }
+    getLastCenter() {
         return this.mLastCenter;
-    };
-    DataStorage.prototype.setRotationMatrix = function (m) {
-        for (var i = 0; i < this.mRotationMatrix.length; i++) {
+    }
+    setRotationMatrix(m) {
+        for (let i = 0; i < this.mRotationMatrix.length; i++) {
             this.mRotationMatrix[i] = m[i];
         }
-    };
-    DataStorage.prototype.getRotationMatrix = function () {
+    }
+    getRotationMatrix() {
         return this.mRotationMatrix;
-    };
-    DataStorage.prototype.setModelMatrix = function (m) {
-        for (var i = 0; i < this.mModelMatrix.length; i++) {
+    }
+    setModelMatrix(m) {
+        for (let i = 0; i < this.mModelMatrix.length; i++) {
             this.mModelMatrix[i] = m[i];
         }
-    };
-    DataStorage.prototype.getModelMatrix = function () {
+    }
+    getModelMatrix() {
         return this.mModelMatrix;
-    };
-    DataStorage.prototype.setLastScaleFactorX = function (f) {
+    }
+    setLastScaleFactorX(f) {
         this.mLastScaleFactorX = f;
-    };
-    DataStorage.prototype.setLastScaleFactorY = function (f) {
+    }
+    setLastScaleFactorY(f) {
         this.mLastScaleFactorY = f;
-    };
-    DataStorage.prototype.setLastScaleFactorZ = function (f) {
+    }
+    setLastScaleFactorZ(f) {
         this.mLastScaleFactorZ = f;
-    };
-    DataStorage.prototype.getLastScaleFactorX = function () {
+    }
+    getLastScaleFactorX() {
         return this.mLastScaleFactorX;
-    };
-    DataStorage.prototype.getLastScaleFactorY = function () {
+    }
+    getLastScaleFactorY() {
         return this.mLastScaleFactorY;
-    };
-    DataStorage.prototype.getLastScaleFactorZ = function () {
+    }
+    getLastScaleFactorZ() {
         return this.mLastScaleFactorZ;
-    };
-    DataStorage.prototype.setStateObject = function (state) {
+    }
+    setStateObject(state) {
         this.mStateObject = state;
-    };
-    DataStorage.prototype.getStateObject = function () {
+    }
+    getStateObject() {
         return this.mStateObject;
-    };
-    DataStorage.prototype.setAdjustZ = function (z) {
+    }
+    setAdjustZ(z) {
         this.mAdjustZ = z;
-    };
-    DataStorage.prototype.getAdjustZ = function () {
+    }
+    getAdjustZ() {
         return this.mAdjustZ;
-    };
-    return DataStorage;
-}());
+    }
+}
 DataStorage.MOVE = 0;
 DataStorage.FILL = 1;
 DataStorage.PERIMETER = 2;
@@ -392,4 +389,3 @@ DataStorage.WALL_OUTER = 8;
 DataStorage.SUPPORT = 9;
 DataStorage.TRIANGLE_VERTEX = 3;
 DataStorage.MIN_Z = 0.1;
-exports.DataStorage = DataStorage;

@@ -5,3 +5,5 @@ function init() {
     GLES20.gl = canvas.getContext("experimental-webgl", {});
     let renderer: ViewerRenderer = new ViewerRenderer(null,0,0);
 }
+
+init();

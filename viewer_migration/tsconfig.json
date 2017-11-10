@@ -1,19 +1,12 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "outDir": "./js",
-    "sourceMap": true,
-    "declaration": true,
-    "allowJs": true,
-    "module": "commonjs",
-    "moduleResolution": "classic",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es5",
-    "lib": [
-      "es2017",
-      "dom",
-      "es5"
-    ]
+//    "sourceMap": true,
+//    "declaration": true,
+    "module": "es6",
+    "moduleResolution": "node",
+//    "emitDecoratorMetadata": true,
+//    "experimentalDecorators": true,
+    "target": "es2015"
   }
 }

@@ -6,7 +6,7 @@ import {GLES20} from "./GLES20_Wrapper";
 
 export class StlObject {
     private readonly vertexShaderCode: string = // A constant representing the combined model/view/projection matrix.
-    "uniform mat4 u_MVPMatrix;      \n" + // A constant representing the combined model/view matrix.	
+    "uniform mat4 u_MVPMatrix;      \n" + // A constant representing the combined model/view matrix.
     "uniform mat4 u_MVMatrix;       \n" + // The position of the light in eye space.
     "uniform vec3 u_LightPos;       \n" + // Color information we will pass in.
     "uniform vec4 a_Color;          \n" + // Per-vertex position information we will pass in.
@@ -20,12 +20,12 @@ export class StlObject {
     "   vec3 lightVector = normalize(u_LightPos - modelViewVertex);        			\n" + // pointing in the same direction then it will get max illumination.
     "   float diffuse = abs(dot(modelViewNormal, lightVector));       				\n" + // Attenuate the light based on distance.
     "   diffuse +=0.2;  											   				\n" + // Multiply the color by the illumination level. It will be interpolated across the triangle.
-    "   v_Color = a_Color * diffuse;                                       			\n" + // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.		
+    "   v_Color = a_Color * diffuse;                                       			\n" + // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
     "   gl_Position = u_MVPMatrix * a_Position;                            			\n" + "}                                                                     			\n";
 
     private readonly vertexOverhangShaderCode: string = // A constant representing the combined model/view/projection matrix.
-    "uniform mat4 u_MVPMatrix;      \n" + // A constant representing the combined model/view matrix.	
-    "uniform mat4 u_MVMatrix;       \n" + // A constant representing the model	
+    "uniform mat4 u_MVPMatrix;      \n" + // A constant representing the combined model/view matrix.
+    "uniform mat4 u_MVMatrix;       \n" + // A constant representing the model
     "uniform mat4 u_MMatrix;       \n" + // The position of the light in eye space.
     "uniform vec3 u_LightPos;       \n" + // Color information we will pass in.
     "uniform vec4 a_Color;          \n" + // Color information we will pass in.
@@ -41,13 +41,13 @@ export class StlObject {
     "   vec3 lightVector = normalize(u_LightPos - modelViewVertex);        			\n" + // pointing in the same direction then it will get max illumination.
     "   float diffuse = abs(dot(modelViewNormal, lightVector));       				\n" + // Attenuate the light based on distance.
     "   diffuse +=0.2;  											   				\n" + // Multiply the color by the illumination level. It will be interpolated across the triangle.
-    "	vec3 overhang = normalize(vec3(u_MMatrix * vec4(a_Normal, 0.0)));   		\n" + "	if (overhang.z < -a_CosAngle) 												\n" + "	{                             			 									\n" + "		v_Color = a_ColorOverhang * diffuse;									\n" + "	} else {																	\n" + "   	v_Color = a_Color * diffuse;                                    		\n" + "	}                             			 									\n" + // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.		
+    "	vec3 overhang = normalize(vec3(u_MMatrix * vec4(a_Normal, 0.0)));   		\n" + "	if (overhang.z < -a_CosAngle) 												\n" + "	{                             			 									\n" + "		v_Color = a_ColorOverhang * diffuse;									\n" + "	} else {																	\n" + "   	v_Color = a_Color * diffuse;                                    		\n" + "	}                             			 									\n" + // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
     "   gl_Position = u_MVPMatrix * a_Position;                            			\n" + "}                                                                     			\n";
 
-    private readonly fragmentShaderCode: string = // Set the default precision to medium. We don't need as high of a precision in the fragment shader.				
-    "precision mediump float;       \n" + // This is the color from the vertex shader interpolated across the triangle per fragment.			  
+    private readonly fragmentShaderCode: string = // Set the default precision to medium. We don't need as high of a precision in the fragment shader.
+    "precision mediump float;       \n" + // This is the color from the vertex shader interpolated across the triangle per fragment.
     "varying vec4 v_Color;          \n" + // The entry point for our fragment shader.
-    "void main()                    \n" + "{                              \n" + // Pass the color directly through the pipeline.		  
+    "void main()                    \n" + "{                              \n" + // Pass the color directly through the pipeline.
     "   gl_FragColor = v_Color;     \n" + "}   " + "" + "            					\n";
 
     private readonly mProgram: WebGLProgram;
@@ -290,14 +290,14 @@ export class StlObject {
             "a_Position"
         );
         ViewerRenderer.checkGlError("glGetAttribLocation");
-        GLES20.glVertexAttribPointer(
-            this.mPositionHandle,
-            StlObject.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT,
-            false,
-            this.VERTEX_STRIDE,
-            this.mTriangleBuffer
-        );
+        // GLES20.glVertexAttribPointer(
+        //     this.mPositionHandle,
+        //     StlObject.COORDS_PER_VERTEX,
+        //     GLES20.GL_FLOAT,
+        //     false,
+        //     this.VERTEX_STRIDE,
+        //     this.mTriangleBuffer
+        // );
         GLES20.glEnableVertexAttribArray(this.mPositionHandle);
         if (this.mOverhang) {
             this.mColorOverhangHandle = GLES20.glGetUniformLocation(
@@ -307,11 +307,9 @@ export class StlObject {
             ViewerRenderer.checkGlError("glGetUniformLocation COLOROVERHANG");
             GLES20.glUniform4fv(
                 this.mColorOverhangHandle,
-                1,
-                StlObject.colorOverhang,
-                0
+                new  Float32Array(StlObject.colorOverhang)
             );
-            
+
             ViewerRenderer.checkGlError("glUniform4fv");
             this.mCosAngleHandle = GLES20.glGetUniformLocation(
                 program,
@@ -336,7 +334,7 @@ export class StlObject {
                 mMatrix,
                 0
             );
-            
+
             ViewerRenderer.checkGlError("glUniformMatrix4fv");
         }
         this.mColorHandle = GLES20.glGetUniformLocation(
@@ -345,12 +343,12 @@ export class StlObject {
         );
 
         ViewerRenderer.checkGlError("glGetUniformLocation a_Color");
-        GLES20.glUniform4fv(
-            this.mColorHandle,
-            1,
-            this.mColor,
-            0
-        );
+        // GLES20.glUniform4fv(
+        //     this.mColorHandle,
+        //     1,
+        //     this.mColor,
+        //     0
+        // );
 
         ViewerRenderer.checkGlError("glUniform4fv");
         this.mNormalHandle = GLES20.glGetAttribLocation(
@@ -359,20 +357,20 @@ export class StlObject {
         );
 
         ViewerRenderer.checkGlError("glGetAttribLocation");
-        GLES20.glVertexAttribPointer(
-            this.mNormalHandle,
-            StlObject.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT,
-            false,
-            this.VERTEX_STRIDE,
-            this.mNormalBuffer
-        );
+        // GLES20.glVertexAttribPointer(
+        //     this.mNormalHandle,
+        //     StlObject.COORDS_PER_VERTEX,
+        //     GLES20.GL_FLOAT,
+        //     false,
+        //     this.VERTEX_STRIDE,
+        //     this.mNormalBuffer
+        // );
         GLES20.glEnableVertexAttribArray(this.mNormalHandle);
         this.mMVPMatrixHandle = GLES20.glGetUniformLocation(
             program,
             "u_MVPMatrix"
         );
-        
+
         ViewerRenderer.checkGlError("glGetUniformLocation");
         GLES20.glUniformMatrix4fv(
             this.mMVPMatrixHandle,
@@ -381,13 +379,13 @@ export class StlObject {
             mvpMatrix,
             0
         );
-        
+
         ViewerRenderer.checkGlError("glUniformMatrix4fv");
         this.mMVMatrixHandle = GLES20.glGetUniformLocation(
             program,
             "u_MVMatrix"
         );
-        
+
         ViewerRenderer.checkGlError("glGetUniformLocation");
         GLES20.glUniformMatrix4fv(
             this.mMVMatrixHandle,
@@ -401,7 +399,7 @@ export class StlObject {
             program,
             "u_LightPos"
         );
-        
+
         ViewerRenderer.checkGlError("glGetUniformLocation");
         GLES20.glUniform3f(
             this.mLightPosHandle,

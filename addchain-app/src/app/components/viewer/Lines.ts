@@ -93,9 +93,9 @@ export class Lines {
         this.mVertexBuffer = new Float32Array(bb);
         let dlb: ArrayBuffer = new ArrayBuffer(this.drawOrder.length * 2);
         // dlb.order(ByteOrder.nativeOrder());
-        this.mDrawListBuffer = dlb.asShortBuffer();
-        this.mDrawListBuffer.put(this.drawOrder);
-        this.mDrawListBuffer.position(0);
+        // this.mDrawListBuffer = dlb.asShortBuffer();
+        // this.mDrawListBuffer.put(this.drawOrder);
+        // this.mDrawListBuffer.position(0);
         let vertexShader: WebGLShader= ViewerRenderer.loadShader(
             GLES20.GL_VERTEX_SHADER,
             this.vertexShaderCode
@@ -136,7 +136,7 @@ export class Lines {
     }
 
     private drawYAxis(
-            point: 
+            point:
                 // TODO: Warning - type not found in scope.
             Point,
             z: number) : number[] {
@@ -193,37 +193,37 @@ export class Lines {
                     data.getLastCenter(),
                     data.getTrueCenter().z
                 );
-                this.mCurrentColor = Lines.X_COLOR;
+                this.mCurrentColor = new Float32Array(Lines.X_COLOR);
                 break;
             case Lines.Y_AXIS:
                 this.mCoordsArray = this.drawYAxis(
                     data.getLastCenter(),
                     data.getTrueCenter().z
                 );
-                this.mCurrentColor = Lines.Y_COLOR;
+                this.mCurrentColor = new Float32Array(Lines.Y_COLOR);
                 break;
             case Lines.Z_AXIS:
                 this.mCoordsArray = this.drawZAxis(
                     data.getLastCenter(),
                     data.getTrueCenter().z
                 );
-                this.mCurrentColor = Lines.Z_COLOR;
+                this.mCurrentColor = new Float32Array(Lines.Z_COLOR);
                 break;
             default:
                 this.mCoordsArray = null;
                 break;
         }
         if (this.mCoordsArray != null) {
-            this.mVertexBuffer.put(this.mCoordsArray);
-            this.mVertexBuffer.position(0);
-            GLES20.glVertexAttribPointer(
-                this.mPositionHandle,
-                this.COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT,
-                false,
-                this.vertexStride,
-                this.mVertexBuffer
-            );
+            // this.mVertexBuffer.put(this.mCoordsArray);
+            // this.mVertexBuffer.position(0);
+            // GLES20.glVertexAttribPointer(
+            //     this.mPositionHandle,
+            //     this.COORDS_PER_VERTEX,
+            //     GLES20.GL_FLOAT,
+            //     false,
+            //     this.vertexStride,
+            //     this.mVertexBuffer
+            // );
             this.mColorHandle = GLES20.glGetUniformLocation(
                 this.mProgram,
                 "vColor"
@@ -266,11 +266,11 @@ export class Lines {
                 points[i] = radius * <number> Math.sin(angle);
                 i++;
             }
-            GLES20.glDrawArrays(
-                GLES20.GL_POINTS,
-                0,
-                this.vertexCount
-            );
+            // GLES20.glDrawArrays(
+            //     GLES20.GL_POINTS,
+            //     0,
+            //     this.vertexCount
+            // );
             GLES20.glDisableVertexAttribArray(this.mPositionHandle);
         }
     }

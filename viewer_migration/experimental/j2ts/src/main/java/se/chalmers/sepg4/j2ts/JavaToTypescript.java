@@ -844,7 +844,7 @@ public class JavaToTypescript {
 
         @Override
         public String visit(CastExpr n, Void arg) {
-            return "(" + visit(n.getType()) + ") " + visit(n.getExpression());
+            return "<" + visit(n.getType()) + "> " + visit(n.getExpression());
         }
 
         @Override

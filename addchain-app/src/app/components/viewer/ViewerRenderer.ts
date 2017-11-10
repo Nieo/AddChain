@@ -94,26 +94,26 @@ export class ViewerRenderer {
 
     private mStlObjectList: Array<StlObject> = [];
 
-    private mWitboxFaceDown: // TODO: Warning - type not found in scope.
-        WitboxPlate;
-
-    private mWitboxFaceRight: // TODO: Warning - type not found in scope.
-        WitboxFaces;
-
-    private mWitboxFaceBack: // TODO: Warning - type not found in scope.
-        WitboxFaces;
-
-    private mWitboxFaceLeft: // TODO: Warning - type not found in scope.
-        WitboxFaces;
-
-    private mWitboxFaceFront: // TODO: Warning - type not found in scope.
-        WitboxFaces;
-
-    private mWitboxFaceTop: // TODO: Warning - type not found in scope.
-        WitboxFaces;
-
-    private mInfinitePlane: // TODO: Warning - type not found in scope.
-        WitboxPlate;
+    // private mWitboxFaceDown: // TODO: Warning - type not found in scope.
+    //     WitboxPlate;
+    //
+    // private mWitboxFaceRight: // TODO: Warning - type not found in scope.
+    //     WitboxFaces;
+    //
+    // private mWitboxFaceBack: // TODO: Warning - type not found in scope.
+    //     WitboxFaces;
+    //
+    // private mWitboxFaceLeft: // TODO: Warning - type not found in scope.
+    //     WitboxFaces;
+    //
+    // private mWitboxFaceFront: // TODO: Warning - type not found in scope.
+    //     WitboxFaces;
+    //
+    // private mWitboxFaceTop: // TODO: Warning - type not found in scope.
+    //     WitboxFaces;
+    //
+    // private mInfinitePlane: // TODO: Warning - type not found in scope.
+    //     WitboxPlate;
 
     private mDataList: Array<DataStorage>;
 
@@ -326,8 +326,8 @@ export class ViewerRenderer {
 
     public static readonly OUT_TOUCHED: number = 3;
 
-    private mCircle: // TODO: Warning - type not found in scope.
-        Circles;
+    // private mCircle: // TODO: Warning - type not found in scope.
+    //     Circles;
 
     private mPlate: number[];
 
@@ -407,8 +407,7 @@ export class ViewerRenderer {
     }
 
     private isStl(): boolean {
-        if (this.mDataList.length > 0) if (this.mDataList[0].getPathFile().endsWith(".stl") || this.mDataList[0].getPathFile().endsWith(".STL")) return true;
-        return false;
+        return true;
     }
 
     public objectPressed(x: number,
@@ -819,81 +818,81 @@ export class ViewerRenderer {
         }
     }
 
-    public generatePlate(type: number[]): void {
-        try {
-            this.mPlate = type;
-            if (this.mMode ==
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerMainFragment.PRINT_PREVIEW) {
-                this.mWitboxFaceBack = new
-                // TODO: Warning - type not found in scope.
-                WitboxFaces(
-                    ViewerRenderer.BACK,
-                    this.mPlate
-                );
-                this.mWitboxFaceRight = new
-                // TODO: Warning - type not found in scope.
-                WitboxFaces(
-                    ViewerRenderer.RIGHT,
-                    this.mPlate
-                );
-                this.mWitboxFaceLeft = new
-                // TODO: Warning - type not found in scope.
-                WitboxFaces(
-                    ViewerRenderer.LEFT,
-                    this.mPlate
-                );
-                this.mWitboxFaceFront = new
-                // TODO: Warning - type not found in scope.
-                WitboxFaces(
-                    ViewerRenderer.FRONT,
-                    this.mPlate
-                );
-                this.mWitboxFaceTop = new
-                // TODO: Warning - type not found in scope.
-                WitboxFaces(
-                    ViewerRenderer.TOP,
-                    this.mPlate
-                );
-                this.mWitboxFaceDown = new
-                // TODO: Warning - type not found in scope.
-                WitboxPlate(
-                    this.mContext,
-                    false,
-                    this.mPlate
-                );
-            }
-            this.mWitboxFaceBack.generatePlaneCoords(
-                ViewerRenderer.BACK,
-                type
-            );
-            this.mWitboxFaceRight.generatePlaneCoords(
-                ViewerRenderer.RIGHT,
-                type
-            );
-            this.mWitboxFaceLeft.generatePlaneCoords(
-                ViewerRenderer.LEFT,
-                type
-            );
-            this.mWitboxFaceFront.generatePlaneCoords(
-                ViewerRenderer.FRONT,
-                type
-            );
-            this.mWitboxFaceTop.generatePlaneCoords(
-                ViewerRenderer.TOP,
-                type
-            );
-            this.mWitboxFaceDown.generatePlaneCoords(
-                type,
-                false
-            );
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    // public generatePlate(type: number[]): void {
+    //     try {
+    //         this.mPlate = type;
+    //         if (this.mMode ==
+    //             // TODO: Warning - no scope specified; assuming 'this'.
+    //             this.ViewerMainFragment.PRINT_PREVIEW) {
+    //             this.mWitboxFaceBack = new
+    //             // TODO: Warning - type not found in scope.
+    //             WitboxFaces(
+    //                 ViewerRenderer.BACK,
+    //                 this.mPlate
+    //             );
+    //             this.mWitboxFaceRight = new
+    //             // TODO: Warning - type not found in scope.
+    //             WitboxFaces(
+    //                 ViewerRenderer.RIGHT,
+    //                 this.mPlate
+    //             );
+    //             this.mWitboxFaceLeft = new
+    //             // TODO: Warning - type not found in scope.
+    //             WitboxFaces(
+    //                 ViewerRenderer.LEFT,
+    //                 this.mPlate
+    //             );
+    //             this.mWitboxFaceFront = new
+    //             // TODO: Warning - type not found in scope.
+    //             WitboxFaces(
+    //                 ViewerRenderer.FRONT,
+    //                 this.mPlate
+    //             );
+    //             this.mWitboxFaceTop = new
+    //             // TODO: Warning - type not found in scope.
+    //             WitboxFaces(
+    //                 ViewerRenderer.TOP,
+    //                 this.mPlate
+    //             );
+    //             this.mWitboxFaceDown = new
+    //             // TODO: Warning - type not found in scope.
+    //             WitboxPlate(
+    //                 this.mContext,
+    //                 false,
+    //                 this.mPlate
+    //             );
+    //         }
+    //         this.mWitboxFaceBack.generatePlaneCoords(
+    //             ViewerRenderer.BACK,
+    //             type
+    //         );
+    //         this.mWitboxFaceRight.generatePlaneCoords(
+    //             ViewerRenderer.RIGHT,
+    //             type
+    //         );
+    //         this.mWitboxFaceLeft.generatePlaneCoords(
+    //             ViewerRenderer.LEFT,
+    //             type
+    //         );
+    //         this.mWitboxFaceFront.generatePlaneCoords(
+    //             ViewerRenderer.FRONT,
+    //             type
+    //         );
+    //         this.mWitboxFaceTop.generatePlaneCoords(
+    //             ViewerRenderer.TOP,
+    //             type
+    //         );
+    //         this.mWitboxFaceDown.generatePlaneCoords(
+    //             type,
+    //             false
+    //         );
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
 
-    public onSurfaceCreated(unused: GL10,
-                            config: EGLConfig): void {
+    public onSurfaceCreated(
+                            ): void {
         GLES20.glClearColor(
             0.149,
             0.196,
@@ -910,7 +909,7 @@ export class ViewerRenderer {
         ViewerRenderer.mSceneAngleX = ViewerRenderer.ANGLE_X;
         ViewerRenderer.mSceneAngleY = ViewerRenderer.ANGLE_Y;
         if (this.mDataList.length > 0) {
-            this.mStlObjectList.clear();
+            //this.mStlObjectList.clear(); //FIXME
             for (let i: number = 0; i < this.mDataList.length; i++) {
                 if (this.mDataList[i].getVertexArray() != null) {
                     // Log.i(
@@ -927,64 +926,59 @@ export class ViewerRenderer {
                 );
             }
         }
-        if (this.mMode ==
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.DO_SNAPSHOT || this.mMode ==
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.PRINT_PREVIEW)
-            this.mInfinitePlane = new
-            // TODO: Warning - type not found in scope.
-            WitboxPlate(
-                this.mContext,
-                true,
-
-                // TODO: Warning - no scope specified; assuming 'this'.
-                this.ViewerMainFragment.getCurrentPlate()
-            );
-        this.mWitboxFaceBack = new
-        // TODO: Warning - type not found in scope.
-        WitboxFaces(
-            ViewerRenderer.BACK,
-            this.mPlate
-        );
-        this.mWitboxFaceRight = new
-        // TODO: Warning - type not found in scope.
-        WitboxFaces(
-            ViewerRenderer.RIGHT,
-            this.mPlate
-        );
-        this.mWitboxFaceLeft = new
-        // TODO: Warning - type not found in scope.
-        WitboxFaces(
-            ViewerRenderer.LEFT,
-            this.mPlate
-        );
-        this.mWitboxFaceFront = new
-        // TODO: Warning - type not found in scope.
-        WitboxFaces(
-            ViewerRenderer.FRONT,
-            this.mPlate
-        );
-        this.mWitboxFaceTop = new
-        // TODO: Warning - type not found in scope.
-        WitboxFaces(
-            ViewerRenderer.TOP,
-            this.mPlate
-        );
-        this.mWitboxFaceDown = new
-        // TODO: Warning - type not found in scope.
-        WitboxPlate(
-            this.mContext,
-            false,
-            this.mPlate
-        );
-        this.mCircle = new
-        // TODO: Warning - type not found in scope.
-        Circles();
+        if (this.mMode == 0){}
+            /*this.ViewerMainFragment.DO_SNAPSHOT || this.mMode ==
+            this.ViewerMainFragment.PRINT_PREVIEW*/
+            // this.mInfinitePlane = new
+            // WitboxPlate(
+            //     this.mContext,
+            //     true,
+            //     this.ViewerMainFragment.getCurrentPlate()
+            // );
+        // this.mWitboxFaceBack = new
+        // // TODO: Warning - type not found in scope.
+        // WitboxFaces(
+        //     ViewerRenderer.BACK,
+        //     this.mPlate
+        // );
+        // this.mWitboxFaceRight = new
+        // // TODO: Warning - type not found in scope.
+        // WitboxFaces(
+        //     ViewerRenderer.RIGHT,
+        //     this.mPlate
+        // );
+        // this.mWitboxFaceLeft = new
+        // // TODO: Warning - type not found in scope.
+        // WitboxFaces(
+        //     ViewerRenderer.LEFT,
+        //     this.mPlate
+        // );
+        // this.mWitboxFaceFront = new
+        // // TODO: Warning - type not found in scope.
+        // WitboxFaces(
+        //     ViewerRenderer.FRONT,
+        //     this.mPlate
+        // );
+        // this.mWitboxFaceTop = new
+        // // TODO: Warning - type not found in scope.
+        // WitboxFaces(
+        //     ViewerRenderer.TOP,
+        //     this.mPlate
+        // );
+        // this.mWitboxFaceDown = new
+        // // TODO: Warning - type not found in scope.
+        // WitboxPlate(
+        //     this.mContext,
+        //     false,
+        //     this.mPlate
+        // );
+        // this.mCircle = new
+        // // TODO: Warning - type not found in scope.
+        // Circles();
     }
 
-    public onSurfaceChanged(unused: GL10,
-                            width: number,
+
+    public onSurfaceChanged(width: number,
                             height: number): void {
         ViewerRenderer.mWidth = width;
         ViewerRenderer.mHeight = height;
@@ -1007,13 +1001,10 @@ export class ViewerRenderer {
             ViewerRenderer.Z_NEAR,
             ViewerRenderer.Z_FAR
         );
-        if (this.mMode ==
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.DO_SNAPSHOT || this.mMode ==
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerMainFragment.PRINT_PREVIEW) {
+        if (this.mMode == 0/*this.ViewerMainFragment.DO_SNAPSHOT || this.mMode ==
+          this.ViewerMainFragment.PRINT_PREVIEW*/) {
             let data: // TODO: Warning - type not found in scope.
-                DataStorage = this.mDataList.get(0);
+                DataStorage = this.mDataList[0];
             let h: number = data.getHeight();
             let l: number = data.getLong();
             let w: number = data.getWidth();
@@ -1046,7 +1037,7 @@ export class ViewerRenderer {
         this.mViewMatrix[14] = z;
     }
 
-    public onDrawFrame(unused: GL10): void {
+    public onDrawFrame(): void {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         if (this.isStl()) for (let i: number = 0; i < this.mStlObjectList.length; i++) this.setColor(i);
         GLES20.glEnable(GLES20.GL_BLEND);
@@ -1135,13 +1126,13 @@ export class ViewerRenderer {
             this.mModelMatrix,
             0
         );
-        System.arraycopy(
-            this.mTemporaryMatrix,
-            0,
-            this.mModelMatrix,
-            0,
-            16
-        );
+        // System.arraycopy( TODO fix me
+        //     this.mTemporaryMatrix,
+        //     0,
+        //     this.mModelMatrix,
+        //     0,
+        //     16
+        // );
         Matrix.multiplyMM(
             this.mMVPMatrix,
             0,
@@ -1276,11 +1267,11 @@ export class ViewerRenderer {
                                 this.mLightPosInEyeSpace,
                                 this.mObjectModel
                             );
-                            this.mCircle.draw(
-                                this.mDataList[this.mObjectPressed],
-                                this.mMVPMatrix,
-                                this.mAxis
-                            );
+                            // this.mCircle.draw(
+                            //     this.mDataList[this.mObjectPressed],
+                            //     this.mMVPMatrix,
+                            //     this.mAxis
+                            // );
                         }
                     } catch (e) {
                         console.log("Slicer IndexOutOfBounds " + this.mObjectPressed);
@@ -1364,7 +1355,7 @@ export class ViewerRenderer {
         // }
     }
 
-    private takeSnapshot(unused: GL10): void {
+    private takeSnapshot(): void {
         console.log(ViewerRenderer.TAG + "TAKING SNAPSHOT");
         let minX: number = 0;
         let minY: number = 0;
@@ -1380,11 +1371,11 @@ export class ViewerRenderer {
             GLES20.GL_UNSIGNED_BYTE,
             bb
         );
-        LibraryModelCreation.saveSnapshot(
-            ViewerRenderer.mWidth,
-            ViewerRenderer.mHeight,
-            bb
-        );
+        // LibraryModelCreation.saveSnapshot(
+        //     ViewerRenderer.mWidth,
+        //     ViewerRenderer.mHeight,
+        //     bb
+        // );
     }
 
     public setSceneAngleX(x: number): void {
@@ -1492,8 +1483,6 @@ export class ViewerRenderer {
                 if (<number> ViewerRenderer.mCurrentSceneAngleY < (ViewerRenderer.ANGLE_Y + 10)) ViewerRenderer.mSceneAngleY = -ViewerRenderer.CAMERA_MIN_ROTATION_DISTANCE; else ViewerRenderer.mSceneAngleY = -ViewerRenderer.CAMERA_MAX_ROTATION_DISTANCE;
             }
         }
-        if ((((<number> ViewerRenderer.mCameraZ == ViewerRenderer.CAMERA_DEFAULT_Z) && (<number> ViewerRenderer.mCameraY == ViewerRenderer.CAMERA_DEFAULT_Y) && (<number> ViewerRenderer.mCameraX == ViewerRenderer.CAMERA_DEFAULT_X)) || (zoom)) && ((<number> ViewerRenderer.mCurrentSceneAngleX == ViewerRenderer.ANGLE_X) && (<number> ViewerRenderer.mCurrentSceneAngleY == ViewerRenderer.ANGLE_Y) || (!rotation)) && (<number> this.mDx == <number> (ViewerRenderer.POSITION_DEFAULT_X - dx)) && (<number> this.mDy == <number> (dyx - dy))) return true; else {
-            return false;
-        }
+        return (((<number> ViewerRenderer.mCameraZ == ViewerRenderer.CAMERA_DEFAULT_Z) && (<number> ViewerRenderer.mCameraY == ViewerRenderer.CAMERA_DEFAULT_Y) && (<number> ViewerRenderer.mCameraX == ViewerRenderer.CAMERA_DEFAULT_X)) || (zoom)) && ((<number> ViewerRenderer.mCurrentSceneAngleX == ViewerRenderer.ANGLE_X) && (<number> ViewerRenderer.mCurrentSceneAngleY == ViewerRenderer.ANGLE_Y) || (!rotation)) && (<number> this.mDx == <number> (ViewerRenderer.POSITION_DEFAULT_X - dx)) && (<number> this.mDy == <number> (dyx - dy));
     }
 }

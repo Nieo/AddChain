@@ -14,6 +14,7 @@ import { PartComponent } from './components/part/part.component';
 import { BuildDetailComponent } from './components/build-detail/build-detail.component';
 import { DesignListComponent } from './components/design-list/design-list.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { ViewerComponent } from './components/viewer/viewer.component';
 
 
 const appRoutes: Routes = [
@@ -37,6 +38,7 @@ const appRoutes: Routes = [
     BuildDetailComponent,
     DesignListComponent,
     SpinnerComponent,
+    ViewerComponent,
   ],
   imports: [
     BrowserModule,

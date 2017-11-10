@@ -1,9 +1,8 @@
 "use strict";
 // package android.app.printerapp.viewer;
 Object.defineProperty(exports, "__esModule", { value: true });
-var GLES20_1 = require("./android/opengl/GLES20");
-var ByteBuffer_1 = require("./java/nio/ByteBuffer");
-var ByteOrder_1 = require("./java/nio/ByteOrder");
+var ViewerRenderer_1 = require("./ViewerRenderer");
+var GLES20_Wrapper_1 = require("./GLES20_Wrapper");
 var Lines = (function () {
     function Lines() {
         this.vertexShaderCode = "uniform mat4 uMVPMatrix;" + "attribute vec4 vPosition;" + "void main() {" +
@@ -35,24 +34,20 @@ var Lines = (function () {
         this.lineCoords[5] = 0.0;
         this.mCoordsArray = this.lineCoords;
         this.vertexCount = this.mCoordsArray.length / this.COORDS_PER_VERTEX;
-        var bb = ByteBuffer_1.ByteBuffer.allocateDirect(this.mCoordsArray.length * 4);
-        bb.order(ByteOrder_1.ByteOrder.nativeOrder());
-        this.mVertexBuffer = bb.asFloatBuffer();
-        var dlb = ByteBuffer_1.ByteBuffer.allocateDirect(this.drawOrder.length * 2);
-        dlb.order(ByteOrder_1.ByteOrder.nativeOrder());
+        var bb = new ArrayBuffer(this.mCoordsArray.length * 4);
+        // bb.order(ByteOrder.nativeOrder());
+        this.mVertexBuffer = new Float32Array(bb);
+        var dlb = new ArrayBuffer(this.drawOrder.length * 2);
+        // dlb.order(ByteOrder.nativeOrder());
         this.mDrawListBuffer = dlb.asShortBuffer();
         this.mDrawListBuffer.put(this.drawOrder);
         this.mDrawListBuffer.position(0);
-        var vertexShader = 
-        // TODO: Warning - no scope specified; assuming 'this'.
-        this.ViewerRenderer.loadShader(GLES20_1.GLES20.GL_VERTEX_SHADER, this.vertexShaderCode);
-        var fragmentShader = 
-        // TODO: Warning - no scope specified; assuming 'this'.
-        this.ViewerRenderer.loadShader(GLES20_1.GLES20.GL_FRAGMENT_SHADER, this.fragmentShaderCode);
-        this.mProgram = GLES20_1.GLES20.glCreateProgram();
-        GLES20_1.GLES20.glAttachShader(this.mProgram, vertexShader);
-        GLES20_1.GLES20.glAttachShader(this.mProgram, fragmentShader);
-        GLES20_1.GLES20.glLinkProgram(this.mProgram);
+        var vertexShader = ViewerRenderer_1.ViewerRenderer.loadShader(GLES20_Wrapper_1.GLES20.GL_VERTEX_SHADER, this.vertexShaderCode);
+        var fragmentShader = ViewerRenderer_1.ViewerRenderer.loadShader(GLES20_Wrapper_1.GLES20.GL_FRAGMENT_SHADER, this.fragmentShaderCode);
+        this.mProgram = GLES20_Wrapper_1.GLES20.glCreateProgram();
+        GLES20_Wrapper_1.GLES20.glAttachShader(this.mProgram, vertexShader);
+        GLES20_Wrapper_1.GLES20.glAttachShader(this.mProgram, fragmentShader);
+        GLES20_Wrapper_1.GLES20.glLinkProgram(this.mProgram);
     }
     Lines.prototype.drawXAxis = function (point, z) {
         var tempAxis = function (d) {
@@ -106,10 +101,10 @@ var Lines = (function () {
         return tempAxis;
     };
     Lines.prototype.draw = function (data, mvpMatrix, currentAxis) {
-        GLES20_1.GLES20.glUseProgram(this.mProgram);
-        GLES20_1.GLES20.glBlendFunc(GLES20_1.GLES20.GL_ONE, GLES20_1.GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        this.mPositionHandle = GLES20_1.GLES20.glGetAttribLocation(this.mProgram, "vPosition");
-        GLES20_1.GLES20.glEnableVertexAttribArray(this.mPositionHandle);
+        GLES20_Wrapper_1.GLES20.glUseProgram(this.mProgram);
+        GLES20_Wrapper_1.GLES20.glBlendFunc(GLES20_Wrapper_1.GLES20.GL_ONE, GLES20_Wrapper_1.GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        this.mPositionHandle = GLES20_Wrapper_1.GLES20.glGetAttribLocation(this.mProgram, "vPosition");
+        GLES20_Wrapper_1.GLES20.glEnableVertexAttribArray(this.mPositionHandle);
         switch (currentAxis) {
             case Lines.X_AXIS:
                 this.mCoordsArray = this.drawXAxis(data.getLastCenter(), data.getTrueCenter().z);
@@ -130,16 +125,14 @@ var Lines = (function () {
         if (this.mCoordsArray != null) {
             this.mVertexBuffer.put(this.mCoordsArray);
             this.mVertexBuffer.position(0);
-            GLES20_1.GLES20.glVertexAttribPointer(this.mPositionHandle, this.COORDS_PER_VERTEX, GLES20_1.GLES20.GL_FLOAT, false, this.vertexStride, this.mVertexBuffer);
-            this.mColorHandle = GLES20_1.GLES20.glGetUniformLocation(this.mProgram, "vColor");
-            GLES20_1.GLES20.glUniform4fv(this.mColorHandle, 1, this.mCurrentColor, 0);
-            this.mMVPMatrixHandle = GLES20_1.GLES20.glGetUniformLocation(this.mProgram, "uMVPMatrix");
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glGetUniformLocation");
-            GLES20_1.GLES20.glUniformMatrix4fv(this.mMVPMatrixHandle, 1, false, mvpMatrix, 0);
-            // TODO: Warning - no scope specified; assuming 'this'.
-            this.ViewerRenderer.checkGlError("glUniformMatrix4fv");
-            GLES20_1.GLES20.glDrawArrays(GLES20_1.GLES20.GL_LINES, 0, this.vertexCount);
+            GLES20_Wrapper_1.GLES20.glVertexAttribPointer(this.mPositionHandle, this.COORDS_PER_VERTEX, GLES20_Wrapper_1.GLES20.GL_FLOAT, false, this.vertexStride, this.mVertexBuffer);
+            this.mColorHandle = GLES20_Wrapper_1.GLES20.glGetUniformLocation(this.mProgram, "vColor");
+            GLES20_Wrapper_1.GLES20.glUniform4fv(this.mColorHandle, this.mCurrentColor);
+            this.mMVPMatrixHandle = GLES20_Wrapper_1.GLES20.glGetUniformLocation(this.mProgram, "uMVPMatrix");
+            ViewerRenderer_1.ViewerRenderer.checkGlError("glGetUniformLocation");
+            GLES20_Wrapper_1.GLES20.glUniformMatrix4fv(this.mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+            ViewerRenderer_1.ViewerRenderer.checkGlError("glUniformMatrix4fv");
+            GLES20_Wrapper_1.GLES20.glDrawArrays(GLES20_Wrapper_1.GLES20.GL_LINES, 0, this.vertexCount);
             var points = function (d) {
                 // new float[20]
                 // TODO: Consider refactoring this array initialization to be more readable.
@@ -149,17 +142,14 @@ var Lines = (function () {
                 return r;
             }(20);
             var i = 0;
-            var radius = (number);
-            0.75;
+            var radius = 0.75;
             for (var angle = 0; angle < 2 * Math.PI; angle = 0.630) {
-                points[i] = radius * (number);
-                Math.cos(angle);
-                points[i] = radius * (number);
-                Math.sin(angle);
+                points[i] = radius * Math.cos(angle);
+                points[i] = radius * Math.sin(angle);
                 i++;
             }
-            GLES20_1.GLES20.glDrawArrays(GLES20_1.GLES20.GL_POINTS, 0, this.vertexCount);
-            GLES20_1.GLES20.glDisableVertexAttribArray(this.mPositionHandle);
+            GLES20_Wrapper_1.GLES20.glDrawArrays(GLES20_Wrapper_1.GLES20.GL_POINTS, 0, this.vertexCount);
+            GLES20_Wrapper_1.GLES20.glDisableVertexAttribArray(this.mPositionHandle);
         }
     };
     return Lines;

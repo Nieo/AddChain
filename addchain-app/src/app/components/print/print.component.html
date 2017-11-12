@@ -1,3 +1,101 @@
-<p>
-  print works!
-</p>
+
+<app-print-list class="print-list"></app-print-list>
+
+<div class="print-container">
+  <div class="data">
+    <div *ngIf="print != null">
+      <h1>Print</h1>
+      <div class="content-container">
+        <div class="part-container">
+          <div class="input-container" *ngIf="!createMode">
+            <label>SLM-ID:</label>
+            <input type="text" [(ngModel)]="print.slm_id" disabled/>
+          </div>
+          <div class="input-container">
+            <label>Build-ID:</label>
+            <input  type="text" [(ngModel)]="print.build_id" disabled="{{viewMode}}"/>
+          </div>
+          <div class="input-container">
+            <label>Operator:</label>
+            <input  type="text" [(ngModel)]="print.operator" disabled="{{viewMode}}"/>
+          </div>
+          <div class="input-container">
+            <label>Start Time:</label>
+            <input  type="text" [(ngModel)]="print.start_time" disabled="{{viewMode}}"/>
+          </div>
+          <div class="input-container">
+            <label>End Time:</label>
+            <input  type="text" [(ngModel)]="print.end_time" disabled="{{viewMode}}"/>
+          </div>
+          <div class="input-container">
+            <label>Print time:</label>
+            <input  type="number" [(ngModel)]="print.calculated_print_time" disabled="{{viewMode}}"/>
+          </div>
+          <div class="input-container">
+            <label>Machine Type:</label>
+            <input  type="text" [(ngModel)]="print.machine_type" disabled="{{viewMode}}"/>
+          </div>
+          <div class="input-container">
+            <label>Platform Material:</label>
+            <input  type="text" [(ngModel)]="print.platform_material" disabled="{{viewMode}}"/>
+          </div>
+          <div class="input-container">
+            <label>Platform Weight:</label>
+            <input  type="number" [(ngModel)]="print.platform_weight" disabled="{{viewMode}}"/>
+          </div>
+        </div>
+        <div class="part-container">
+          <div class="input-container">
+            <label>Powder Start Weight:</label>
+            <input  type="number" [(ngModel)]="print.powder_start_weight" disabled="{{viewMode}}"/>
+          </div>
+          <div class="input-container">
+            <label>Platform End Weight:</label>
+            <input  type="number" [(ngModel)]="print.powder_end_weight" disabled="{{viewMode}}"/>
+          </div>
+            <div class="input-container">
+              <label>Powder Waste:</label>
+              <input  type="number" [(ngModel)]="print.powder_waste" disabled="{{viewMode}}"/>
+            </div>
+            <div class="input-container">
+              <label>Powder Condition:</label>
+              <input  type="text" [(ngModel)]="print.powder_condition" disabled="{{viewMode}}"/>
+            </div>
+            <div class="input-container">
+              <label>Number of layers:</label>
+              <input  type="number" [(ngModel)]="print.number_of_layers" disabled="{{viewMode}}"/>
+            </div>
+            <div class="input-container">
+              <label>Min exposure time:</label>
+              <input  type="number" [(ngModel)]="print.min_exposure_time" disabled="{{viewMode}}"/>
+            </div>
+            <div class="input-container">
+              <label>DCP factor:</label>
+              <input  type="number" [(ngModel)]="print.dcp_factor" disabled="{{viewMode}}"/>
+            </div>
+            <div class="input-container">
+              <label>Base Cutting:</label>
+              <input  type="text" [(ngModel)]="print.base_cutting" disabled="{{viewMode}}"/>
+            </div>
+        </div>
+      </div>
+      <div class="input-container">
+        <label>Comment:</label>
+        <textarea [(ngModel)]="print.comment" disabled="{{viewMode}}"></textarea>
+      </div>
+    </div>
+
+    <div *ngIf="viewMode && !createMode">
+      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
+      <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
+    </div>
+    <div *ngIf="!viewMode && !createMode">
+      <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>
+      <button class="btn-rasied btn-success" (click)="save()">Save</button>
+    </div>
+    <div *ngIf="createMode">
+      <button class="btn-rasied btn-danger" (click)="reset()">Discard</button>
+      <button class="btn-rasied btn-success" (click)="create()">Create</button>
+    </div>
+  </div>
+</div>

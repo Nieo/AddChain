@@ -18,6 +18,7 @@ import { ViewerComponent } from './components/viewer/viewer.component';
 import { BuildListComponent } from './components/build-list/build-list.component';
 import {BuildService} from "./services/build.service";
 import {PrintService} from "./services/print.service";
+import { PrintListComponent } from './components/print-list/print-list.component';
 
 
 const appRoutes: Routes = [
@@ -25,7 +26,7 @@ const appRoutes: Routes = [
   {path: "project", component: ProjectComponent},
   {path: "design/:id", component: DesignComponent },
   {path: "build/:id", component: BuildDetailComponent },
-  {path: "print", component: PrintComponent },
+  {path: "print/:id", component: PrintComponent},
   {path: "part", component: PartComponent}
 ];
 
@@ -43,6 +44,7 @@ const appRoutes: Routes = [
     SpinnerComponent,
     ViewerComponent,
     BuildListComponent,
+    PrintListComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +55,7 @@ const appRoutes: Routes = [
     ),
     FormsModule
   ],
-  providers: [ DesignService, BuildService, PrintService],
+  providers: [DesignService, BuildService, PrintService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,3 +1,34 @@
-<p>
-  build-detail works!
-</p>
+
+<app-build-list class="build-list"></app-build-list>
+
+<div class="build-container">
+  <div class="data">
+    <div *ngIf="build != null">
+      <h1>Build</h1>
+      <div class="input-container" *ngIf="!createMode">
+        <label>ID:</label>
+        <input type="text" [(ngModel)]="build.build_id" disabled/>
+      </div>
+      <div class="input-container">
+        <label>Material:</label>
+        <input  type="text" [(ngModel)]="build.material" disabled="{{viewMode}}"/>
+      </div>
+      <div class="input-container">
+        <label>Comment:</label>
+        <textarea [(ngModel)]="build.comment" disabled="{{viewMode}}"></textarea>
+      </div>
+    </div>
+    <div *ngIf="viewMode && !createMode">
+      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
+      <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
+    </div>
+    <div *ngIf="!viewMode && !createMode">
+      <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>
+      <button class="btn-rasied btn-success" (click)="save()">Save</button>
+    </div>
+    <div *ngIf="createMode">
+      <button class="btn-rasied btn-danger" (click)="reset()">Discard</button>
+      <button class="btn-rasied btn-success" (click)="create()">Create</button>
+    </div>
+  </div>
+</div>

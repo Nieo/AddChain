@@ -1,0 +1,45 @@
+@import "../../../styles.scss";
+
+:host{
+  display: flex;
+  .design-list{
+    flex-grow: 1;
+  }
+  .build-container{
+    flex-grow: 2;
+    display: flex;
+  }
+}
+
+.stl-viewer {
+  width: 600px;
+  height: 600px;
+  background-color: black;
+}
+
+.container {
+  display: flex;
+  color: #000;
+  background-color: $lightAccent;
+}
+.data {
+  display: flex;
+  width: 500px;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  div {
+    flex-basis: auto;
+    margin:10px;
+    background-color: $lightShade;
+  }
+}
+
+.stl-container {
+  background-color: $lightShade;
+  margin: 10px;
+}
+
+h1, p {
+  margin: 10px;
+}

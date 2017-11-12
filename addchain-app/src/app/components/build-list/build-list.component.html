@@ -1,0 +1,9 @@
+<div [hidden]="builds != undefined">
+  <app-spinner></app-spinner>
+</div>
+<div class="list-container" [hidden]="builds == undefined">
+  <a [routerLink]="['/build', 'new']" class="btn-new">New</a>
+  <a *ngFor="let build of builds" [routerLink]="['/build', build.build_id]" [class.selected]="build.build_id == currentBuildID" >
+    {{build.build_id}}
+  </a>
+</div>

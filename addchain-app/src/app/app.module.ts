@@ -15,13 +15,16 @@ import { BuildDetailComponent } from './components/build-detail/build-detail.com
 import { DesignListComponent } from './components/design-list/design-list.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ViewerComponent } from './components/viewer/viewer.component';
+import { BuildListComponent } from './components/build-list/build-list.component';
+import {BuildService} from "./services/build.service";
+import {PrintService} from "./services/print.service";
 
 
 const appRoutes: Routes = [
   {path: "",  redirectTo: "project", pathMatch: "full"},
   {path: "project", component: ProjectComponent},
   {path: "design/:id", component: DesignComponent },
-  {path: "build", component: BuildDetailComponent },
+  {path: "build/:id", component: BuildDetailComponent },
   {path: "print", component: PrintComponent },
   {path: "part", component: PartComponent}
 ];
@@ -39,6 +42,7 @@ const appRoutes: Routes = [
     DesignListComponent,
     SpinnerComponent,
     ViewerComponent,
+    BuildListComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,7 +53,7 @@ const appRoutes: Routes = [
     ),
     FormsModule
   ],
-  providers: [ DesignService ],
+  providers: [ DesignService, BuildService, PrintService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

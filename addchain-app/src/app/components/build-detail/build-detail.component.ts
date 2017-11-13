@@ -70,7 +70,7 @@ export class BuildDetailComponent implements OnInit {
   }
   public reset(){
     this.build = JSON.parse(JSON.stringify(this.originalBuild));
-    this.viewMode = this.createMode? false: true;
+    this.viewMode = !this.createMode;
   }
   public remove(){
     this.buildService.deleteBuild(this.build)

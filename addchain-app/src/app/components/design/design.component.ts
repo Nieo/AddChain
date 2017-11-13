@@ -28,7 +28,6 @@ export class DesignComponent implements OnInit {
         .switchMap((params: ParamMap) => this.loadDesign("" + params.get('id'))).subscribe(
           design => {
             this.design = design;
-            console.log("SET",this.design);
             this.originalDesign = JSON.parse(JSON.stringify(design));
           }
       );

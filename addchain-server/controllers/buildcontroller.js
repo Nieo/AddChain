@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Build = require('../database/buildhandle');
+const buildHandle = require('../database/buildhandle');
 
 router.get('/', (req, res) => {
   const page = req.query.page !== undefined ? req.query.page : 0;
-  Build.getBuildList(page)
+  buildHandle.getBuildList(page)
     .then(data => {
       res.json(data);
     })
@@ -15,9 +15,14 @@ router.get('/', (req, res) => {
     })
 });
 router.get('/:id', (req, res) => {
-  Build.getBuild(req.params.id)
+  Promise.all([buildHandle.getBuild(req.params.id),
+    buildHandle.getRelatedDesigns(req.params.id),
+    buildHandle.getRelatedBuilds(req.params.id)])
     .then(data => {
-      res.json(data);
+      let build = data[0];
+      build.relatedDesigns = data[1];
+      build.relatedPrints = data[2];
+      res.json(build);
     })
     .catch(error => {
       console.log("Error: ", error);
@@ -26,7 +31,7 @@ router.get('/:id', (req, res) => {
     })
 });
 router.post('/', (req, res) => {
-  Build.createBuild(req.body)
+  buildHandle.createBuild(req.body)
     .then(data => {
       res.json(data);
     })
@@ -39,7 +44,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   let d = req.body;
   d.id = req.params.id;
-  Build.updateBuild(d)
+  buildHandle.updateBuild(d)
     .then(data => {
       res.json(data);
     })
@@ -50,7 +55,7 @@ router.put('/:id', (req, res) => {
     })
 });
 router.delete('/:id', (req, res) => {
-  Build.deleteBuild(req.params.id)
+  buildHandle.deleteBuild(req.params.id)
     .then(count => {
       res.status(200);
       res.json(count);

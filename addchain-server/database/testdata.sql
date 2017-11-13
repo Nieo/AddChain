@@ -39,13 +39,13 @@ insert into prepares (build_id, design_id, part_number) values (4, 4, 2500);
 insert into prints (build_id, operator, start_time, end_time, calculated_print_time, machine_type, platform_material, platform_weight, powder_start_weight, powder_end_weight, powder_waste, powder_condition, number_of_layers, min_exposure_time, dcp_factor, base_cutting, comment)
 	values (1, 'Kalle Persson', now(), (now() + interval '5 hours'), 48000, 'SLM 128', 'material D', 900, 2000, 1400, 200, 'New', 800, 7, 11234, 'Saw', 'A lot of waste on this one');
 insert into prints (build_id, operator, start_time, end_time, calculated_print_time, machine_type, platform_material, platform_weight, powder_start_weight, powder_end_weight, powder_waste, powder_condition, number_of_layers, min_exposure_time, dcp_factor, base_cutting, comment)
-	values (1, 'Kalle Persson', now(), (now() + interval '5 hours'), 48000, 'SLM 128', 'material D', 900, 2100, 1500, 200, 'New', 800, 7, 11234, 'Saw', 'Take two');
+	values (2, 'Kalle Persson', now(), (now() + interval '5 hours'), 48000, 'SLM 128', 'material D', 900, 2100, 1500, 200, 'New', 800, 7, 11234, 'Saw', 'Take two');
 insert into prints (build_id, operator, start_time, end_time, calculated_print_time, machine_type, platform_material, platform_weight, powder_start_weight, powder_end_weight, powder_waste, powder_condition, number_of_layers, min_exposure_time, dcp_factor, base_cutting, comment)
-	values (1, 'Björn Borg', now(), (now() + interval '10 hours'), 98000, 'SLM 128', 'material D', 1000, 3000, 1400, 200, 'Mixed', 800, 7, 11234, 'Saw', 'No comment');
+	values (3, 'Björn Borg', now(), (now() + interval '10 hours'), 98000, 'SLM 128', 'material D', 1000, 3000, 1400, 200, 'Mixed', 800, 7, 11234, 'Saw', 'No comment');
 insert into prints (build_id, operator, start_time, end_time, calculated_print_time, machine_type, platform_material, platform_weight, powder_start_weight, powder_end_weight, powder_waste, powder_condition, number_of_layers, min_exposure_time, dcp_factor, base_cutting, comment)
-	values (1, 'Pål Jönsson', now(), (now() + interval '6 hours'), 55000, 'SLM 256', 'material D', 1200, 4000, 400, 400, 'New', 800, 7, 11234, 'Manually removed', 'I have a comment');
+	values (4, 'Pål Jönsson', now(), (now() + interval '6 hours'), 55000, 'SLM 256', 'material D', 1200, 4000, 400, 400, 'New', 800, 7, 11234, 'Manually removed', 'I have a comment');
 insert into prints (build_id, operator, start_time, end_time, calculated_print_time, machine_type, platform_material, platform_weight, powder_start_weight, powder_end_weight, powder_waste, powder_condition, number_of_layers, min_exposure_time, dcp_factor, base_cutting, comment)
-	values (1, 'Pål Jönsson', now(), (now() + interval '7 hours'), 55000, 'SLM 256', 'material D', 1200, 4000, 400, 400, 'Reused 1 time', 800, 7, 11234, 'Manually removed', 'My hands are tired');
+	values (4, 'Pål Jönsson', now(), (now() + interval '7 hours'), 55000, 'SLM 256', 'material D', 1200, 4000, 400, 400, 'Reused 1 time', 800, 7, 11234, 'Manually removed', 'My hands are tired');
 
 -- Parts
 insert into parts (slm_id, part_number, comment) values (1, 1, '');

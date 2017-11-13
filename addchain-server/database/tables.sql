@@ -78,7 +78,7 @@ CREATE TABLE orders
 	project_id character varying(50) REFERENCES projects,
 	design_id integer REFERENCES designs,
 	quantity integer,
-	PRIMARY KEY (project_id, design_id)
+	PRIMARY KEY (design_id)
 );
 
 CREATE TABLE prepares

@@ -33,12 +33,13 @@ export class Matrix {
     }
 
     static rotateM(m: number[], mOffset: number, a: number, x: number, y: number, z: number) {
-        var temp: Array<number> = [32];
+        let temp: Array<number> = [32];
         Matrix.setRotateM(temp, 0, a, x, y, z);
         Matrix.multiplyMM(temp, 16, m, mOffset, temp, 0);
         // System.arraycopy(temp, 16, m, mOffset, 16);
-        m.splice(mOffset, 16);
-        m.concat(temp.slice(16, temp.length - 1))
+        for(let i:number = 0; i < 16 ; i++) {
+          m[i+mOffset] = temp[i];
+        }
     }
 
     static setRotateM(rm: number[], rmOffset: number, a: number, x: number, y: number, z: number) {

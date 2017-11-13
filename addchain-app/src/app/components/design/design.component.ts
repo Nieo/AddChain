@@ -28,10 +28,10 @@ export class DesignComponent implements OnInit {
         .switchMap((params: ParamMap) => this.loadDesign("" + params.get('id'))).subscribe(
           design => {
             this.design = design;
+            console.log("SET",this.design);
             this.originalDesign = JSON.parse(JSON.stringify(design));
           }
       );
-
   }
 
   private loadDesign(id: string):Promise<Design>{
@@ -40,7 +40,7 @@ export class DesignComponent implements OnInit {
       if(id === 'new') {
         this.viewMode = false;
         this.createMode = true;
-        resolve(new Design(0, "", ""));
+        resolve(new Design(0, "", "",[]));
       }else{
         this.viewMode = true;
         this.createMode = false;
@@ -73,7 +73,7 @@ export class DesignComponent implements OnInit {
   }
   public reset(){
     this.design = JSON.parse(JSON.stringify(this.originalDesign));
-    this.viewMode = this.createMode? false: true;
+    this.viewMode = !this.createMode;
   }
   public remove(){
     this.designService.deleteDesign(this.design)

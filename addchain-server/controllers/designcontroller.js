@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const design = require('../database/designhandle');
+const designHandle = require('../database/designhandle');
 
 router.get('/', (req, res) => {
   const page = req.query.page !== undefined ? req.query.page : 0;
-  design.getDesignList(page)
+  designHandle.getDesignList(page)
     .then(data => {
       res.json(data);
     })
@@ -15,18 +15,21 @@ router.get('/', (req, res) => {
     })
 });
 router.get('/:id', (req, res) => {
-  design.getDesign(req.params.id)
-    .then(data => {
-      res.json(data);
+    Promise.all([designHandle.getDesign(req.params.id), designHandle.getRelatedBuilds(req.params.id)])
+    .then(values => {
+      let design = values[0];
+      design.relatedBuilds = values[1];
+      console.log(design);
+      res.json(design);
     })
     .catch(error => {
       console.log("Error: ", error);
       res.status(500);
       res.end();
-    })
+    });
 });
 router.post('/', (req, res) => {
-  design.createDesign(req.body)
+  designHandle.createDesign(req.body)
     .then(data => {
       res.json(data);
     })
@@ -39,7 +42,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   let d = req.body;
   d.id = req.params.id;
-  design.updateDesign(d)
+  designHandle.updateDesign(d)
     .then(data => {
       res.json(data);
     })
@@ -50,7 +53,7 @@ router.put('/:id', (req, res) => {
     })
 });
 router.delete('/:id', (req, res) => {
-  design.deleteDesign(req.params.id)
+  designHandle.deleteDesign(req.params.id)
     .then(count => {
       res.status(200);
       res.json(count);

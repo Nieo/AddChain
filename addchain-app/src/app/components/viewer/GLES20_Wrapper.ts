@@ -1,8 +1,27 @@
 export class GLES20 {
     static set gl(value: WebGLRenderingContext) {
         this._gl = value;
+
+      this.GL_VERTEX_SHADER = value.VERTEX_SHADER;
+      this.GL_FRAGMENT_SHADER = value.FRAGMENT_SHADER;
+      this.GL_ONE = value.ONE;
+      this.GL_ONE_MINUS_SRC_ALPHA = value.ONE_MINUS_SRC_ALPHA;
+      this.GL_SRC_COLOR = value.SRC_COLOR;
+      this.GL_CONSTANT_COLOR = value.CONSTANT_COLOR;
+      this.GL_FLOAT = value.FLOAT;
+      this.GL_LINE_LOOP = value.LINE_LOOP;
+      this.GL_TRIANGLES = value.TRIANGLES;
+      this.GL_LINES = value.LINES;
+      this.GL_COLOR_BUFFER_BIT = value.COLOR_BUFFER_BIT;
+      this.GL_DEPTH_BUFFER_BIT = value.DEPTH_BUFFER_BIT;
+      this.GL_BLEND = value.BLEND;
+      this.GL_DEPTH_TEST = value.DEPTH_TEST;
+      this.GL_RGBA = value.RGBA;
+      this.GL_UNSIGNED_BYTE = value.UNSIGNED_BYTE;
+      this.GL_NO_ERROR = value.NO_ERROR;
+      this.GL_POINTS = value.POINTS;
     }
-    static GL_VERTEX_SHADER: number = 0x8B31;
+    static GL_VERTEX_SHADER: number = 0x8B31 ;
     static GL_FRAGMENT_SHADER: number = 0x8B30;
     static GL_ONE: number = 1;
     static GL_ONE_MINUS_SRC_ALPHA: number = 0x0303;
@@ -19,10 +38,11 @@ export class GLES20 {
     static GL_RGBA: number = 0x1908;
     static GL_UNSIGNED_BYTE: number = 0x1401;
     static GL_NO_ERROR: number = 0;
+    static GL_POINTS: number = 0x0000;
 
 
 
-    private static _gl: WebGLRenderingContext;
+  private static _gl: WebGLRenderingContext;
 
     static glBindAttribLocation(mProgram: WebGLProgram, index: number, name: string) {
         GLES20._gl.bindAttribLocation(mProgram, index, name);

@@ -290,6 +290,9 @@ export class StlObject {
             program,
             "a_Position"
         );
+        let buffer = GLES20.glCreateBuffer();
+      GLES20.glBindBuffer(GLES20.ARRAY_BUFFER, buffer);//Fixme
+      GLES20.glBufferData(GLES20.ARRAY_BUFFER, this.mTriangleBuffer, GLES20.STATIC_DRAW);
         ViewerRenderer.checkGlError("glGetAttribLocation");
         GLES20.glVertexAttribPointer_(
             this.mPositionHandle,
@@ -418,7 +421,7 @@ export class StlObject {
         } else {
           GLES20.glUseProgram(this.mProgram);
           GLES20.glDrawArrays(
-            GLES20.GL_POINTS,
+            GLES20.GL_TRIANGLES,
             0,
             this.vertexCount
           );

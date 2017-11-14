@@ -38,7 +38,7 @@ export class Matrix {
         Matrix.multiplyMM(temp, 16, m, mOffset, temp, 0);
         // System.arraycopy(temp, 16, m, mOffset, 16);
         for(let i:number = 0; i < 16 ; i++) {
-          m[i+mOffset] = temp[i];
+          m[i+mOffset] = temp[i+16];
         }
     }
 

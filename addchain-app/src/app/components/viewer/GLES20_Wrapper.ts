@@ -20,6 +20,8 @@ export class GLES20 {
       this.GL_UNSIGNED_BYTE = value.UNSIGNED_BYTE;
       this.GL_NO_ERROR = value.NO_ERROR;
       this.GL_POINTS = value.POINTS;
+      this.ARRAY_BUFFER = value.ARRAY_BUFFER;
+      this.STATIC_DRAW = value.STATIC_DRAW;
     }
     static GL_VERTEX_SHADER: number = 0x8B31 ;
     static GL_FRAGMENT_SHADER: number = 0x8B30;
@@ -39,6 +41,9 @@ export class GLES20 {
     static GL_UNSIGNED_BYTE: number = 0x1401;
     static GL_NO_ERROR: number = 0;
     static GL_POINTS: number = 0x0000;
+    static ARRAY_BUFFER:number = 0x8892;
+    static STATIC_DRAW: number = -1;
+
 
 
 
@@ -53,7 +58,7 @@ export class GLES20 {
     }
 
     static glCreateProgram(): WebGLProgram {
-        return GLES20._gl.createProgram();
+      return GLES20._gl.createProgram();
     }
 
     static glLinkProgram(mProgram: WebGLProgram) {
@@ -73,7 +78,7 @@ export class GLES20 {
     }
 
     static glVertexAttribPointer_(index: number, size: number, type: number, normalized: boolean, stride: number, mTriangleBuffer: Float32Array) {
-        GLES20._gl.vertexAttribPointer(index,size,type,normalized,stride,0)
+      GLES20._gl.vertexAttribPointer(index,size,type,normalized,stride,0)
     }
 
     static glVertexAttribPointer(index: number, size: number, type: number, normalized: boolean, stride: number, offset: number) {
@@ -147,4 +152,16 @@ export class GLES20 {
     static glDisableVertexAttribArray(index: number) {
         GLES20._gl.disableVertexAttribArray(index);
     }
+
+  static glBindBuffer(target: number, buffer: WebGLBuffer) {
+    GLES20._gl.bindBuffer(target, buffer);
+  }
+
+  static glCreateBuffer():WebGLBuffer {
+    return GLES20._gl.createBuffer();
+  }
+
+  static glBufferData(target:number, size: number| ArrayBufferView| ArrayBuffer, usage:number){
+    GLES20._gl.bufferData(target, size, usage);
+  }
 }

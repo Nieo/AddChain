@@ -1126,13 +1126,10 @@ export class ViewerRenderer {
       this.mModelMatrix,
       0
     );
-    // System.arraycopy( TODO fix me
-    //     this.mTemporaryMatrix,
-    //     0,
-    //     this.mModelMatrix,
-    //     0,
-    //     16
-    // );
+    // System.arraycopy(this.mTemporaryMatrix,0,this.mModelMatrix,0,16);
+    for(let i:number = 0; i < 16 ; i++) {
+      this.mModelMatrix[i] = this.mTemporaryMatrix[i];
+    }
     Matrix.multiplyMM(
       this.mMVPMatrix,
       0,

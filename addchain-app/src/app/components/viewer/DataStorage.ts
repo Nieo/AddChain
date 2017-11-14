@@ -246,7 +246,7 @@ export class DataStorage {
         let x: number;
         let y: number;
         let z: number;
-        for (let i: number = 0; i < this.mNormalList.length; i = 3) {
+        for (let i: number = 0; i < this.mNormalList.length; i += 3) {
             x = <number> this.mNormalList[i];
             y = <number> this.mNormalList[i + 1];
             z = <number> this.mNormalList[i + 2];
@@ -254,7 +254,7 @@ export class DataStorage {
                 this.mNormalArray[index] = x;
                 this.mNormalArray[index + 1] = y;
                 this.mNormalArray[index + 2] = z;
-                index = 3;
+                index += 3;
             }
         }
     }

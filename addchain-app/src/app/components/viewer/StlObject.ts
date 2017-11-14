@@ -161,7 +161,8 @@ export class StlObject {
         //         // TODO: Warning - no scope specified; assuming 'this'.
         //         this.WitboxFaces.WITBOX_HEIGHT
         // ];
-        //if (this.mData.getMaxX() > auxPlate[0] || this.mData.getMinX() < -auxPlate[0] || this.mData.getMaxY() > auxPlate[1] || this.mData.getMinY() < -auxPlate[1] || this.mData.getMaxZ() > auxPlate[2] || this.mData.getMinZ() < 0) this.setColor(StlObject.colorObjectOut); else this.setColor(StlObject.colorNormal);
+        //if (this.mData.getMaxX() > auxPlate[0] || this.mData.getMinX() < -auxPlate[0] || this.mData.getMaxY() > auxPlate[1] || this.mData.getMinY() < -auxPlate[1] || this.mData.getMaxZ() > auxPlate[2] || this.mData.getMinZ() < 0) this.setColor(StlObject.colorObjectOut); else
+        this.setColor(StlObject.colorNormal);
         let vbb: ArrayBuffer = new ArrayBuffer(this.mVertexArray.length * 4);
         // vbb.order(ByteOrder.nativeOrder());
         this.mTriangleBuffer = new Float32Array(vbb);
@@ -290,14 +291,14 @@ export class StlObject {
             "a_Position"
         );
         ViewerRenderer.checkGlError("glGetAttribLocation");
-        // GLES20.glVertexAttribPointer(
-        //     this.mPositionHandle,
-        //     StlObject.COORDS_PER_VERTEX,
-        //     GLES20.GL_FLOAT,
-        //     false,
-        //     this.VERTEX_STRIDE,
-        //     this.mTriangleBuffer
-        // );
+        GLES20.glVertexAttribPointer_(
+            this.mPositionHandle,
+            StlObject.COORDS_PER_VERTEX,
+            GLES20.GL_FLOAT,
+            false,
+            this.VERTEX_STRIDE,
+            this.mTriangleBuffer
+        );
         GLES20.glEnableVertexAttribArray(this.mPositionHandle);
         if (this.mOverhang) {
             this.mColorOverhangHandle = GLES20.glGetUniformLocation(
@@ -343,12 +344,10 @@ export class StlObject {
         );
 
         ViewerRenderer.checkGlError("glGetUniformLocation a_Color");
-        // GLES20.glUniform4fv(
-        //     this.mColorHandle,
-        //     1,
-        //     this.mColor,
-        //     0
-        // );
+        GLES20.glUniform4fv(
+            this.mColorHandle,
+            new Float32Array(this.mColor)
+        );
 
         ViewerRenderer.checkGlError("glUniform4fv");
         this.mNormalHandle = GLES20.glGetAttribLocation(
@@ -357,14 +356,14 @@ export class StlObject {
         );
 
         ViewerRenderer.checkGlError("glGetAttribLocation");
-        // GLES20.glVertexAttribPointer(
-        //     this.mNormalHandle,
-        //     StlObject.COORDS_PER_VERTEX,
-        //     GLES20.GL_FLOAT,
-        //     false,
-        //     this.VERTEX_STRIDE,
-        //     this.mNormalBuffer
-        // );
+        GLES20.glVertexAttribPointer_(
+            this.mNormalHandle,
+            StlObject.COORDS_PER_VERTEX,
+            GLES20.GL_FLOAT,
+            false,
+            this.VERTEX_STRIDE,
+            this.mNormalBuffer
+        );
         GLES20.glEnableVertexAttribArray(this.mNormalHandle);
         this.mMVPMatrixHandle = GLES20.glGetUniformLocation(
             program,
@@ -416,10 +415,13 @@ export class StlObject {
                     3
                 );
             }
-        } else GLES20.glDrawArrays(
-            GLES20.GL_TRIANGLES,
+        } else {
+          GLES20.glUseProgram(this.mProgram);
+          GLES20.glDrawArrays(
+            GLES20.GL_POINTS,
             0,
             this.vertexCount
-        );
+          );
+        }
     }
 }

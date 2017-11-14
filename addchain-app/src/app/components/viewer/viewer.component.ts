@@ -38,9 +38,21 @@ export class ViewerComponent implements OnInit {
   }
 
   private setUpDataStorage(dataStorage:DataStorage):void {
+
+
     dataStorage.addVertex(1);
     dataStorage.addVertex(0.2);
     dataStorage.addVertex(-1);
+
+    dataStorage.addVertex(1);
+    dataStorage.addVertex(1);
+    dataStorage.addVertex(0);
+
+    dataStorage.addVertex(0);
+    dataStorage.addVertex(0.5);
+    dataStorage.addVertex(1);
+
+
     dataStorage.setMaxX(1);
     dataStorage.setMaxY(1);
     dataStorage.setMaxZ(1);
@@ -48,9 +60,23 @@ export class ViewerComponent implements OnInit {
     dataStorage.setMinX(0);
     dataStorage.setMinY(0);
     dataStorage.setMinZ(0);
+
+    dataStorage.addNormal(1);
+    dataStorage.addNormal(0);
+    dataStorage.addNormal(-1);
+
+    dataStorage.addNormal(0);
+    dataStorage.addNormal(0);
+    dataStorage.addNormal(1);
+
+    dataStorage.addNormal(-1);
+    dataStorage.addNormal(0);
+    dataStorage.addNormal(-1);
+
     dataStorage.fillVertexArray(true);
     dataStorage.fillNormalArray();
     dataStorage.centerSTL(true);
+
   }
 
 

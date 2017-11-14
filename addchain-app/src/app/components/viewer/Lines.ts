@@ -214,16 +214,16 @@ export class Lines {
                 break;
         }
         if (this.mCoordsArray != null) {
-            // this.mVertexBuffer.put(this.mCoordsArray);
+            this.mVertexBuffer.set(this.mCoordsArray);
             // this.mVertexBuffer.position(0);
-            // GLES20.glVertexAttribPointer(
-            //     this.mPositionHandle,
-            //     this.COORDS_PER_VERTEX,
-            //     GLES20.GL_FLOAT,
-            //     false,
-            //     this.vertexStride,
-            //     this.mVertexBuffer
-            // );
+            GLES20.glVertexAttribPointer_(
+                this.mPositionHandle,
+                this.COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT,
+                false,
+                this.vertexStride,
+                this.mVertexBuffer
+            );
             this.mColorHandle = GLES20.glGetUniformLocation(
                 this.mProgram,
                 "vColor"

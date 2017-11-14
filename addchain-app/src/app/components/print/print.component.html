@@ -13,7 +13,8 @@
           </div>
           <div class="input-container">
             <label>Build-ID:</label>
-            <input  type="text" [(ngModel)]="print.build_id" disabled="{{viewMode}}"/>
+            <a class="buildlink" [routerLink]="['/build', print.build_id]">{{print.build_id}}</a>
+            <!--<input  type="text" [(ngModel)]="print.build_id" disabled="{{viewMode}}"/>-->
           </div>
           <div class="input-container">
             <label>Operator:</label>
@@ -98,4 +99,8 @@
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
+
+</div>
+<div class="list-container">
+
 </div>

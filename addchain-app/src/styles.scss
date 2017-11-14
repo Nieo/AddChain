@@ -191,6 +191,7 @@ command on the parent element.
     border-radius: 5px;
     padding: 5px;
     margin: 5px;
+    text-decoration: none;
     &:disabled {
       border: 1px solid $lightShade;
       background-color: $lightShade;

@@ -161,7 +161,7 @@ export class StlObject {
         //         // TODO: Warning - no scope specified; assuming 'this'.
         //         this.WitboxFaces.WITBOX_HEIGHT
         // ];
-        if (this.mData.getMaxX() > auxPlate[0] || this.mData.getMinX() < -auxPlate[0] || this.mData.getMaxY() > auxPlate[1] || this.mData.getMinY() < -auxPlate[1] || this.mData.getMaxZ() > auxPlate[2] || this.mData.getMinZ() < 0) this.setColor(StlObject.colorObjectOut); else this.setColor(StlObject.colorNormal);
+        //if (this.mData.getMaxX() > auxPlate[0] || this.mData.getMinX() < -auxPlate[0] || this.mData.getMaxY() > auxPlate[1] || this.mData.getMinY() < -auxPlate[1] || this.mData.getMaxZ() > auxPlate[2] || this.mData.getMinZ() < 0) this.setColor(StlObject.colorObjectOut); else this.setColor(StlObject.colorNormal);
         let vbb: ArrayBuffer = new ArrayBuffer(this.mVertexArray.length * 4);
         // vbb.order(ByteOrder.nativeOrder());
         this.mTriangleBuffer = new Float32Array(vbb);

@@ -12,16 +12,22 @@ export class ViewerComponent implements OnInit {
   private viewer: ViewerRenderer;
 
   constructor() {
-    this.viewer = new ViewerRenderer( [new DataStorage()],0,0);
+    let dataStorage = new DataStorage();
+    this.setUpDataStorage(dataStorage);
+    this.viewer = new ViewerRenderer( [dataStorage],0,1);
   }
 
   ngOnInit() {
+
     let canvas = <HTMLCanvasElement> document.getElementById('stl-viewer');
-    let gl = this.setupWebGL(canvas);
+
+    const gl = canvas.getContext("webgl");
+    GLES20.gl = gl;
 
     GLES20.glClearColor(0, 1, 1, 1.0);
     GLES20.glClear(gl.COLOR_BUFFER_BIT);
     this.viewer.onSurfaceCreated();
+    this.viewer.onSurfaceChanged(canvas.width, canvas.height);
     this.renderFrame();
 
   }
@@ -31,11 +37,21 @@ export class ViewerComponent implements OnInit {
     window.requestAnimationFrame(time => this.renderFrame());
   }
 
+  private setUpDataStorage(dataStorage:DataStorage):void {
+    dataStorage.addVertex(1);
+    dataStorage.addVertex(0.2);
+    dataStorage.addVertex(-1);
+    dataStorage.setMaxX(1);
+    dataStorage.setMaxY(1);
+    dataStorage.setMaxZ(1);
 
-
-  private setupWebGL(canvas: HTMLCanvasElement) {
-    let gl = canvas.getContext("experimental-webgl", {});
-    GLES20.gl = gl;
-    return gl;
+    dataStorage.setMinX(0);
+    dataStorage.setMinY(0);
+    dataStorage.setMinZ(0);
+    dataStorage.fillVertexArray(true);
+    dataStorage.fillNormalArray();
+    dataStorage.centerSTL(true);
   }
+
+
 }

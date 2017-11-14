@@ -164,7 +164,10 @@ export class Matrix {
         m[mOffset + 15] = 0;
     }
 
-    static setLookAtM(rm: number[], rmOffset: number, eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number) {
+    static setLookAtM(rm: number[], rmOffset: number,
+                      eyeX: number, eyeY: number, eyeZ: number,
+                      centerX: number, centerY: number, centerZ: number,
+                      upX: number, upY: number, upZ: number) {
         // See the OpenGL GLUT documentation for gluLookAt for a description
         // of the algorithm. We implement it in a straightforward way:
         let fx: number = centerX - eyeX;
@@ -300,7 +303,7 @@ export class Matrix {
     }
 
     static transposeM(mTrans: number[], mTransOffset: number, m: number[], mOffset: number) {
-        for (var i: number = 0; i < 4; i++) {
+        for (let i: number = 0; i < 4; i++) {
             let mBase: number = i * 4 + mOffset;
             mTrans[i + mTransOffset] = m[mBase];
             mTrans[i + 4 + mTransOffset] = m[mBase + 1];

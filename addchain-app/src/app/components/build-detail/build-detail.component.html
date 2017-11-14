@@ -31,16 +31,20 @@
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
-  <div class="list-container">
+  <div>
     <h2>Contains:</h2>
-    <a *ngFor="let design of build.relatedDesigns" [routerLink]="['/design', design.design_id]">
-      {{design.name}} x {{design.copies}}
-    </a>
+    <div *ngIf="build != null" class="list-container">
+      <a *ngFor="let design of build.relatedDesigns" [routerLink]="['/design', design.design_id]">
+        {{design.name}} x {{design.copies}}
+      </a>
+    </div>
   </div>
-  <div class="list-container">
-    <h2>Runs: {{build.relatedPrints?.length}}</h2>
-    <a *ngFor="let print of build.relatedPrints" [routerLink]="['/print', print.slm_id]">
-      {{print.start_time | date : 'yyyy-MM-dd' }}
-    </a>
+  <div >
+    <h2>Runs:{{build?.relatedPrints.length}}</h2>
+    <div *ngIf="build != null" class="list-container">
+      <a *ngFor="let print of build.relatedPrints" [routerLink]="['/print', print.slm_id]">
+        {{print.start_time | date : 'yyyy-MM-dd' }}
+      </a>
+    </div>
   </div>
 </div>

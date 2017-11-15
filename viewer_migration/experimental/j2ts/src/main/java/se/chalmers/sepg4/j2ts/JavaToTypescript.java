@@ -808,7 +808,7 @@ public class JavaToTypescript {
 
         @Override
         public String visit(AssignExpr n, Void arg) {
-            return visit(n.getTarget()) + " = " + visit(n.getValue());
+            return visit(n.getTarget()) + " " + n.getOperator().asString() + " " + visit(n.getValue());
         }
 
         @Override

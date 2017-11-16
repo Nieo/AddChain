@@ -1,0 +1,36 @@
+@import "../../../styles.scss";
+
+:host{
+  display: flex;
+  .design-list{
+    flex-grow: 1;
+  }
+  .project-container{
+    flex-grow: 2;
+    display: flex;
+  }
+}
+
+
+.container {
+  display: flex;
+  color: #000;
+  background-color: $lightAccent;
+}
+.data {
+  display: flex;
+  width: 500px;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  div {
+    flex-basis: auto;
+    margin:10px;
+    background-color: $lightShade;
+  }
+}
+
+
+h1, p {
+  margin: 10px;
+}

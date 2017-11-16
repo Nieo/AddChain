@@ -11,7 +11,7 @@ insert into designs (name, description, stl_file_pointer, stl_preview) values ('
 -- Orders
 insert into orders (project_id, design_id, quantity) values ('Tremiljarder 10', 1, 4);
 insert into orders (project_id, design_id, quantity) values ('Tremiljarder 10', 2, 1);
-insert into orders (project_id, design_id, quantity) values ('abc123', 3, 2);
+insert into orders (project_id, design_id, quantity) values ('abc123', 3, 1);
 insert into orders (project_id, design_id, quantity) values ('abc123', 4, 5000);
 
 -- Builds

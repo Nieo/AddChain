@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   Promise.all([buildHandle.getBuild(req.params.id),
     buildHandle.getRelatedDesigns(req.params.id),
-    buildHandle.getRelatedBuilds(req.params.id)])
+    buildHandle.getRelatedPrints(req.params.id)])
     .then(data => {
       let build = data[0];
       build.relatedDesigns = data[1];

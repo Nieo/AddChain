@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+const projectController = require('./controllers/projectcontroller');
 const designController = require('./controllers/designcontroller');
 const buildController = require('./controllers/buildcontroller');
 const printController = require('./controllers/printcontroller');
@@ -26,6 +27,7 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use('/projects', projectController);
 app.use('/designs', designController);
 app.use('/builds', buildController);
 app.use('/prints', printController);

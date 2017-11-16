@@ -1,3 +1,44 @@
-<p>
-  project works!
-</p>
+
+<app-project-list class="project"></app-project-list>
+
+<div class="project-container">
+  <div class="data">
+    <div *ngIf="project != null">
+      <h1>Project</h1>
+      <div class="input-container" *ngIf="!createMode">
+        <label>ID:</label>
+        <input type="text" [(ngModel)]="project.project_id" disabled/>
+      </div>
+      <div class="input-container">
+        <label>Name:</label>
+        <input  type="text" [(ngModel)]="project.name" disabled="{{viewMode}}"/>
+      </div>
+      <div class="input-container">
+        <label>Customer:</label>
+        <input  type="text" [(ngModel)]="project.customer" disabled="{{viewMode}}"/>
+      </div>
+      <div class="input-container">
+        <label>Description:</label>
+        <textarea [(ngModel)]="project.description" disabled="{{viewMode}}"></textarea>
+      </div>
+    </div>
+    <div *ngIf="viewMode && !createMode">
+      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
+      <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
+    </div>
+    <div *ngIf="!viewMode && !createMode">
+      <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>
+      <button class="btn-rasied btn-success" (click)="save()">Save</button>
+    </div>
+    <div *ngIf="createMode">
+      <button class="btn-rasied btn-danger" (click)="reset()">Discard</button>
+      <button class="btn-rasied btn-success" (click)="create()">Create</button>
+    </div>
+  </div>
+  <div class="list-container">
+    <h2>Order:</h2>
+    <a *ngFor="let design of project.relatedDesigns" [routerLink]="['/design', design.design_id]">
+      {{design.name}} x {{design.quantity}}
+    </a>
+  </div>
+</div>

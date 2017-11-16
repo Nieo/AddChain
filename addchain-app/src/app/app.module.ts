@@ -19,11 +19,13 @@ import { BuildListComponent } from './components/build-list/build-list.component
 import {BuildService} from "./services/build.service";
 import {PrintService} from "./services/print.service";
 import { PrintListComponent } from './components/print-list/print-list.component';
+import {ProjectService} from "./services/project.service";
+import { ProjectListComponent } from './components/project-list/project-list.component';
 
 
 const appRoutes: Routes = [
   {path: "",  redirectTo: "project", pathMatch: "full"},
-  {path: "project", component: ProjectComponent},
+  {path: "project/:id", component: ProjectComponent},
   {path: "design/:id", component: DesignComponent },
   {path: "build/:id", component: BuildDetailComponent },
   {path: "print/:id", component: PrintComponent},
@@ -45,6 +47,7 @@ const appRoutes: Routes = [
     ViewerComponent,
     BuildListComponent,
     PrintListComponent,
+    ProjectListComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,7 +58,7 @@ const appRoutes: Routes = [
     ),
     FormsModule
   ],
-  providers: [DesignService, BuildService, PrintService],
+  providers: [ProjectService, DesignService, BuildService, PrintService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

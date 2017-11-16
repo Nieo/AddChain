@@ -12,6 +12,6 @@ exports.getRelatedDesigns = (id) => {
   ' WHERE build_id=$1' +
   ' GROUP BY prepares.design_id, designs.name',[id]);
 };
-exports.getRelatedBuilds = (id) => {
+exports.getRelatedPrints = (id) => {
   return db.any('SELECT prints.slm_id, prints.start_time FROM prints WHERE prints.build_id=$1', [id]);
 };

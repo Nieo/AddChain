@@ -35,7 +35,7 @@
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
-  <div class="list-container">
+  <div *ngIf="project != null" class="list-container">
     <h2>Order:</h2>
     <a *ngFor="let design of project.relatedDesigns" [routerLink]="['/design', design.design_id]">
       {{design.name}} x {{design.quantity}}

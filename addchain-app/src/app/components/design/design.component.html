@@ -40,7 +40,7 @@
       {{project.name}}
     </a>
   </div>
-  <div class="list-container">
+  <div *ngIf="design != null" class="list-container">
     <h2>Used in:</h2>
     <a *ngFor="let build of design.relatedBuilds" [routerLink]="['/build', build.build_id]">
       Build:{{build.build_id}}, copies:{{build.count}}

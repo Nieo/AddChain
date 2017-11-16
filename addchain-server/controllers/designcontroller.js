@@ -15,10 +15,13 @@ router.get('/', (req, res) => {
     })
 });
 router.get('/:id', (req, res) => {
-    Promise.all([designHandle.getDesign(req.params.id), designHandle.getRelatedBuilds(req.params.id)])
+    Promise.all([designHandle.getDesign(req.params.id),
+        designHandle.getRelatedBuilds(req.params.id),
+        designHandle.getRelatedProject(req.params.id)])
     .then(values => {
       let design = values[0];
       design.relatedBuilds = values[1];
+      design.relatedProject = values[2];
       console.log(design);
       res.json(design);
     })

@@ -34,6 +34,12 @@
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
+  <div *ngIf="design != null" class="list-container">
+    <h2>Project:</h2>
+    <a *ngFor="let project of design.relatedProject" [routerLink]="['/project', project.project_id]">
+      {{project.name}}
+    </a>
+  </div>
   <div class="list-container">
     <h2>Used in:</h2>
     <a *ngFor="let build of design.relatedBuilds" [routerLink]="['/build', build.build_id]">

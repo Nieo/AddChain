@@ -3,6 +3,7 @@ export class Design {
   name: string;
   description: string;
   relatedBuilds: RelatedBuild[];
+  relatedProject: RelatedProject[];
   constructor(design_id: number, name: string, description: string, relatedBuilds: RelatedBuild[]){
     this.design_id = design_id;
     this.name = name;
@@ -18,4 +19,9 @@ export class RelatedBuild {
     this.build_id = build_id;
     this.count = count;
   }
+}
+
+export class RelatedProject {
+  project_id: string;
+  name: string;
 }

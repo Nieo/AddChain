@@ -24,13 +24,19 @@ export class BuildService {
     return this.http.get(this.baseUrl + id)
       .toPromise()
       .then(response => response as Build)
-      .catch( error => console.log(error) );
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
   createBuild(build: Build): Promise<Build> {
     return this.http.post(this.baseUrl, build)
       .toPromise()
       .then(response => response as Build)
-      .catch(error => console.log(error));
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
   updateBuild(build: Build): Promise<Build> {
     return this.http.put(this.baseUrl + build.build_id, build)
@@ -48,7 +54,10 @@ export class BuildService {
     return this.http.delete(this.baseUrl + build.build_id)
       .toPromise()
       .then( response => true)
-      .catch(error => console.log(error));
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
 
 }

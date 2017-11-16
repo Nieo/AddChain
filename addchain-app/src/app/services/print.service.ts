@@ -23,13 +23,19 @@ export class PrintService {private baseUrl: string = "http://localhost:3000/prin
     return this.http.get(this.baseUrl + id)
       .toPromise()
       .then(response => response as Print)
-      .catch( error => console.log(error) );
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
   createPrint(print: Print): Promise<Print> {
     return this.http.post(this.baseUrl, print)
       .toPromise()
       .then(response => response as Print)
-      .catch(error => console.log(error));
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
   updatePrint(print: Print): Promise<Print> {
     return this.http.put(this.baseUrl + print.slm_id, print)

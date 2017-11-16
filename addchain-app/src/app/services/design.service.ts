@@ -27,13 +27,19 @@ export class DesignService {
     return this.http.get(this.baseUrl + id)
     .toPromise()
     .then(response => response as Design)
-    .catch( error => console.log(error) );
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
   createDesign(design: Design): Promise<Design> {
     return this.http.post(this.baseUrl, design)
       .toPromise()
       .then(response => response as Design)
-      .catch(error => console.log(error));
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
   updateDesign(design: Design): Promise<Design> {
     return this.http.put(this.baseUrl + design.design_id, design)
@@ -51,6 +57,9 @@ export class DesignService {
     return this.http.delete(this.baseUrl + design.design_id)
       .toPromise()
       .then( response => true)
-      .catch(error => console.log(error));
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
 }

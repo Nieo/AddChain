@@ -24,13 +24,19 @@ export class ProjectService {
     return this.http.get(this.baseUrl + id)
       .toPromise()
       .then(response => response as Project)
-      .catch( error => console.log(error) );
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
   createProject(project: Project): Promise<Project> {
     return this.http.post(this.baseUrl, project)
       .toPromise()
       .then(response => response as Project)
-      .catch(error => console.log(error));
+      .catch( error => {
+        console.log(error);
+        throw error;
+      });
   }
   updateProject(project: Project): Promise<Project> {
     return this.http.put(this.baseUrl + project.project_id, project)

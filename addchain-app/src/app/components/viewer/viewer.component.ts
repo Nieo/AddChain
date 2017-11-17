@@ -10,6 +10,9 @@ import {DataStorage} from "./DataStorage";
 })
 export class ViewerComponent implements OnInit {
   private viewer: ViewerRenderer;
+  private moveFlag : boolean = false;
+  private startPosX: number = 0;
+  private startPosY: number = 0;
 
   constructor() {
     let dataStorage = new DataStorage();
@@ -35,6 +38,24 @@ export class ViewerComponent implements OnInit {
   private renderFrame():void {
     this.viewer.onDrawFrame();
     window.requestAnimationFrame(time => this.renderFrame());
+  }
+  public mouseDown(event: MouseEvent):void{
+    this.moveFlag = true;
+    this.startPosX = event.clientX;
+    this.startPosY = event.clientY
+  }
+  public mouseMove(event: MouseEvent):void{
+    if(this.moveFlag){
+        // Calculate the difference between startPos coordinates and event cordinates rotate accordingly
+      let difX:number = this.startPosX - event.clientX;
+      let difY:number = this.startPosY - event.clientY;
+      console.log("difX =" + difX + " difY=" + difY);
+    }
+  }
+  public mouseUp():void{
+    this.moveFlag = false;
+    this.startPosX = 0;
+    this.startPosY = 0;
   }
 
   private setUpDataStorage(dataStorage:DataStorage):void {

@@ -39,11 +39,19 @@ export class ViewerComponent implements OnInit {
     this.viewer.onDrawFrame();
     window.requestAnimationFrame(time => this.renderFrame());
   }
+
+  public mouseWheelDownFunc(event):void{
+    // Zoom out
+  }
+  public mouseWheelUpFunc(event):void{
+    // Zoom in
+  }
   public mouseDown(event: MouseEvent):void{
     this.moveFlag = true;
     this.startPosX = event.clientX;
     this.startPosY = event.clientY
   }
+
   public mouseMove(event: MouseEvent):void{
     if(this.moveFlag){
         // Calculate the difference between startPos coordinates and event cordinates rotate accordingly
@@ -52,6 +60,7 @@ export class ViewerComponent implements OnInit {
       console.log("difX =" + difX + " difY=" + difY);
     }
   }
+
   public mouseUp():void{
     this.moveFlag = false;
     this.startPosX = 0;

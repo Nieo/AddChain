@@ -73,10 +73,13 @@ export class StlObject {
     private mLightPosHandle: WebGLUniformLocation;
 
     static readonly COORDS_PER_VERTEX: number = 3;
+    static readonly COORDS_PER_NORMAL: number = 3;
+    static readonly BYTES_PER_FLOAT: number = 4;
 
     static readonly COLORS_PER_VERTEX: number = 4;
 
-    private readonly VERTEX_STRIDE: number = StlObject.COORDS_PER_VERTEX * 4;
+    private readonly VERTEX_STRIDE: number = StlObject.COORDS_PER_VERTEX * StlObject.BYTES_PER_FLOAT
+      + StlObject.COORDS_PER_NORMAL * StlObject.BYTES_PER_FLOAT;
 
     mColor: number[];
 
@@ -141,7 +144,7 @@ export class StlObject {
         this.mData = data;
         this.mVertexArray = this.mData.getVertexArray();
         this.mNormalArray = this.mData.getNormalArray();
-        this.vertexCount = this.mVertexArray.length / StlObject.COORDS_PER_VERTEX;
+        this.vertexCount = this.mVertexArray.length / (StlObject.COORDS_PER_VERTEX + StlObject.COORDS_PER_NORMAL);
         this.configStlObject(state);
         let auxPlate: number[];
         // if (
@@ -292,15 +295,15 @@ export class StlObject {
         );
         let buffer = GLES20.glCreateBuffer();
       GLES20.glBindBuffer(GLES20.ARRAY_BUFFER, buffer);//Fixme
-      GLES20.glBufferData(GLES20.ARRAY_BUFFER, this.mTriangleBuffer, GLES20.STATIC_DRAW);
+      GLES20.glBufferData(GLES20.ARRAY_BUFFER, this.mTriangleBuffer.length, GLES20.STATIC_DRAW);
         ViewerRenderer.checkGlError("glGetAttribLocation");
-        GLES20.glVertexAttribPointer_(
+        GLES20.glVertexAttribPointer(
             this.mPositionHandle,
             StlObject.COORDS_PER_VERTEX,
             GLES20.GL_FLOAT,
             false,
             this.VERTEX_STRIDE,
-            this.mTriangleBuffer
+            0
         );
         GLES20.glEnableVertexAttribArray(this.mPositionHandle);
         if (this.mOverhang) {
@@ -359,13 +362,13 @@ export class StlObject {
         );
 
         ViewerRenderer.checkGlError("glGetAttribLocation");
-        GLES20.glVertexAttribPointer_(
+        GLES20.glVertexAttribPointer(
             this.mNormalHandle,
-            StlObject.COORDS_PER_VERTEX,
+            StlObject.COORDS_PER_NORMAL,
             GLES20.GL_FLOAT,
             false,
             this.VERTEX_STRIDE,
-            this.mNormalBuffer
+            StlObject.COORDS_PER_VERTEX * StlObject.BYTES_PER_FLOAT
         );
         GLES20.glEnableVertexAttribArray(this.mNormalHandle);
         this.mMVPMatrixHandle = GLES20.glGetUniformLocation(
@@ -419,7 +422,6 @@ export class StlObject {
                 );
             }
         } else {
-          GLES20.glUseProgram(this.mProgram);
           GLES20.glDrawArrays(
             GLES20.GL_TRIANGLES,
             0,

@@ -284,9 +284,19 @@ export class DataStorage {
             this.mTypeArray[i] = <number> this.mTypeList[i];
         }
     }
-
+    // This is some arcane webGL requirement.
     public getVertexArray(): number[] {
-        return this.mVertexArray;
+        // [v,v,v,n,n,n,....]
+        let r = [];
+        for(let i = 0; i < this.mVertexArray.length; i += 3) {
+          r.push(this.mVertexArray[i]);
+          r.push(this.mVertexArray[i + 1]);
+          r.push(this.mVertexArray[i + 2]);
+          r.push(this.mNormalArray[i]);
+          r.push(this.mNormalArray[i + 1]);
+          r.push(this.mNormalArray[i + 2]);
+        }
+        return r;
     }
 
     public getNormalArray(): number[] {

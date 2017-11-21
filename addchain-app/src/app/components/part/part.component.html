@@ -1,4 +1,38 @@
-<p>
-  part works!
-</p>
-<app-viewer></app-viewer>
+<app-part-list class="part-list"></app-part-list>
+
+<div class="part-container">
+  <div class="data">
+    <div *ngIf="part != null">
+      <h1>Part</h1>
+      <div class="input-container" *ngIf="!createMode">
+        <label>Part Number:</label>
+        <input type="text" [(ngModel)]="part.part_number" disabled="{{viewMode}}"/>
+      </div>
+      <div class="input-container">
+        <label>Comment:</label>
+        <textarea [(ngModel)]="part.comment" disabled="{{viewMode}}"></textarea>
+      </div>
+
+
+    </div>
+    <div *ngIf="!(!viewMode||createMode)">
+      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
+      <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
+    </div>
+    <div *ngIf="!(viewMode||createMode)">
+      <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>
+      <button class="btn-rasied btn-success" (click)="save()">Save</button>
+    </div>
+    <div *ngIf="createMode">
+      <button class="btn-rasied btn-danger" (click)="reset()">Discard</button>
+      <button class="btn-rasied btn-success" (click)="create()">Create</button>
+    </div>
+  </div>
+  <div class="list-container">
+    <h2>Uses:</h2>
+    <a *ngFor="let postprocesses of part.relatedPostProcesses" [routerLink]="['/postprocesses', postprocesses.post_process_id]">
+      {{postprocesses.name}}
+    </a>
+  </div>
+</div>
+

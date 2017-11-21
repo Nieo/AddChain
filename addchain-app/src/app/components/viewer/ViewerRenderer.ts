@@ -893,9 +893,9 @@ export class ViewerRenderer {
 
   public onSurfaceCreated(): void {
     GLES20.glClearColor(
-      0.149,
-      0.196,
-      0.22,
+      0.649,
+      0.696,
+      0.62,
       1.0
     );
     GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);

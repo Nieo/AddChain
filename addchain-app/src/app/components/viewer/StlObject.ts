@@ -5,7 +5,7 @@ import {ViewerRenderer} from "./ViewerRenderer";
 import {GLES20} from "./GLES20_Wrapper";
 
 export class StlObject {
-    private readonly vertexShaderCode: string = // A constant representing the combined model/view/projection matrix.
+  private readonly vertexShaderCode: string = // A constant representing the combined model/view/projection matrix.
     "uniform mat4 u_MVPMatrix;      \n" + // A constant representing the combined model/view matrix.
     "uniform mat4 u_MVMatrix;       \n" + // The position of the light in eye space.
     "uniform vec3 u_LightPos;       \n" + // Color information we will pass in.
@@ -23,7 +23,7 @@ export class StlObject {
     "   v_Color = a_Color * diffuse;                                       			\n" + // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
     "   gl_Position = u_MVPMatrix * a_Position;                            			\n" + "}                                                                     			\n";
 
-    private readonly vertexOverhangShaderCode: string = // A constant representing the combined model/view/projection matrix.
+  private readonly vertexOverhangShaderCode: string = // A constant representing the combined model/view/projection matrix.
     "uniform mat4 u_MVPMatrix;      \n" + // A constant representing the combined model/view matrix.
     "uniform mat4 u_MVMatrix;       \n" + // A constant representing the model
     "uniform mat4 u_MMatrix;       \n" + // The position of the light in eye space.
@@ -41,392 +41,417 @@ export class StlObject {
     "   vec3 lightVector = normalize(u_LightPos - modelViewVertex);        			\n" + // pointing in the same direction then it will get max illumination.
     "   float diffuse = abs(dot(modelViewNormal, lightVector));       				\n" + // Attenuate the light based on distance.
     "   diffuse +=0.2;  											   				\n" + // Multiply the color by the illumination level. It will be interpolated across the triangle.
-    "	vec3 overhang = normalize(vec3(u_MMatrix * vec4(a_Normal, 0.0)));   		\n" + "	if (overhang.z < -a_CosAngle) 												\n" + "	{                             			 									\n" + "		v_Color = a_ColorOverhang * diffuse;									\n" + "	} else {																	\n" + "   	v_Color = a_Color * diffuse;                                    		\n" + "	}                             			 									\n" + // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
+    "	vec3 overhang = normalize(vec3(u_MMatrix * vec4(a_Normal, 0.0)));   		\n" +
+    "	if (overhang.z < -a_CosAngle) 												\n" +
+    "	{                             			 									\n" +
+    "		v_Color = a_ColorOverhang * diffuse;									\n" +
+    "	} else {																	\n" +
+    "   	v_Color = a_Color * diffuse;                                    		\n" +
+    "	}                             			 									\n" + // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
     "   gl_Position = u_MVPMatrix * a_Position;                            			\n" + "}                                                                     			\n";
 
-    private readonly fragmentShaderCode: string = // Set the default precision to medium. We don't need as high of a precision in the fragment shader.
+  private readonly fragmentShaderCode: string = // Set the default precision to medium. We don't need as high of a precision in the fragment shader.
     "precision mediump float;       \n" + // This is the color from the vertex shader interpolated across the triangle per fragment.
     "varying vec4 v_Color;          \n" + // The entry point for our fragment shader.
     "void main()                    \n" + "{                              \n" + // Pass the color directly through the pipeline.
     "   gl_FragColor = v_Color;     \n" + "}   " + "" + "            					\n";
 
-    private readonly mProgram: WebGLProgram;
+  private readonly mProgram: WebGLProgram;
 
-    private readonly mProgramOverhang: WebGLProgram;
+  private readonly mProgramOverhang: WebGLProgram;
 
-    private mPositionHandle: number;
+  private mPositionHandle: number;
 
-    private mColorHandle: WebGLUniformLocation;
+  private mColorHandle: WebGLUniformLocation;
 
-    private mColorOverhangHandle: WebGLUniformLocation;
+  private mColorOverhangHandle: WebGLUniformLocation;
 
-    private mCosAngleHandle: WebGLUniformLocation;
+  private mCosAngleHandle: WebGLUniformLocation;
 
-    private mNormalHandle: number;
+  private mNormalHandle: number;
 
-    private mMMatrixHandle: WebGLUniformLocation;
+  private mMMatrixHandle: WebGLUniformLocation;
 
-    private mMVPMatrixHandle: WebGLUniformLocation;
+  private mMVPMatrixHandle: WebGLUniformLocation;
 
-    private mMVMatrixHandle: WebGLUniformLocation;
+  private mMVMatrixHandle: WebGLUniformLocation;
 
-    private mLightPosHandle: WebGLUniformLocation;
+  private mLightPosHandle: WebGLUniformLocation;
 
-    static readonly COORDS_PER_VERTEX: number = 3;
-    static readonly COORDS_PER_NORMAL: number = 3;
-    static readonly BYTES_PER_FLOAT: number = 4;
+  static readonly COORDS_PER_VERTEX: number = 3;
+  static readonly COORDS_PER_NORMAL: number = 3;
+  static readonly BYTES_PER_FLOAT: number = 4;
 
-    static readonly COLORS_PER_VERTEX: number = 4;
+  static readonly COLORS_PER_VERTEX: number = 4;
 
-    private readonly VERTEX_STRIDE: number = StlObject.COORDS_PER_VERTEX * StlObject.BYTES_PER_FLOAT
-      + StlObject.COORDS_PER_NORMAL * StlObject.BYTES_PER_FLOAT;
+  private readonly VERTEX_STRIDE: number = StlObject.COORDS_PER_VERTEX * StlObject.BYTES_PER_FLOAT
+    + StlObject.COORDS_PER_NORMAL * StlObject.BYTES_PER_FLOAT;
 
-    mColor: number[];
+  mColor: number[];
 
-    public static colorNormal: number[] = [
-        0.2,
-        0.709803922,
-        0.898039216,
-        1.0
-    ];
+  public static colorNormal: number[] = [
+    0.2,
+    0.709803922,
+    0.898039216,
+    1.0
+  ];
 
-    public static colorOverhang: number[] = [
+  public static colorOverhang: number[] = [
+    1,
+    0,
+    0,
+    1.0
+  ];
+
+  public static colorSelectedObject: number[] = [
+    1.0,
+    1.0,
+    0.0,
+    1.0
+  ];
+
+  public static colorObjectOut: number[] = [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ];
+
+  public static colorObjectOutTouched: number[] = [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ];
+
+  private readonly mData: DataStorage;
+
+  mVertexArray: number[];
+
+  mNormalArray: number[];
+
+  private readonly mNormalBuffer: Float32Array;
+
+  private readonly mTriangleBuffer: Float32Array;
+
+  private readonly vertexCount: number;
+
+  private mTransparent: boolean;
+
+  private mXray: boolean;
+
+  private mOverhang: boolean;
+
+  private mOverhangAngle: number = 45;
+
+  private buffer: ArrayBuffer;
+
+
+  private _webGLBuffer;
+
+  public constructor(
+    data: DataStorage,
+    state: number) {
+    this.mData = data;
+    this.mVertexArray = this.mData.getVertexArray();
+    this.buffer = new ArrayBuffer(this.mVertexArray.length);
+    for(let i = 0; i < this.mVertexArray.length; i++) {
+      this.buffer[i] = this.mVertexArray[i];
+    }
+
+    this.mNormalArray = this.mData.getNormalArray();
+    this.vertexCount = this.mVertexArray.length / this.VERTEX_STRIDE;
+    this.configStlObject(state);
+    let auxPlate: number[];
+    // if (
+    //     // TODO: Warning - no scope specified; assuming 'this'.
+    //     this.ViewerMainFragment.getCurrentPlate() != null) {
+    //     auxPlate =
+    //         // TODO: Warning - no scope specified; assuming 'this'.
+    //         this.ViewerMainFragment.getCurrentPlate();
+    // } else auxPlate = [
+    //
+    //         // TODO: Warning - no scope specified; assuming 'this'.
+    //         this.WitboxFaces.WITBOX_LONG,
+    //
+    //         // TODO: Warning - no scope specified; assuming 'this'.
+    //         this.WitboxFaces.WITBOX_WITDH,
+    //
+    //         // TODO: Warning - no scope specified; assuming 'this'.
+    //         this.WitboxFaces.WITBOX_HEIGHT
+    // ];
+    //if (this.mData.getMaxX() > auxPlate[0] || this.mData.getMinX() < -auxPlate[0] || this.mData.getMaxY() > auxPlate[1] || this.mData.getMinY() < -auxPlate[1] || this.mData.getMaxZ() > auxPlate[2] || this.mData.getMinZ() < 0) this.setColor(StlObject.colorObjectOut); else
+    this.setColor(StlObject.colorNormal);
+    let vbb: ArrayBuffer = new ArrayBuffer(this.mVertexArray.length * 4);
+    // vbb.order(ByteOrder.nativeOrder());
+    this.mTriangleBuffer = new Float32Array(vbb);
+    this.mTriangleBuffer.set(this.mVertexArray,0);
+    // this.mTriangleBuffer.(0);
+    let nbb: ArrayBuffer = new ArrayBuffer(this.mNormalArray.length * 4);
+    // nbb.order(ByteOrder.nativeOrder());
+    this.mNormalBuffer = new Float32Array(nbb);
+    this.mNormalBuffer.set(this.mNormalArray,0);
+    // this.mNormalBuffer.position(0);
+    let vertexOverhangShader: WebGLShader =
+      ViewerRenderer.loadShader(
+        GLES20.GL_VERTEX_SHADER,
+        this.vertexOverhangShaderCode
+      );
+    let vertexShader: WebGLShader=
+      ViewerRenderer.loadShader(
+        GLES20.GL_VERTEX_SHADER,
+        this.vertexShaderCode
+      );
+    let fragmentShader: WebGLShader=
+      ViewerRenderer.loadShader(
+        GLES20.GL_FRAGMENT_SHADER,
+        this.fragmentShaderCode
+      );
+    this.mProgram = GLES20.glCreateProgram();
+    this.mProgramOverhang = GLES20.glCreateProgram();
+    GLES20.glAttachShader(
+      this.mProgram,
+      vertexShader
+    );
+    GLES20.glAttachShader(
+      this.mProgram,
+      fragmentShader
+    );
+    GLES20.glAttachShader(
+      this.mProgramOverhang,
+      vertexOverhangShader
+    );
+    GLES20.glAttachShader(
+      this.mProgramOverhang,
+      fragmentShader
+    );
+    GLES20.glBindAttribLocation(
+      this.mProgram,
+      0,
+      "a_Position"
+    );
+    GLES20.glBindAttribLocation(
+      this.mProgram,
+      1,
+      "a_Normal"
+    );
+    GLES20.glBindAttribLocation(
+      this.mProgramOverhang,
+      0,
+      "a_Position"
+    );
+    GLES20.glBindAttribLocation(
+      this.mProgramOverhang,
+      1,
+      "a_Normal"
+    );
+    GLES20.glLinkProgram(this.mProgram);
+    GLES20.glLinkProgram(this.mProgramOverhang);
+
+    this._webGLBuffer =GLES20.glCreateBuffer();
+    GLES20.glBindBuffer(GLES20.ARRAY_BUFFER, this._webGLBuffer);
+    GLES20.glBufferData(GLES20.ARRAY_BUFFER, this.buffer, GLES20.STATIC_DRAW);
+    this.mPositionHandle = GLES20.glGetAttribLocation(
+      this.mProgram,
+      "a_Position"
+    );
+    GLES20.glVertexAttribPointer(
+      this.mPositionHandle,
+      StlObject.COORDS_PER_VERTEX,
+      GLES20.GL_FLOAT,
+      false,
+      this.VERTEX_STRIDE,
+      0
+    );
+    this.mNormalHandle = GLES20.glGetAttribLocation(
+      this.mProgram,
+      "a_Normal"
+    );
+    GLES20.glVertexAttribPointer(
+      this.mNormalHandle,
+      StlObject.COORDS_PER_NORMAL,
+      GLES20.GL_FLOAT,
+      false,
+      this.VERTEX_STRIDE,
+      StlObject.COORDS_PER_VERTEX * StlObject.BYTES_PER_FLOAT
+    );
+    GLES20.glEnableVertexAttribArray(this.mPositionHandle);
+    GLES20.glEnableVertexAttribArray(this.mNormalHandle);
+  }
+
+  public configStlObject(state: number) : void {
+    // switch (state) {
+    //     case
+    //         // TODO: Warning - no scope specified; assuming 'this'.
+    //         this.ViewerSurfaceView.XRAY:
+    //         this.setXray(true);
+    //         break;
+    //     case
+    //         // TODO: Warning - no scope specified; assuming 'this'.
+    //         this.ViewerSurfaceView.TRANSPARENT:
+    //         this.setTransparent(true);
+    //         break;
+    //     case
+    //         // TODO: Warning - no scope specified; assuming 'this'.
+    //         this.ViewerSurfaceView.OVERHANG:
+    //         this.setOverhang(true);
+    //         break;
+    // }
+  }
+
+  public setTransparent(transparent: boolean) : void {
+    this.mTransparent = transparent;
+  }
+
+  public setXray(xray: boolean) : void {
+    this.mXray = xray;
+  }
+
+  public setOverhang(overhang: boolean) : void {
+    this.mOverhang = overhang;
+  }
+
+  public setColor(c: number[]) : void {
+    this.mColor = c;
+  }
+
+  public draw(
+    mvpMatrix: number[],
+    mvMatrix: number[],
+    lightVector: number[],
+    mMatrix: number[]) : void {
+    let program: WebGLProgram = this.mProgram;
+    if (this.mOverhang) {
+      program = this.mProgramOverhang;
+      GLES20.glUseProgram(this.mProgramOverhang);
+    } else {
+      program = this.mProgram;
+      GLES20.glUseProgram(this.mProgram);
+    }
+    if (this.mTransparent) GLES20.glBlendFunc(
+      GLES20.GL_ONE,
+      GLES20.GL_ONE_MINUS_SRC_ALPHA
+    ); else GLES20.glBlendFunc(
+      GLES20.GL_SRC_COLOR,
+      GLES20.GL_CONSTANT_COLOR
+    );
+
+    ViewerRenderer.checkGlError("glGetAttribLocation");
+    // GLES20.glBindBuffer(GLES20.ARRAY_BUFFER, this._webGLBuffer);
+
+
+    if (this.mOverhang) {
+      this.mColorOverhangHandle = GLES20.glGetUniformLocation(
+        program,
+        "a_ColorOverhang"
+      );
+      ViewerRenderer.checkGlError("glGetUniformLocation COLOROVERHANG");
+      GLES20.glUniform4fv(
+        this.mColorOverhangHandle,
+        new  Float32Array(StlObject.colorOverhang)
+      );
+
+      ViewerRenderer.checkGlError("glUniform4fv");
+      this.mCosAngleHandle = GLES20.glGetUniformLocation(
+        program,
+        "a_CosAngle"
+      );
+
+      ViewerRenderer.checkGlError("glGetUniformLocation");
+      GLES20.glUniform1f(
+        this.mCosAngleHandle,
+        <number> Math.cos((this.mOverhangAngle) * Math.PI / 180)
+      );
+      this.mMMatrixHandle = GLES20.glGetUniformLocation(
+        program,
+        "u_MMatrix"
+      );
+
+      ViewerRenderer.checkGlError("glGetUniformLocation");
+      GLES20.glUniformMatrix4fv(
+        this.mMMatrixHandle,
         1,
+        false,
+        mMatrix,
+        0
+      );
+
+      ViewerRenderer.checkGlError("glUniformMatrix4fv");
+    }
+    this.mColorHandle = GLES20.glGetUniformLocation(
+      program,
+      "a_Color"
+    );
+
+    ViewerRenderer.checkGlError("glGetUniformLocation a_Color");
+    GLES20.glUniform4fv(
+      this.mColorHandle,
+      new Float32Array(this.mColor)
+    );
+
+    ViewerRenderer.checkGlError("glUniform4fv");
+
+
+    ViewerRenderer.checkGlError("glGetAttribLocation");
+    // GLES20.glBindBuffer(GLES20.ARRAY_BUFFER, this._webGLBuffer);
+
+    this.mMVPMatrixHandle = GLES20.glGetUniformLocation(
+      program,
+      "u_MVPMatrix"
+    );
+
+    ViewerRenderer.checkGlError("glGetUniformLocation");
+    GLES20.glUniformMatrix4fv(
+      this.mMVPMatrixHandle,
+      1,
+      false,
+      mvpMatrix,
+      0
+    );
+
+    ViewerRenderer.checkGlError("glUniformMatrix4fv");
+    this.mMVMatrixHandle = GLES20.glGetUniformLocation(
+      program,
+      "u_MVMatrix"
+    );
+
+    ViewerRenderer.checkGlError("glGetUniformLocation");
+    GLES20.glUniformMatrix4fv(
+      this.mMVMatrixHandle,
+      1,
+      false,
+      mvMatrix,
+      0
+    );
+    ViewerRenderer.checkGlError("glUniformMatrix4fv");
+    this.mLightPosHandle = GLES20.glGetUniformLocation(
+      program,
+      "u_LightPos"
+    );
+
+    ViewerRenderer.checkGlError("glGetUniformLocation");
+    GLES20.glUniform3f(
+      this.mLightPosHandle,
+      lightVector[0],
+      lightVector[1],
+      lightVector[2]
+    );
+    ViewerRenderer.checkGlError("glUniform3f");
+    if (this.mXray) {
+      for (let i: number = 0; i < this.vertexCount / StlObject.COORDS_PER_VERTEX; i++) {
+        GLES20.glDrawArrays(
+          GLES20.GL_LINE_LOOP,
+          i * 3,
+          3
+        );
+      }
+    } else {
+      console.log(this.vertexCount);
+      GLES20.glDrawArrays(
+        GLES20.GL_TRIANGLES,
         0,
-        0,
-        1.0
-    ];
-
-    public static colorSelectedObject: number[] = [
-        1.0,
-        1.0,
-        0.0,
-        1.0
-    ];
-
-    public static colorObjectOut: number[] = [
-        1.0,
-        1.0,
-        1.0,
-        1.0
-    ];
-
-    public static colorObjectOutTouched: number[] = [
-        1.0,
-        1.0,
-        1.0,
-        1.0
-    ];
-
-    private readonly mData: DataStorage;
-
-    mVertexArray: number[];
-
-    mNormalArray: number[];
-
-    private readonly mNormalBuffer: Float32Array;
-
-    private readonly mTriangleBuffer: Float32Array;
-
-    private readonly vertexCount: number;
-
-    private mTransparent: boolean;
-
-    private mXray: boolean;
-
-    private mOverhang: boolean;
-
-    private mOverhangAngle: number = 45;
-
-    public constructor(
-            data: DataStorage,
-            state: number) {
-        this.mData = data;
-        this.mVertexArray = this.mData.getVertexArray();
-        this.mNormalArray = this.mData.getNormalArray();
-        this.vertexCount = this.mVertexArray.length / (StlObject.COORDS_PER_VERTEX + StlObject.COORDS_PER_NORMAL);
-        this.configStlObject(state);
-        let auxPlate: number[];
-        // if (
-        //     // TODO: Warning - no scope specified; assuming 'this'.
-        //     this.ViewerMainFragment.getCurrentPlate() != null) {
-        //     auxPlate =
-        //         // TODO: Warning - no scope specified; assuming 'this'.
-        //         this.ViewerMainFragment.getCurrentPlate();
-        // } else auxPlate = [
-        //
-        //         // TODO: Warning - no scope specified; assuming 'this'.
-        //         this.WitboxFaces.WITBOX_LONG,
-        //
-        //         // TODO: Warning - no scope specified; assuming 'this'.
-        //         this.WitboxFaces.WITBOX_WITDH,
-        //
-        //         // TODO: Warning - no scope specified; assuming 'this'.
-        //         this.WitboxFaces.WITBOX_HEIGHT
-        // ];
-        //if (this.mData.getMaxX() > auxPlate[0] || this.mData.getMinX() < -auxPlate[0] || this.mData.getMaxY() > auxPlate[1] || this.mData.getMinY() < -auxPlate[1] || this.mData.getMaxZ() > auxPlate[2] || this.mData.getMinZ() < 0) this.setColor(StlObject.colorObjectOut); else
-        this.setColor(StlObject.colorNormal);
-        let vbb: ArrayBuffer = new ArrayBuffer(this.mVertexArray.length * 4);
-        // vbb.order(ByteOrder.nativeOrder());
-        this.mTriangleBuffer = new Float32Array(vbb);
-        this.mTriangleBuffer.set(this.mVertexArray,0);
-        // this.mTriangleBuffer.(0);
-        let nbb: ArrayBuffer = new ArrayBuffer(this.mNormalArray.length * 4);
-        // nbb.order(ByteOrder.nativeOrder());
-        this.mNormalBuffer = new Float32Array(nbb);
-        this.mNormalBuffer.set(this.mNormalArray,0);
-        // this.mNormalBuffer.position(0);
-        let vertexOverhangShader: WebGLShader =
-            ViewerRenderer.loadShader(
-            GLES20.GL_VERTEX_SHADER,
-            this.vertexOverhangShaderCode
-        );
-        let vertexShader: WebGLShader=
-            ViewerRenderer.loadShader(
-            GLES20.GL_VERTEX_SHADER,
-            this.vertexShaderCode
-        );
-        let fragmentShader: WebGLShader=
-            ViewerRenderer.loadShader(
-            GLES20.GL_FRAGMENT_SHADER,
-            this.fragmentShaderCode
-        );
-        this.mProgram = GLES20.glCreateProgram();
-        this.mProgramOverhang = GLES20.glCreateProgram();
-        GLES20.glAttachShader(
-            this.mProgram,
-            vertexShader
-        );
-        GLES20.glAttachShader(
-            this.mProgram,
-            fragmentShader
-        );
-        GLES20.glAttachShader(
-            this.mProgramOverhang,
-            vertexOverhangShader
-        );
-        GLES20.glAttachShader(
-            this.mProgramOverhang,
-            fragmentShader
-        );
-        GLES20.glBindAttribLocation(
-            this.mProgram,
-            0,
-            "a_Position"
-        );
-        GLES20.glBindAttribLocation(
-            this.mProgram,
-            1,
-            "a_Normal"
-        );
-        GLES20.glBindAttribLocation(
-            this.mProgramOverhang,
-            0,
-            "a_Position"
-        );
-        GLES20.glBindAttribLocation(
-            this.mProgramOverhang,
-            1,
-            "a_Normal"
-        );
-        GLES20.glLinkProgram(this.mProgram);
-        GLES20.glLinkProgram(this.mProgramOverhang);
+        this.vertexCount
+      );
     }
-
-    public configStlObject(state: number) : void {
-        // switch (state) {
-        //     case
-        //         // TODO: Warning - no scope specified; assuming 'this'.
-        //         this.ViewerSurfaceView.XRAY:
-        //         this.setXray(true);
-        //         break;
-        //     case
-        //         // TODO: Warning - no scope specified; assuming 'this'.
-        //         this.ViewerSurfaceView.TRANSPARENT:
-        //         this.setTransparent(true);
-        //         break;
-        //     case
-        //         // TODO: Warning - no scope specified; assuming 'this'.
-        //         this.ViewerSurfaceView.OVERHANG:
-        //         this.setOverhang(true);
-        //         break;
-        // }
-    }
-
-    public setTransparent(transparent: boolean) : void {
-        this.mTransparent = transparent;
-    }
-
-    public setXray(xray: boolean) : void {
-        this.mXray = xray;
-    }
-
-    public setOverhang(overhang: boolean) : void {
-        this.mOverhang = overhang;
-    }
-
-    public setColor(c: number[]) : void {
-        this.mColor = c;
-    }
-
-    public draw(
-            mvpMatrix: number[],
-            mvMatrix: number[],
-            lightVector: number[],
-            mMatrix: number[]) : void {
-        let program: WebGLProgram = this.mProgram;
-        if (this.mOverhang) {
-            program = this.mProgramOverhang;
-            GLES20.glUseProgram(this.mProgramOverhang);
-        } else {
-            program = this.mProgram;
-            GLES20.glUseProgram(this.mProgram);
-        }
-        if (this.mTransparent) GLES20.glBlendFunc(
-            GLES20.GL_ONE,
-            GLES20.GL_ONE_MINUS_SRC_ALPHA
-        ); else GLES20.glBlendFunc(
-            GLES20.GL_SRC_COLOR,
-            GLES20.GL_CONSTANT_COLOR
-        );
-        this.mPositionHandle = GLES20.glGetAttribLocation(
-            program,
-            "a_Position"
-        );
-        let buffer = GLES20.glCreateBuffer();
-      GLES20.glBindBuffer(GLES20.ARRAY_BUFFER, buffer);//Fixme
-      GLES20.glBufferData(GLES20.ARRAY_BUFFER, this.mTriangleBuffer.length, GLES20.STATIC_DRAW);
-        ViewerRenderer.checkGlError("glGetAttribLocation");
-        GLES20.glVertexAttribPointer(
-            this.mPositionHandle,
-            StlObject.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT,
-            false,
-            this.VERTEX_STRIDE,
-            0
-        );
-        GLES20.glEnableVertexAttribArray(this.mPositionHandle);
-        if (this.mOverhang) {
-            this.mColorOverhangHandle = GLES20.glGetUniformLocation(
-                program,
-                "a_ColorOverhang"
-            );
-            ViewerRenderer.checkGlError("glGetUniformLocation COLOROVERHANG");
-            GLES20.glUniform4fv(
-                this.mColorOverhangHandle,
-                new  Float32Array(StlObject.colorOverhang)
-            );
-
-            ViewerRenderer.checkGlError("glUniform4fv");
-            this.mCosAngleHandle = GLES20.glGetUniformLocation(
-                program,
-                "a_CosAngle"
-            );
-
-            ViewerRenderer.checkGlError("glGetUniformLocation");
-            GLES20.glUniform1f(
-                this.mCosAngleHandle,
-                <number> Math.cos((this.mOverhangAngle) * Math.PI / 180)
-            );
-            this.mMMatrixHandle = GLES20.glGetUniformLocation(
-                program,
-                "u_MMatrix"
-            );
-
-            ViewerRenderer.checkGlError("glGetUniformLocation");
-            GLES20.glUniformMatrix4fv(
-                this.mMMatrixHandle,
-                1,
-                false,
-                mMatrix,
-                0
-            );
-
-            ViewerRenderer.checkGlError("glUniformMatrix4fv");
-        }
-        this.mColorHandle = GLES20.glGetUniformLocation(
-            program,
-            "a_Color"
-        );
-
-        ViewerRenderer.checkGlError("glGetUniformLocation a_Color");
-        GLES20.glUniform4fv(
-            this.mColorHandle,
-            new Float32Array(this.mColor)
-        );
-
-        ViewerRenderer.checkGlError("glUniform4fv");
-        this.mNormalHandle = GLES20.glGetAttribLocation(
-            program,
-            "a_Normal"
-        );
-
-        ViewerRenderer.checkGlError("glGetAttribLocation");
-        GLES20.glVertexAttribPointer(
-            this.mNormalHandle,
-            StlObject.COORDS_PER_NORMAL,
-            GLES20.GL_FLOAT,
-            false,
-            this.VERTEX_STRIDE,
-            StlObject.COORDS_PER_VERTEX * StlObject.BYTES_PER_FLOAT
-        );
-        GLES20.glEnableVertexAttribArray(this.mNormalHandle);
-        this.mMVPMatrixHandle = GLES20.glGetUniformLocation(
-            program,
-            "u_MVPMatrix"
-        );
-
-        ViewerRenderer.checkGlError("glGetUniformLocation");
-        GLES20.glUniformMatrix4fv(
-            this.mMVPMatrixHandle,
-            1,
-            false,
-            mvpMatrix,
-            0
-        );
-
-        ViewerRenderer.checkGlError("glUniformMatrix4fv");
-        this.mMVMatrixHandle = GLES20.glGetUniformLocation(
-            program,
-            "u_MVMatrix"
-        );
-
-        ViewerRenderer.checkGlError("glGetUniformLocation");
-        GLES20.glUniformMatrix4fv(
-            this.mMVMatrixHandle,
-            1,
-            false,
-            mvMatrix,
-            0
-        );
-        ViewerRenderer.checkGlError("glUniformMatrix4fv");
-        this.mLightPosHandle = GLES20.glGetUniformLocation(
-            program,
-            "u_LightPos"
-        );
-
-        ViewerRenderer.checkGlError("glGetUniformLocation");
-        GLES20.glUniform3f(
-            this.mLightPosHandle,
-            lightVector[0],
-            lightVector[1],
-            lightVector[2]
-        );
-        ViewerRenderer.checkGlError("glUniform3f");
-        if (this.mXray) {
-            for (let i: number = 0; i < this.vertexCount / StlObject.COORDS_PER_VERTEX; i++) {
-                GLES20.glDrawArrays(
-                    GLES20.GL_LINE_LOOP,
-                    i * 3,
-                    3
-                );
-            }
-        } else {
-          GLES20.glDrawArrays(
-            GLES20.GL_TRIANGLES,
-            0,
-            this.vertexCount
-          );
-        }
-    }
+  }
 }

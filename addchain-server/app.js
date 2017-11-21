@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const designController = require('./controllers/designcontroller');
 const buildController = require('./controllers/buildcontroller');
 const printController = require('./controllers/printcontroller');
+const searchController = require('./controllers/searchcontroller');
 
 app.use(bodyParser.json());
 
@@ -29,6 +30,7 @@ app.use(function(req, res, next) {
 app.use('/designs', designController);
 app.use('/builds', buildController);
 app.use('/prints', printController);
+app.use('/search', searchController);
 
 app.listen(3000, () => {
   console.log('App listening on port 3000!');

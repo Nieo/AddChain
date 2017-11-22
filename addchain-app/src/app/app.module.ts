@@ -23,6 +23,8 @@ import {ProjectService} from "./services/project.service";
 import { ProjectListComponent } from './components/project-list/project-list.component';
 import {PartListComponent} from "./components/part-list/part-list.component";
 import {PartService} from "./services/part.service";
+import { SearchComponent } from './components/search/search.component';
+import {SearchService} from "./services/search.service";
 
 
 const appRoutes: Routes = [
@@ -31,7 +33,8 @@ const appRoutes: Routes = [
   {path: "design/:id", component: DesignComponent },
   {path: "build/:id", component: BuildDetailComponent },
   {path: "print/:id", component: PrintComponent},
-  {path: "part/:id", component: PartComponent}
+  {path: "part/:id", component: PartComponent},
+  {path: "search/:query", component: SearchComponent}
 ];
 
 
@@ -50,7 +53,8 @@ const appRoutes: Routes = [
     BuildListComponent,
     PrintListComponent,
     ProjectListComponent,
-    PartListComponent
+    PartListComponent,
+    SearchComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,7 +65,7 @@ const appRoutes: Routes = [
     ),
     FormsModule
   ],
-  providers: [ProjectService, DesignService, BuildService, PrintService, PartService],
+  providers: [ProjectService, DesignService, BuildService, PrintService, PartService, SearchService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

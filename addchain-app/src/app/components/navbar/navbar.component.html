@@ -8,7 +8,7 @@
     <a class="btn" routerLink="/part/1">Part</a>
     <div class="input-box">
       <p>Search:</p>
-      <input type="text">
+      <input type="text" #query (keyup.enter)="onEnter(query.value)">
     </div>
   </div>
 </div>

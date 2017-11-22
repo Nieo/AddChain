@@ -1,0 +1,11 @@
+<div>
+    <a *ngFor="let design of results.designs" class="result"
+       href="/design/{{design.design_id}}">Design with id: {{design.design_id}}</a>
+    <a *ngFor="let build of results.builds" class="result"
+       href="/build/{{build.build_id}}">Build with id: {{build.build_id}}</a>
+    <a *ngFor="let print of results.prints" class="result"
+       href="/print/{{print.slm_id}}">Print with id: {{print.slm_id}}</a>
+    <p *ngIf="results.designs.length === 0
+        && results.builds.length === 0
+        && results.prints.length === 0">Search returned no results.</p>
+</div>

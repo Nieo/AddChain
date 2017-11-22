@@ -2,6 +2,7 @@ const db = require('./db');
 
 exports.getPrintList = (page) => {return db.any('SELECT * FROM prints LIMIT 100 OFFSET $1', [page]);};
 exports.getPrint = (id) => {return db.one('SELECT * FROM prints WHERE slm_id = $1', id);};
+exports.getPrintIfExists = (id) => {return db.oneOrNone('SELECT * FROM prints WHERE slm_id = $1', id);};
 exports.createPrint = (print) => {
   return db.one(
     'INSERT INTO prints(' +

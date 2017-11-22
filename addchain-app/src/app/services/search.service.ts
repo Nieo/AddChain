@@ -9,11 +9,15 @@ import {HttpClient} from "@angular/common/http";
 export class SearchService {
   private baseUrl: string = "http://localhost:3000/search/";
   constructor(private http: HttpClient) { }
-  
+
   public get(query): Promise<SearchResult>{
     return this.http.get(this.baseUrl + query)
     .toPromise()
-    .then(response => response as SearchResult)
-    //.catch( error => console.log(error) );
+    .then(response => {
+      console.log(response);
+      console.log(response as SearchResult);
+      return response as SearchResult;
+    })
+    .catch( error => console.log(error) );
   }
 }

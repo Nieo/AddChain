@@ -10,15 +10,15 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-  public results: SearchResult = new SearchResult([],[],[]); 
+  public results: SearchResult = new SearchResult([],[],[]);
   constructor(
       private route: ActivatedRoute,
       private router: Router,
-      private searchService: SearchService) { 
+      private searchService: SearchService) {
       }
 
   ngOnInit() {
       let query = this.route.snapshot.paramMap.get('query');
-      this.searchService.get(query).then(result => this.results);
+      this.searchService.get(query).then(result => this.results = result);
   }
 }

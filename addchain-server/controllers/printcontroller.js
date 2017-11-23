@@ -15,9 +15,11 @@ router.get('/', (req, res) => {
     })
 });
 router.get('/:id', (req, res) => {
-  Print.getPrint(req.params.id)
+  Promise.all([Print.getPrint(req.params.id), Print.getRelatedParts(req.params.id)])
     .then(data => {
-      res.json(data);
+      let print = data[0];
+      print.relatedParts = data[1];
+      res.json(print);
     })
     .catch(error => {
       console.log("Error: ", error);

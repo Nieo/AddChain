@@ -69,3 +69,6 @@ function asArray(print) {
     print.base_cutting,
     print.comment]
 }
+exports.getRelatedParts = (id) => {
+  return db.any('SELECT parts.part_id, parts.part_number FROM parts WHERE parts.slm_id=$1', [id]);
+};

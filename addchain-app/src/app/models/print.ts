@@ -17,9 +17,8 @@ export class Print {
   dcp_factor: number;
   base_cutting: string;
   comment: string;
-
-
-
+  relatedParts: RelatedPart[] = [];
+  
   constructor(slm_id, build_id, operator, start_time, end_time, calculated_print_time, machine_type, platform_material, platform_weight, powder_start_weight,
     powder_end_weight, powder_waste,powder_condition, number_of_layers, min_exposure_time , dcp_factor , base_cutting, comment){
     this.slm_id = slm_id;
@@ -40,7 +39,10 @@ export class Print {
     this.dcp_factor = dcp_factor;
     this.base_cutting = base_cutting;
     this.comment = comment;
-
-
   }
+  
+}
+export class RelatedPart{
+  part_id: number;
+  part_number: number;
 }

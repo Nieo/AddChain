@@ -97,8 +97,13 @@
     </div>
   </div>
 </div>
-  <div *ngIf="print != null" class="list-container">
-    <h2>Modeled by:</h2>
-    <a [routerLink]="['/build', print.build_id]"> {{print.build_id}} </a>
-  </div>
-
+<div *ngIf="print != null" class="list-container">
+  <h2>Modeled by:</h2>
+  <a [routerLink]="['/build', print.build_id]"> {{print.build_id}} </a>
+</div>
+<div *ngIf="print != null" class="list-container">
+  <h2>Parts:</h2>
+  <a *ngFor="let part of print.relatedParts" [routerLink]="['/part', part.part_id]">
+      {{part.part_number}}
+  </a>  
+</div>

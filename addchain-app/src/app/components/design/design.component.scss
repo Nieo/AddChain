@@ -33,6 +33,12 @@
     margin:10px;
     background-color: $lightShade;
   }
+  .input-container{
+    textarea{
+      resize: none;
+      scroll-x: hidden;
+    }
+  }
 }
 
 .stl-container {

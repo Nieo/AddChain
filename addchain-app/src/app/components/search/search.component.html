@@ -17,7 +17,14 @@
       <p>PRINT</p></div>
       <p class="summary">{{print.comment}}</p>
     </a>
+  <a *ngFor="let part of results.parts" class="result"
+     [routerLink]="['/part', part.part_id]"><div class="header">
+    <h1>{{part.part_id}} - #{{part.part_number}}<span *ngFor="let postProcess of part.relatedPostProcesses">, {{postProcess.name}}</span></h1>
+    <p>PART</p></div>
+    <p class="summary">{{part.comment}}</p>
+  </a>
     <p *ngIf="results.designs.length === 0
         && results.builds.length === 0
-        && results.prints.length === 0">Search returned no results.</p>
+        && results.prints.length === 0
+        && results.parts.length === 0">Search returned no results.</p>
 </div>

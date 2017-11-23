@@ -3,26 +3,34 @@ const router = express.Router();
 const printHandle = require('../database/printhandle');
 const designHandle = require('../database/designhandle');
 const buildHandle = require('../database/buildhandle');
+const partHandle = require('../database/parthandle');
 
 
 router.get('/:id', (req, res) => {
   const regex = /\d+/;
-  if(!regex.test(req.params.id)) {
-    res.json({'builds':[],'designs':[],'prints':[]});
-    return;
-  }
-  Promise.all([buildHandle.getBuildIfExists(req.params.id),
-    designHandle.getDesignIfExists(req.params.id),
-    printHandle.getPrintIfExists(req.params.id),
-    buildHandle.getRelatedDesigns(req.params.id)])
+  let isNumerical = regex.test(req.params.id);
+  let queries = [
+    isNumerical ? buildHandle.getBuildIfExists(req.params.id) : Promise.resolve(null),
+    isNumerical ? designHandle.getDesignIfExists(req.params.id) : Promise.resolve(null),
+    isNumerical ? printHandle.getPrintIfExists(req.params.id) : Promise.resolve(null),
+    isNumerical ? buildHandle.getRelatedDesigns(req.params.id) : Promise.resolve(null),
+    isNumerical ? partHandle.getPartIfExists(req.params.id) : Promise.resolve(null),
+    isNumerical ? partHandle.getRelatedPostProcesses(req.params.id) : Promise.resolve(null),
+  ];
+
+  Promise.all(queries)
     .then(data => {
         let results = {
             'builds': data[0] ? [data[0]] : [],
             'designs': data[1] ? [data[1]] : [],
             'prints': data[2] ? [data[2]] : [],
+            'parts': data[4] ? [data[4]] : []
         };
         if (results.builds.length > 0) {
           results.builds[0].relatedDesigns = data[3];
+        }
+        if (results.parts.length > 0) {
+          results.parts[0].relatedPostProcesses = data[5];
         }
         console.log(results);
         res.json(results);

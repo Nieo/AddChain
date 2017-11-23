@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-  public results: SearchResult = new SearchResult([],[],[]);
+  public results: SearchResult = new SearchResult([],[],[], []);
   constructor(
       private route: ActivatedRoute,
       private router: Router,

@@ -1,13 +1,18 @@
-import {Design} from "../models/design";
-import {Build} from "../models/build";
-import {Print} from "../models/print";
+import {Design} from "./design";
+import {Build} from "./build";
+import {Print} from "./print";
+import {Part} from "./part";
+
 export class SearchResult {
     designs: Design[];
     builds: Build[];
     prints: Print[];
-    constructor(designs, builds, prints){
+    parts: Part[];
+
+    constructor(designs, builds, prints, parts){
         this.designs = designs;
         this.builds = builds;
         this.prints = prints;
+        this.parts = parts;
     }
 }

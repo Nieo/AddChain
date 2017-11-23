@@ -12,11 +12,6 @@
             <input type="text" [(ngModel)]="print.slm_id" disabled/>
           </div>
           <div class="input-container">
-            <label>Build-ID:</label>
-            <a class="buildlink" [routerLink]="['/build', print.build_id]">{{print.build_id}}</a>
-            <!--<input  type="text" [(ngModel)]="print.build_id" disabled="{{viewMode}}"/>-->
-          </div>
-          <div class="input-container">
             <label>Operator:</label>
             <input  type="text" [(ngModel)]="print.operator" disabled="{{viewMode}}"/>
           </div>
@@ -85,6 +80,8 @@
         <textarea [(ngModel)]="print.comment" disabled="{{viewMode}}"></textarea>
       </div>
     </div>
+    <div>
+    
 
     <div *ngIf="viewMode && !createMode">
       <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
@@ -99,8 +96,9 @@
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
-
 </div>
-<div class="list-container">
+  <div *ngIf="print != null" class="list-container">
+    <h2>Modeled by:</h2>
+    <a [routerLink]="['/build', print.build_id]"> {{print.build_id}} </a>
+  </div>
 
-</div>

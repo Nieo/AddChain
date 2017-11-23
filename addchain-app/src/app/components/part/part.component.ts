@@ -34,7 +34,7 @@ export class PartComponent implements OnInit {
     if(id === 'new') {
       this.viewMode = false;
       this.createMode = true;
-      resolve(new Part(0, 0, ""));
+      resolve(new Part(0,0,0, ""));
     }else{
       this.viewMode = true;
       this.createMode = false;

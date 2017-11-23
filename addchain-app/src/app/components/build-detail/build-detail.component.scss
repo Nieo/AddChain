@@ -11,6 +11,12 @@
   }
 }
 
+.input-container{
+  textarea{
+    resize: none;
+    overflow-x: hidden;
+  }
+}
 
 .container {
   display: flex;

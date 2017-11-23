@@ -27,14 +27,22 @@ export class PartService {
     return this.http.get(this.baseUrl + id)
       .toPromise()
       .then(response => response as Part)
-      .catch(error => console.log(error));
+      .catch(error =>{
+        console.log(error);
+        throw error;
+      });
+  
   }
+
 
   createPart(part: Part): Promise<Part> {
     return this.http.post(this.baseUrl, part)
       .toPromise()
       .then(response => response as Part)
-      .catch(error => console.log(error));
+      .catch(error =>{
+         console.log(error);
+        throw error;
+      });
   }
 
   updatePart(part: Part): Promise<Part> {

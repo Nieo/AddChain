@@ -28,7 +28,9 @@
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
-  <div class="list-container">
+  <div *ngIf="part != null" class="list-container">
+    <h2>Comes from:</h2>
+    <a [routerLink]="['/print', part.slm_id]"> {{part.slm_id}} </a>
     <h2>Uses:</h2>
     <a *ngFor="let postprocesses of part.relatedPostProcesses" [routerLink]="['/postprocesses', postprocesses.post_process_id]">
       {{postprocesses.name}}

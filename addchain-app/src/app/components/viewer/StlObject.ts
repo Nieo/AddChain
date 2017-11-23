@@ -446,7 +446,6 @@ export class StlObject {
         );
       }
     } else {
-      console.log(this.vertexCount);
       GLES20.glDrawArrays(
         GLES20.GL_TRIANGLES,
         0,

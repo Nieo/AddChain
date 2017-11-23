@@ -2,7 +2,6 @@
   <app-spinner></app-spinner>
 </div>
 <div class="list-container" [hidden]="parts == undefined">
-  <a [routerLink]="['/part', 'new']" class="btn-new">New</a>
   <a *ngFor="let part of parts" [routerLink]="['/part', part.part_id]" [class.selected]="part.part_id == currentPartID" >
     {{part.part_id}}
   </a>

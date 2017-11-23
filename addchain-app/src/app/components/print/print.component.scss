@@ -1,10 +1,10 @@
 @import "../../../styles.scss";
 
 :host{
-  display: flex;
-  .design-list{
-    flex-grow: 1;
+  .dashboard{
+    height: auto;
   }
+  display: flex;
   .print-container{
     flex-grow: 2;
     display: flex;

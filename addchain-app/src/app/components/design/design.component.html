@@ -19,8 +19,9 @@
       </div>
     </div>
     <div *ngIf="viewMode && !createMode">
-      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
       <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
+      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
+      <button class="btn-rasied btn-success" [routerLink]="['/design', 'new']">New</button>
     </div>
     <div *ngIf="!viewMode && !createMode">
       <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>
@@ -31,17 +32,21 @@
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
-  <div *ngIf="design != null" class="list-container">
-    <h2>Project:</h2>
-    <a *ngFor="let project of design.relatedProject" [routerLink]="['/project', project.project_id]">
-      {{project.name}}
-    </a>
+  <div class="display">
+    <div class="related">
+      <div *ngIf="design != null" class="list-container">
+        <h2>Project:</h2>
+        <a *ngFor="let project of design.relatedProject" [routerLink]="['/project', project.project_id]">
+          {{project.name}}
+        </a>
+      </div>
+      <div *ngIf="design != null" class="list-container">
+        <h2>Used in:</h2>
+        <a *ngFor="let build of design.relatedBuilds" [routerLink]="['/build', build.build_id]">
+          Build:{{build.build_id}}, copies:{{build.count}}
+        </a>
+      </div>
+    </div>
+    <app-viewer></app-viewer>
   </div>
-  <div *ngIf="design != null" class="list-container">
-    <h2>Used in:</h2>
-    <a *ngFor="let build of design.relatedBuilds" [routerLink]="['/build', build.build_id]">
-      Build:{{build.build_id}}, copies:{{build.count}}
-    </a>
-  </div>
-  <app-viewer></app-viewer>
 </div>

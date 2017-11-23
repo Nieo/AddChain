@@ -19,8 +19,9 @@
       </div>
     </div>
     <div *ngIf="viewMode && !createMode">
-      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
       <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
+      <button class="btn-rasied btn-light" (click)="toggleEdit()">Edit</button>
+      <button class="btn-rasied btn-success" [routerLink]="['/build', 'new']">New</button>
     </div>
     <div *ngIf="!viewMode && !createMode">
       <button class="btn-rasied btn-danger" (click)="reset()">Reset</button>

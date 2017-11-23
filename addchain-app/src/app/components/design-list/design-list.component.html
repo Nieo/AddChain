@@ -2,7 +2,6 @@
   <app-spinner></app-spinner>
 </div>
 <div class="list-container" [hidden]="designs == undefined">
-    <a [routerLink]="['/design', 'new']" class="btn-new">New</a>
     <a *ngFor="let design of designs" [routerLink]="['/design', design.design_id]" [class.selected]="design.design_id == currentDesignID" >
       {{design.name}}
     </a>

@@ -2,9 +2,6 @@
 
 :host{
   display: flex;
-  .design-list{
-    flex-grow: 1;
-  }
   .detail-container{
     flex-grow: 2;
     display: flex;
@@ -23,22 +20,7 @@
   background-color: $lightAccent;
 }
 .data {
-  display: flex;
   width: 500px;
-  justify-content: space-around;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  div {
-    flex-basis: auto;
-    margin:10px;
-    background-color: $lightShade;
-  }
-  .input-container{
-    textarea{
-      resize: none;
-      scroll-x: hidden;
-    }
-  }
 }
 
 .stl-container {
@@ -49,5 +31,4 @@
 h1, p {
   margin: 10px;
 }
-
 

@@ -41,13 +41,25 @@ body {
   background-color: $lightShade;
 }
 
+// ugly hack that should be removed
+html,body,ng-content{
+  height: 100%;
+}
+
 /*
 Default fonts and font size for different elements
  */
-h1,h2,h3,h4,h5,p,a{
-  font-family: 'Ubuntu', sans-serif;
+h1,h2,h3,h4,h5,{
+  font-family: 'Roboto', sans-serif;
 }
 
+p,a,textarea{
+  font-family: 'Lato', sans-serif;
+}
+// all list 
+app-print-list , app-build-list, app-part-list, app-project-list, app-design-list{
+  background-color: $darkShade;
+}
 
 //Styling element for a list with clickable elements
 .list-container{
@@ -55,12 +67,10 @@ h1,h2,h3,h4,h5,p,a{
   flex-direction: column;
   align-content: space-between;
   min-width: 150px;
-  border-left: 0.25px solid $lightShade;
-  border-right: 0.25px solid $lightShade;
   a{
     text-decoration: none;
     padding: 5px;
-    margin: 1px;
+    margin: 3px;
     background-color: $primaryColor;
     color: white;
     border-radius: 2px;
@@ -135,6 +145,31 @@ h1,h2,h3,h4,h5,p,a{
 
 
 
+.data {
+  display: flex;
+  width: 500px;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  div {
+    flex-basis: auto;
+    margin:10px;
+    background-color: $lightShade;
+  }
+}
+
+
+
+.display{
+  display: flex;
+  flex-direction: column;
+  .related{
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+
 /*
 Below this is several mixins(i.e functions in scss) that are useful to do different things in scss they should include a brief description
  */
@@ -163,10 +198,18 @@ command on the parent element.
       clear: both;
     }
 }
+.dashboard{
+  text-align:center;
+  height: 100%;
+  app-build-detail, app-design, app-project, app-part{
+    height: 100%;
+  }
+}
 
 .input-container {
   width: 100%;
-  margin: 5px;
+  margin: 10px 0px 5px 10px;
+  padding-right: 20px;
   float: left;
   label {
     float: left;
@@ -191,7 +234,8 @@ command on the parent element.
     border-radius: 5px;
     padding: 5px;
     margin: 5px;
-    text-decoration: none;
+    resize: none;
+    overflow-x: hidden;
     &:disabled {
       border: 1px solid $lightShade;
       background-color: $lightShade;

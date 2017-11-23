@@ -2,8 +2,7 @@
   <app-spinner></app-spinner>
 </div>
 <div class="list-container" [hidden]="prints == undefined">
-  <a [routerLink]="['/print', 'new']" class="btn-new">New</a>
   <a *ngFor="let print of prints" [routerLink]="['/print', print.slm_id]" [class.selected]="print.slm_id == currentSlmID" >
-    {{print.slm_id}}
+    Print {{print.slm_id}} : {{print.start_time| date : 'yyyy-MM-dd'}}
   </a>
 </div>

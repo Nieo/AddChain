@@ -2,7 +2,6 @@
   <app-spinner></app-spinner>
 </div>
 <div class="list-container" [hidden]="projects == undefined">
-  <a [routerLink]="['/project', 'new']" class="btn-new">New</a>
   <a *ngFor="let project of projects" [routerLink]="['/project', project.project_id]" [class.selected]="project.project_id == currentProjectID" >
     {{project.name}}
   </a>

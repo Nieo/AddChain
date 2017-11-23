@@ -13,11 +13,7 @@ export class SearchService {
   public get(query): Promise<SearchResult>{
     return this.http.get(this.baseUrl + query)
     .toPromise()
-    .then(response => {
-      console.log(response);
-      console.log(response as SearchResult);
-      return response as SearchResult;
-    })
+    .then(response => response as SearchResult)
     .catch( error => console.log(error) );
   }
 }

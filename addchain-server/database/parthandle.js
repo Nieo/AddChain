@@ -1,6 +1,7 @@
 const db = require('./db');
 
 exports.getPart = (id) => {return db.one('SELECT * FROM parts WHERE part_id = $1', id);};
+exports.getPartIfExists = (id) => db.oneOrNone('SELECT * FROM parts WHERE part_id = $1', id);
 exports.getPartList = (page) => {return db.any('SELECT * FROM parts LIMIT 100 OFFSET $1',[page]);};
 exports.getRelatedPostProcesses = (id) => {return db.any('SELECT refinements.post_process_id, post_processes.name, count(refinements.post_process_id)  ' +
     'FROM refinements INNER JOIN post_processes ON refinements.post_process_id = post_processes.post_process_id WHERE refinements.part_id=$1 GROUP BY refinements.post_process_id, post_processes.name',[id])};

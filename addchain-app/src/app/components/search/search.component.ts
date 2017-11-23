@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-  public results: SearchResult = new SearchResult([],[],[]);
+  public results: SearchResult = new SearchResult([],[],[], [], []);
   constructor(
       private route: ActivatedRoute,
       private router: Router,
@@ -18,7 +18,15 @@ export class SearchComponent implements OnInit {
       }
 
   ngOnInit() {
-      let query = this.route.snapshot.paramMap.get('query');
-      this.searchService.get(query).then(result => this.results = result);
+      this.route.paramMap.subscribe(params => this.onRouteChange(params));
+  }
+
+  onRouteChange(params) {
+    let query = params.get('query').trim();
+    if (query !== params.get('query')) {
+      this.router.navigateByUrl('search/' + encodeURIComponent(query));
+      return;
+    }
+    this.searchService.get(query).then(result => this.results = result);
   }
 }

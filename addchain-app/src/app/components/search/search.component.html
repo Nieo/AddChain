@@ -1,11 +1,35 @@
 <div>
+    <a *ngFor="let project of results.projects" class="result"
+       [routerLink]="['/project', project.project_id]"><div class="header"><h1>{{project.project_id}}: {{project.name}} - {{project.customer}}</h1> <p>PROJECT</p></div>
+      <p class="summary">{{project.description}}</p>
+    </a>
     <a *ngFor="let design of results.designs" class="result"
-       href="/design/{{design.design_id}}">Design with id: {{design.design_id}}</a>
+       [routerLink]="['/design', design.design_id]"><div class="header"><h1>{{design.design_id}}: {{design.name}}</h1> <p>DESIGN</p></div>
+      <p class="summary">{{design.description}}</p>
+    </a>
     <a *ngFor="let build of results.builds" class="result"
-       href="/build/{{build.build_id}}">Build with id: {{build.build_id}}</a>
+       [routerLink]="['/build', build.build_id]"><div class="header">
+      <h1>{{build.build_id}}: {{build.material}}<span *ngFor="let design of build.relatedDesigns">, {{design.copies}} x {{design.name}}</span>
+      </h1>
+      <p>BUILD</p>
+    </div>
+      <p class="summary">{{build.comment}}</p>
+    </a>
     <a *ngFor="let print of results.prints" class="result"
-       href="/print/{{print.slm_id}}">Print with id: {{print.slm_id}}</a>
+       [routerLink]="['/print', print.slm_id]"><div class="header">
+      <h1>{{print.slm_id}}: {{print.start_time | date : 'yyyy-MM-dd HH:mm'}}<span *ngIf="print.operator"> - {{print.operator}}</span></h1>
+      <p>PRINT</p></div>
+      <p class="summary">{{print.comment}}</p>
+    </a>
+  <a *ngFor="let part of results.parts" class="result"
+     [routerLink]="['/part', part.part_id]"><div class="header">
+    <h1>{{part.part_id}}: #{{part.part_number}}<span *ngFor="let postProcess of part.relatedPostProcesses">, {{postProcess.name}}</span></h1>
+    <p>PART</p></div>
+    <p class="summary">{{part.comment}}</p>
+  </a>
     <p *ngIf="results.designs.length === 0
         && results.builds.length === 0
-        && results.prints.length === 0">Search returned no results.</p>
+        && results.prints.length === 0
+        && results.parts.length === 0
+        && results.projects.length === 0">Search returned no results.</p>
 </div>

@@ -1,3 +1,46 @@
 .result {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
   display: block;
+  text-decoration: none;
+  color: black;
+  border-bottom: solid 3px transparent;
+  &:hover {
+    border-bottom-color: lightgrey;
+  }
+  overflow: auto;
+}
+
+.header {
+  display: block;
+  h1, p {
+    margin-bottom: 0;
+  }
+  h1 {
+    font-size: 1.5em;
+    float: left;
+    margin-left: 0;
+    margin-right: auto;
+    display: inline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 430px;
+  }
+  p {
+    float: right;
+    margin-left: auto;
+    margin-right: 0;
+    display: inline;
+  }
+}
+
+.summary {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  float: left;
 }

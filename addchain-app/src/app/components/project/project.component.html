@@ -5,9 +5,9 @@
   <div class="data">
     <div *ngIf="project != null">
       <h1>Project</h1>
-      <div class="input-container" *ngIf="!createMode">
+      <div class="input-container">
         <label>ID:</label>
-        <input type="text" [(ngModel)]="project.project_id" disabled/>
+        <input type="text" [(ngModel)]="project.project_id" disabled="{{!createMode}}"/>
       </div>
       <div class="input-container">
         <label>Name:</label>

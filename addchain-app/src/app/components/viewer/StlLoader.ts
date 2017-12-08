@@ -4,7 +4,7 @@ declare function require(name: string);
 
 export class StlLoader {
   private reader: FileReader;
-  private fs = require('fs');
+  // private fs = require('fs');
 
   constructor() {
     this.reader = new FileReader();
@@ -23,10 +23,10 @@ export class StlLoader {
   }
 
   public loadFile(path: string) {
-    this.fs.readFile(path,function(err, data) {
-      if (err) throw err;
-      this.reader.readAsArrayBuffer(data);
-    });
+    // this.fs.readFile(path,function(err, data) {
+    //   if (err) throw err;
+    //   this.reader.readAsArrayBuffer(data);
+    // });
   }
 
   public loadTestFile() {

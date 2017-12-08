@@ -21,16 +21,16 @@ export class ViewerComponent implements OnInit {
   }
 
   ngOnInit() {
-    let canvas = <HTMLCanvasElement> document.getElementById('stl-viewer');
-
-    const gl = canvas.getContext("webgl");
-    GLES20.gl = gl;
-
-    GLES20.glClearColor(0, 1, 1, 1.0);
-    GLES20.glClear(gl.COLOR_BUFFER_BIT);
-    this.viewer.onSurfaceCreated();
-    this.viewer.onSurfaceChanged(canvas.width, canvas.height);
-    this.renderFrame();
+    // let canvas = <HTMLCanvasElement> document.getElementById('stl-viewer');
+    //
+    // const gl = canvas.getContext("webgl");
+    // GLES20.gl = gl;
+    //
+    // GLES20.glClearColor(0, 1, 1, 1.0);
+    // GLES20.glClear(gl.COLOR_BUFFER_BIT);
+    // this.viewer.onSurfaceCreated();
+    // this.viewer.onSurfaceChanged(canvas.width, canvas.height);
+    // this.renderFrame();
   }
 
   private renderFrame():void {

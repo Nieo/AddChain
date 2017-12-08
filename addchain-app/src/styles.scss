@@ -49,14 +49,14 @@ html,body,ng-content{
 /*
 Default fonts and font size for different elements
  */
-h1,h2,h3,h4,h5,{
+h1,h2,h3,h4,h5{
   font-family: 'Roboto', sans-serif;
 }
 
 p,a,textarea{
   font-family: 'Lato', sans-serif;
 }
-// all list 
+// all list
 app-print-list , app-build-list, app-part-list, app-project-list, app-design-list{
   background-color: $darkShade;
 }

@@ -241,6 +241,11 @@ command on the parent element.
       background-color: $lightShade;
     }
   }
+  select{
+    width: 125px;
+    max-height: 50px;
+  }
+
 }
 
 .image {

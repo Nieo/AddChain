@@ -17,6 +17,22 @@
         <label>Description:</label>
         <textarea [(ngModel)]="design.description" disabled="{{viewMode}}"></textarea>
       </div>
+      <div class="input-container" *ngIf="createMode" [hidden]="projects == undefined">
+        <label>Project:</label>
+        <select ng-model="relatedProject">
+          <option *ngFor="let project of projects" [value]="project">
+            {{project.name}}
+          </option>
+        </select>
+      </div>
+      <div class="input-container" *ngIf="createMode" [hidden]="builds == undefined">
+        <label>Builds:</label>
+        <select ng-model="relatedBuilds" multiple>
+          <option *ngFor="let build of builds">
+            {{build.build_id}}
+          </option>
+        </select>
+      </div>
     </div>
     <div *ngIf="viewMode && !createMode">
       <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
@@ -31,6 +47,7 @@
       <button class="btn-rasied btn-danger" (click)="reset()">Discard</button>
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
+
   </div>
   <div class="display">
     <div class="related">

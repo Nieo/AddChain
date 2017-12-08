@@ -24,4 +24,8 @@ export class RelatedBuild {
 export class RelatedProject {
   project_id: string;
   name: string;
+  constructor(project_id: string, name:string){
+    this.project_id = project_id;
+    this.name = name;
+  }
 }

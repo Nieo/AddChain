@@ -1,9 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {Design} from "../../models/design";
+import {Design, RelatedProject, RelatedBuild} from "../../models/design";
 import {DesignService} from "../../services/design.service";
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 
 import 'rxjs/add/operator/map';
+import {Project} from "../../models/project";
+import {ProjectService} from "../../services/project.service";
+import {BuildService} from "../../services/build.service";
+import {Build} from "../../models/build";
 
 
 @Component({
@@ -16,9 +20,18 @@ export class DesignComponent implements OnInit {
   originalDesign: Design;
   viewMode: boolean = true;
   createMode: boolean = false;
+  // The selected Project will be stored here
+  relatedProject: Project;
+  // The selected builds will be stored here
+  relatedBuilds: Build[];
+
+  builds : Build[];
+  projects: Project[];
 
   constructor(
     private designService: DesignService,
+    private buildService: BuildService,
+    private projectService: ProjectService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -31,6 +44,28 @@ export class DesignComponent implements OnInit {
             this.originalDesign = JSON.parse(JSON.stringify(design));
           }
       );
+      // Gets all potential projects
+      this.getProjects();
+
+      this.getBuilds();
+  }
+  getBuilds(){
+    this.buildService.getBuilds().subscribe(builds => {
+      this.builds = builds;
+      this.builds.sort((a: Build, b: Build) => {
+        return a.build_id > b.build_id ? 1 : -1;
+      });
+    });
+  }
+  getProjects(){
+    this.projectService.getProjects().subscribe(projects => {
+      this.projects = projects;
+      this.projects.sort((a: Project, b: Project) => {
+        return a.project_id > b.project_id ? 1 : -1;
+      });
+      // Set default project to the first project
+      this.relatedProject = this.projects[0];
+    });
   }
 
   private loadDesign(id: string):Promise<Design>{
@@ -80,6 +115,7 @@ export class DesignComponent implements OnInit {
         console.log("deleted ", data);
         this.router.navigateByUrl('/design/new');
       });
+
   }
   public create(){
     this.designService.createDesign(this.design)

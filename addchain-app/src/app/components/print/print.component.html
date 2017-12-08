@@ -2,6 +2,9 @@
 <app-print-list class="print-list"></app-print-list>
 
 <div class="print-container">
+  <div class="image">
+    <img src="../../../assets/printed_christmas_ornaments.jpg" alt="Print overview">
+  </div>
   <div class="data">
     <div *ngIf="print != null">
       <h1>Print</h1>
@@ -81,7 +84,7 @@
       </div>
     </div>
     <div>
-    
+
 
     <div *ngIf="viewMode && !createMode">
       <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>
@@ -106,5 +109,5 @@
   <h2>Parts:</h2>
   <a *ngFor="let part of print.relatedParts" [routerLink]="['/part', part.part_id]">
       {{part.part_number}}
-  </a>  
+  </a>
 </div>

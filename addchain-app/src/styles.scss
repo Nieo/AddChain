@@ -242,3 +242,12 @@ command on the parent element.
     }
   }
 }
+
+.image {
+  img {
+    width: 100%;
+  }
+  justify-content: space-around;
+  width: 25%;
+  align-items: center;
+}

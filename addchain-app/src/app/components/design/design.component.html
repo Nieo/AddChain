@@ -17,13 +17,14 @@
         <label>Description:</label>
         <textarea [(ngModel)]="design.description" disabled="{{viewMode}}"></textarea>
       </div>
-      <div class="input-container" *ngIf="createMode" [hidden]="projects == undefined">
-        <label>Project:</label>
-        <select ng-model="relatedProject">
-          <option *ngFor="let project of projects" [value]="project">
-            {{project.name}}
+      <div class="input-container" *ngIf="!viewMode" [hidden]="projects == undefined">
+        <label>Project:
+        <select [(ngModel)]="relatedProject">
+          <option *ngFor="let project of projects" [ngValue]="project">
+            {{project.name}} ({{project.project_id}})
           </option>
         </select>
+        </label>
       </div>
       <div class="input-container" *ngIf="createMode" [hidden]="builds == undefined">
         <label>Builds:</label>

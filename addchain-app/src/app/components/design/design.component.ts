@@ -95,6 +95,7 @@ export class DesignComponent implements OnInit {
   }
   public save(){
     console.log("Saving");
+    this.design.relatedProject = [new RelatedProject(this.relatedProject.project_id, this.relatedProject.name)];
     this.designService.updateDesign(this.design)
       .then((data) => {
         this.originalDesign = data;
@@ -118,6 +119,7 @@ export class DesignComponent implements OnInit {
 
   }
   public create(){
+    this.design.relatedProject = [new RelatedProject(this.relatedProject.project_id, this.relatedProject.name)];
     this.designService.createDesign(this.design)
       .then((data) => {
         this.design = data;

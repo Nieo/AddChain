@@ -33,21 +33,27 @@ router.get('/:id', (req, res) => {
 });
 router.post('/', (req, res) => {
   designHandle.createDesign(req.body)
-    .then(data => {
-      res.json(data);
-    })
-    .catch(error => {
-      console.log("Error: ", error);
-      res.status(500);
-      res.end();
+  .then(design => {
+    return designHandle.createRelatedProject(design.design_id, req.body.relatedProject[0].project_id)
+      .then(_ => {
+        res.json(design);
+      });
   })
+  .catch(error => {
+    console.log("Error: ", error);
+    res.status(500);
+    res.end();
+  });
 });
 router.put('/:id', (req, res) => {
   let d = req.body;
   d.id = req.params.id;
   designHandle.updateDesign(d)
     .then(data => {
-      res.json(data);
+      return designHandle.updateRelatedProject(d.id, d.relatedProject[0].project_id)
+        .then(_ => {
+          res.json(data);
+        });
     })
     .catch(error => {
       console.log("Error: ", error);
@@ -56,16 +62,18 @@ router.put('/:id', (req, res) => {
     })
 });
 router.delete('/:id', (req, res) => {
-  designHandle.deleteDesign(req.params.id)
-    .then(count => {
-      res.status(200);
-      res.json(count);
-    })
+  designHandle.deleteRelatedProject(req.params.id)
+  .then(_ => {
+    return designHandle.deleteDesign(req.params.id)
+      .then(count => {
+        res.status(200);
+        res.json(count);
+      });})
     .catch(error => {
       console.log("Error: ", error);
       res.status(500);
       res.end();
-    })
+    });
 });
 router.options('/:id', (req, res) => {
   res.end();

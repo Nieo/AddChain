@@ -13,6 +13,10 @@ exports.getRelatedDesigns = (id) => {
   ' WHERE build_id=$1' +
   ' GROUP BY prepares.design_id, designs.name',[id]);
 };
+exports.createRelatedDesign = (build_id, design_id, part_number) =>
+  db.one('INSERT INTO prepares (build_id, design_id, part_number) VALUES ($1,$2,$3) RETURNING *',
+    [build_id, design_id, part_number]);
+exports.deleteRelatedDesigns = (id) => db.result('DELETE FROM prepares WHERE build_id=$1', [id], r => r.rowCount);
 exports.getRelatedPrints = (id) => {
   return db.any('SELECT prints.slm_id, prints.start_time FROM prints WHERE prints.build_id=$1', [id]);
 };

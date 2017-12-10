@@ -33,7 +33,20 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   buildHandle.createBuild(req.body)
     .then(data => {
-      res.json(data);
+      let designs = [];
+      for (let i = 0, n = 0; i < req.body.relatedDesigns.length; i++, n++) {
+        let design = req.body.relatedDesigns[i];
+        for (let j = 0; j < design.copies; j++, n++) {
+          designs.push({design_id: design.design_id, part_number: n});
+        }
+      }
+      let createRelated = [];
+      for (let design of designs) {
+        createRelated.push(buildHandle.createRelatedDesign(data.build_id, design.design_id, design.part_number));
+      }
+      return Promise.all(createRelated).then(_ => {
+        res.json(data);
+      });
     })
     .catch(error => {
       console.log("Error: ", error);
@@ -46,7 +59,22 @@ router.put('/:id', (req, res) => {
   d.id = req.params.id;
   buildHandle.updateBuild(d)
     .then(data => {
-      res.json(data);
+      return buildHandle.deleteRelatedDesigns(d.id).then(_ => {
+        let designs = [];
+        for (let i = 0, n = 0; i < req.body.relatedDesigns.length; i++, n++) {
+          let design = req.body.relatedDesigns[i];
+          for (let j = 0; j < design.copies; j++, n++) {
+            designs.push({design_id: design.design_id, part_number: n});
+          }
+        }
+        let createRelated = [];
+        for (let design of designs) {
+          createRelated.push(buildHandle.createRelatedDesign(data.build_id, design.design_id, design.part_number));
+        }
+        return Promise.all(createRelated).then(_ => {
+          res.json(data);
+        });}
+      );
     })
     .catch(error => {
       console.log("Error: ", error);
@@ -55,12 +83,14 @@ router.put('/:id', (req, res) => {
     })
 });
 router.delete('/:id', (req, res) => {
-  buildHandle.deleteBuild(req.params.id)
-    .then(count => {
-      res.status(200);
-      res.json(count);
-    })
-    .catch(error => {
+  buildHandle.deleteRelatedDesigns(req.params.id).then(_ => {
+    return buildHandle.deleteBuild(req.params.id)
+      .then(count => {
+        res.status(200);
+        res.json(count);
+      });
+  })
+  .catch(error => {
       console.log("Error: ", error);
       res.status(500);
       res.end();

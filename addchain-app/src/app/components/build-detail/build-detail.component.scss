@@ -24,3 +24,12 @@
 h1, p {
   margin: 10px;
 }
+.part-count {
+  width: 75px;
+}
+
+.part-btn {
+  @extend .btn-rasied;
+  padding: 6px 15px;
+  font-size: inherit;
+}

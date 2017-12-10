@@ -12,7 +12,7 @@ export class Build {
 }
 
 export class RelatedDesign{
-  id: number;
+  design_id: number;
   copies: number;
   name: string;
 }

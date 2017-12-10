@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Build} from "../../models/build";
+import {Build, RelatedDesign} from "../../models/build";
 import {BuildService} from "../../services/build.service";
 import {ActivatedRoute, Router, ParamMap} from "@angular/router";
+import {Design} from "../../models/design";
+import {DesignService} from "../../services/design.service";
 
 @Component({
   selector: 'app-build-detail',
@@ -13,9 +15,12 @@ export class BuildDetailComponent implements OnInit {
   originalBuild: Build;
   viewMode: boolean = true;
   createMode: boolean = false;
+  designs: Design[] = [];
+  newDesign: Design;
 
   constructor(
     private buildService: BuildService,
+    private designService: DesignService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -28,7 +33,7 @@ export class BuildDetailComponent implements OnInit {
         this.originalBuild = JSON.parse(JSON.stringify(build));
       }
     );
-
+    this.getDesigns();
   }
 
   private loadBuild(id: string):Promise<Build>{
@@ -51,6 +56,36 @@ export class BuildDetailComponent implements OnInit {
           });
       }
     }));
+  }
+
+  private getDesigns() {
+    this.designService.getDesigns().subscribe(designs => {
+      this.designs = designs;
+      this.designs.sort((a: Design, b: Design) => {
+        return a.design_id > b.design_id ? 1 : -1;
+      });
+    });
+  }
+
+  public notInBuild(design : Design) {
+    for (let relatedDesign of this.build.relatedDesigns) {
+      if (design.design_id === relatedDesign.design_id) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public removeDesign(index : number) {
+    this.build.relatedDesigns.splice(index, 1);
+  }
+
+  public addDesign(design : Design) {
+    let related = new RelatedDesign();
+    related.design_id = design.design_id;
+    related.name = design.name;
+    related.copies = 1;
+    this.build.relatedDesigns.push(related);
   }
 
   public toggleEdit(){

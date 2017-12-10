@@ -20,6 +20,22 @@
         <label>Comment:</label>
         <textarea [(ngModel)]="build.comment" disabled="{{viewMode}}"></textarea>
       </div>
+      <div *ngIf="!viewMode">
+      <div class="input-container" *ngFor="let design of build.relatedDesigns; let i = index">
+        <label>{{design.name}} ({{design.design_id}}):</label>
+        <input type="number" class="part-count" [(ngModel)]="design.copies">
+        <button class="part-btn btn-danger" (click)="removeDesign(i)">-</button>
+      </div>
+      <div class="input-container">
+        <label>Add:</label>
+        <select [(ngModel)]="newDesign">
+          <option *ngFor="let design of designs.filter(notInBuild.bind(this))" [ngValue]="design">
+            {{design.name}} ({{design.design_id}})
+          </option>
+        </select>
+        <button class="part-btn btn-new" (click)="addDesign(newDesign)">+</button>
+      </div>
+    </div>
     </div>
     <div *ngIf="viewMode && !createMode">
       <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>

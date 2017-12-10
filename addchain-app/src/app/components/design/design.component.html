@@ -26,14 +26,6 @@
         </select>
         </label>
       </div>
-      <div class="input-container" *ngIf="createMode" [hidden]="builds == undefined">
-        <label>Builds:</label>
-        <select ng-model="relatedBuilds" multiple>
-          <option *ngFor="let build of builds">
-            {{build.build_id}}
-          </option>
-        </select>
-      </div>
     </div>
     <div *ngIf="viewMode && !createMode">
       <button class="btn-rasied btn-danger" (click)="remove()">Delete</button>

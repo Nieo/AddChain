@@ -22,15 +22,12 @@ export class DesignComponent implements OnInit {
   createMode: boolean = false;
   // The selected Project will be stored here
   relatedProject: Project;
-  // The selected builds will be stored here
-  relatedBuilds: Build[];
 
   builds : Build[];
   projects: Project[];
 
   constructor(
     private designService: DesignService,
-    private buildService: BuildService,
     private projectService: ProjectService,
     private route: ActivatedRoute,
     private router: Router
@@ -46,16 +43,6 @@ export class DesignComponent implements OnInit {
       );
       // Gets all potential projects
       this.getProjects();
-
-      this.getBuilds();
-  }
-  getBuilds(){
-    this.buildService.getBuilds().subscribe(builds => {
-      this.builds = builds;
-      this.builds.sort((a: Build, b: Build) => {
-        return a.build_id > b.build_id ? 1 : -1;
-      });
-    });
   }
   getProjects(){
     this.projectService.getProjects().subscribe(projects => {

@@ -245,7 +245,11 @@ command on the parent element.
     width: 125px;
     max-height: 50px;
   }
-
+  p {
+    margin: 0;
+    text-align: left;
+    padding: 5px;
+  }
 }
 
 .image {

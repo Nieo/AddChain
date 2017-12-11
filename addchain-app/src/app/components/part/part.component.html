@@ -15,6 +15,20 @@
         <label>Comment:</label>
         <textarea [(ngModel)]="part.comment" disabled="{{viewMode}}"></textarea>
       </div>
+      <div>
+        <h2>Applied postprocesses</h2>
+        <div *ngFor="let postprocesses of part.relatedPostProcesses">
+          <label>{{postprocesses.name}}</label>
+          <div class="input-container">
+            <label>Description:</label>
+            <p>{{postprocesses.description}}</p>
+          </div>
+          <div class="input-container">
+            <label>Comment:</label>
+            <p>{{postprocesses.comment}}</p>
+          </div>
+        </div>
+      </div>
 
 
     </div>
@@ -32,15 +46,10 @@
       <button class="btn-rasied btn-success" (click)="create()">Create</button>
     </div>
   </div>
+
   <div *ngIf="part != null" class="list-container">
     <h2>Comes from:</h2>
     <a [routerLink]="['/print', part.slm_id]"> {{part.slm_id}} </a>
-  </div>
-  <div *ngIf="part != null" class="list-container">
-    <h2>Uses:</h2>
-    <a *ngFor="let postprocesses of part.relatedPostProcesses" [routerLink]="['/postprocesses', postprocesses.post_process_id]">
-      {{postprocesses.name}}
-    </a>
   </div>
 </div>
 

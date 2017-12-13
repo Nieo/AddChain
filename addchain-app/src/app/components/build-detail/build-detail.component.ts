@@ -95,7 +95,7 @@ export class BuildDetailComponent implements OnInit {
     console.log("Saving");
     this.buildService.updateBuild(this.build)
       .then((data) => {
-        this.originalBuild = data;
+        this.originalBuild = JSON.parse(JSON.stringify(this.build));
         console.log("Saved data", data);
         this.viewMode = true;
       })

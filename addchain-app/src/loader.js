@@ -29,9 +29,20 @@ window.addEventListener("load", function () {
   var obj = new THREE.Mesh(new THREE.Geometry(), mat);
   scene.add(obj);
 
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if(this.readyState === 4 && this.status === 200) {
+      openFile(xhttp.response);
+    }
+  };
+  xhttp.open("GET", "/assets/stl-reader-3.0.1/test/cube.stl",true);
+  xhttp.responseType = "blob";
+  xhttp.send();
+
   var loop = function loop() {
     requestAnimationFrame(loop);
-    //obj.rotation.z += 0.05;
+    // obj.rotation.z += 0.05;
     controls.update();
     renderer.clear();
     renderer.render(scene, camera);
@@ -41,6 +52,7 @@ window.addEventListener("load", function () {
   // file load
   var openFile = function (file) {
     console.log("Open file");
+    console.log(file);
     var reader = new FileReader();
     reader.addEventListener("load", function (ev) {
       var buffer = ev.target.result;
@@ -58,6 +70,9 @@ window.addEventListener("load", function () {
     var file = ev.target.files[0];
     openFile(file);
   }, false);
+
+
+
 
   // dnd
   view.addEventListener("dragover", function (ev) {

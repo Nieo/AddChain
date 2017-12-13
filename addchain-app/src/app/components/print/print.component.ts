@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Print} from "../../models/print";
 import {ParamMap, ActivatedRoute, Router} from "@angular/router";
 import {PrintService} from "../../services/print.service";
+import {Build} from "../../models/build";
+import {BuildService} from "../../services/build.service";
 
 @Component({
   selector: 'app-print',
@@ -13,8 +15,12 @@ export class PrintComponent implements OnInit {
   originalPrint: Print;
   viewMode: boolean = true;
   createMode: boolean = false;
+  builds: Build[] = [];
+  relatedBuildName: string;
+
   constructor(
     private printService: PrintService,
+    private buildService: BuildService,
     private route: ActivatedRoute,
     private router: Router
 
@@ -26,9 +32,46 @@ export class PrintComponent implements OnInit {
       print => {
         this.print = print;
         this.originalPrint = JSON.parse(JSON.stringify(print));
+        this.updateRelatedBuild();
       }
     );
+    // Gets all potential builds
+    this.getBuilds();
+  }
+  getBuilds(){
+    this.buildService.getBuilds().subscribe(builds => {
+      this.builds = builds;
+      this.builds.sort((a: Build, b: Build) => {
+        return a.build_id > b.build_id ? 1 : -1;
+      });
+      let getFullBuilds: Promise<Build>[] = [];
+      for (let build of builds) {
+        getFullBuilds.push(this.buildService.getBuild(String(build.build_id)));
+      }
+      Promise.all(getFullBuilds).then(fullBuilds => {
+        this.builds = fullBuilds;
+        this.updateRelatedBuild();
+      });
+    });
+  }
 
+  buildName(id: number) {
+    // TODO: This could be done using binary search instead.
+    for (let build of this.builds) {
+      if (build.build_id === id) {
+        let name: string = build.material;
+        for (let design of build.relatedDesigns) {
+          name += ', ' + design.name + ' x ' + design.copies;
+        }
+        name += ' (' + build.build_id + ')';
+        return name;
+      }
+    }
+    return String(id);
+  }
+
+  updateRelatedBuild() {
+    this.relatedBuildName = this.buildName(this.print.build_id);
   }
 
   private loadPrint(id: string):Promise<Print>{
@@ -69,6 +112,7 @@ export class PrintComponent implements OnInit {
   }
   public reset(){
     this.print = JSON.parse(JSON.stringify(this.originalPrint));
+    this.updateRelatedBuild();
     this.viewMode = this.createMode? false: true;
   }
   public remove(){

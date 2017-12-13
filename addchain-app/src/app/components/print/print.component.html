@@ -15,6 +15,17 @@
             <input type="text" [(ngModel)]="print.slm_id" disabled/>
           </div>
           <div class="input-container">
+            <label>Build:</label>
+            <select [(ngModel)]="print.build_id" *ngIf="!viewMode" (change)="updateRelatedBuild()">
+              <option *ngFor="let build of builds" [ngValue]="build.build_id">
+                {{buildName(build.build_id)}}
+              </option>
+            </select>
+            <!-- Using an input field here is somewhat hacky. It would be better to use an ordinary <p> or <span> tag
+                 and just make sure that the text styling is the same as for a disabled input field. -->
+            <input  type="text" [(ngModel)]="relatedBuildName" *ngIf="viewMode" disabled/>
+          </div>
+          <div class="input-container">
             <label>Operator:</label>
             <input  type="text" [(ngModel)]="print.operator" disabled="{{viewMode}}"/>
           </div>
@@ -103,11 +114,12 @@
 </div>
 <div *ngIf="print != null" class="list-container">
   <h2>Modeled by:</h2>
-  <a [routerLink]="['/build', print.build_id]"> {{print.build_id}} </a>
+  <a [routerLink]="['/build', print.build_id]"> {{buildName(print.build_id)}} </a>
 </div>
 <div *ngIf="print != null" class="list-container">
   <h2>Parts:</h2>
   <a *ngFor="let part of print.relatedParts" [routerLink]="['/part', part.part_id]">
       {{part.part_number}}
   </a>
+</div>
 </div>

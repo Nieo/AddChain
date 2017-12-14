@@ -13,6 +13,21 @@
     resize: none;
     overflow-x: hidden;
   }
+
+  button{
+    width: 40px;
+  }
+}
+.input-container.design{
+  display: flex;
+  justify-content: space-between;;
+  label{
+    width: 150px;
+    text-align: left;
+  }
+  input.part-count, select{
+    width: 150px;
+  }
 }
 
 .container {

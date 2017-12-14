@@ -61,6 +61,10 @@ app-print-list , app-build-list, app-part-list, app-project-list, app-design-lis
   background-color: $darkShade;
 }
 
+app-print{
+  height: 100%;
+}
+
 //Styling element for a list with clickable elements
 .list-container{
   display: flex;

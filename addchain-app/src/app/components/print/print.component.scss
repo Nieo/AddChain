@@ -11,6 +11,7 @@
   }
   .list-container{
     margin-top: 10px;
+    max-width: 180px;
   }
 }
 
@@ -44,6 +45,10 @@
     textarea{
       resize: none;
       overflow: auto;
+    }
+    select {
+      width: auto;
+      max-width: 230px;
     }
   }
 }

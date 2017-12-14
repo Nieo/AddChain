@@ -33,12 +33,12 @@
       margin-left: 10px;
     }
   }
-  .input-container{
-    margin-left: 30px;
-    textarea{
-        resize: none;
-        overflow-x: hidden;
-    }
+  .print-id-display {
+    width: 400px;
+  }
+  .print-id-select {
+    width: auto;
+    max-width: 400px;
   }
 }
 

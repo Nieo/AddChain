@@ -7,6 +7,17 @@
   <div class="data">
     <div *ngIf="part != null">
       <h1>Part</h1>
+      <div class="input-container">
+        <label>Print:</label>
+        <select class="print-id-select" [(ngModel)]="part.slm_id" *ngIf="!viewMode" (change)="updateRelatedPrint()">
+          <option *ngFor="let print of prints" [ngValue]="print.slm_id">
+            {{getPrintName(print)}}
+          </option>
+        </select>
+        <!-- Using an input field here is somewhat hacky. It would be better to use an ordinary <p> or <span> tag
+             and just make sure that the text styling is the same as for a disabled input field. -->
+        <input type="text" class="print-id-display" [(ngModel)]="relatedPrintName" disabled/>
+      </div>
       <div class="input-container" *ngIf="!createMode">
         <label>Part Number:</label>
         <input type="text" [(ngModel)]="part.part_number" disabled="{{viewMode}}"/>
@@ -49,7 +60,7 @@
 
   <div *ngIf="part != null" class="list-container">
     <h2>Comes from:</h2>
-    <a [routerLink]="['/print', part.slm_id]"> {{part.slm_id}} </a>
+    <a [routerLink]="['/print', part.slm_id]"> {{relatedPrintName}} </a>
   </div>
 </div>
 
